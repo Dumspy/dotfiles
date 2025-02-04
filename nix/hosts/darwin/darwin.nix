@@ -14,6 +14,7 @@
       "raycast"
       "zed"
       "visual-studio-code"
+      "bruno"
     ];
     onActivation = {
       autoUpdate = true;
