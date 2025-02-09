@@ -14,6 +14,9 @@ source <(fzf --zsh)
 # zsh_profile
 source ~/.zsh_profile
 
+#direnv
+eval "$(direnv hook zsh)"
+
 if [[ "$(uname -n)" == "nixos" ]]; then
   source ~/.ssh_pipe
 fi
