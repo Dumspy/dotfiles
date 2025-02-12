@@ -21,7 +21,6 @@
   outputs = inputs@{ self, nix-darwin, nixos-wsl, nixpkgs, home-manager }:
   {
     # Build darwin flake using:
-    # $ darwin-rebuild build --flake .#personal
     darwinConfigurations."Felixs-MacBook-Air" = nix-darwin.lib.darwinSystem {
       system = "aarch64-darwin";
       modules = [
@@ -38,7 +37,6 @@
     };
 
     # Build nixosConfigurations using:
-    #
     nixosConfigurations = {
       wsl = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
@@ -55,8 +53,16 @@
           }
         ];
       };
+
+      docker-host = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          ./hosts/system.nix
+          ./hosts/docker-host/docker-host.nix
+        ];
+      };
     };
 
-    darwinPackages = self.darwinConfigurations."personal".pkgs;
+    # darwinPackages = self.darwinConfigurations."Felixs-MacBook-Air".pkgs;
   };
 }
