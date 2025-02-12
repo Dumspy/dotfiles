@@ -20,7 +20,7 @@
   };
 
   environment.systemPackages = [
-    pkgs.socat
+    pkgs.socat # required for ssh pipe from Windows to WSL
     pkgs.gcc
     pkgs.gnumake
   ];
