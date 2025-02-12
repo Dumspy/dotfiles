@@ -9,6 +9,8 @@
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
+    ./services/docker/docker.nix
+    ./services/caddy/caddy.nix
   ];
 
   # Bootloader.
@@ -49,18 +51,8 @@
   users.users.nixos = {
     isNormalUser = true;
     description = "nixos";
-    extraGroups = ["networkmanager" "wheel" "docker"];
+    extraGroups = ["networkmanager" "wheel"];
     packages = with pkgs; [];
-  };
-
-  # Enable Docker
-  virtualisation.docker.enable = true;
-  virtualisation.oci-containers = {
-    backend = "docker";
-    containers = {
-      hello-world = import ./containers/hello-world.nix {inherit config pkgs;};
-      nginx-proxy-manager = import ./containers/nginx-proxy-manager.nix {inherit config pkgs;};
-    };
   };
 
   services.openssh.enable = true;
