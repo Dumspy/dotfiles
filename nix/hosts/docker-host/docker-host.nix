@@ -48,8 +48,6 @@
     packages = with pkgs; [];
   };
 
-  users.defaultUserShell = pkgs.zsh;
-
   # Enable Docker
   virtualisation.docker.enable = true;
   virtualisation.oci-containers.containers = {
