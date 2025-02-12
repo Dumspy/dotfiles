@@ -1,4 +1,8 @@
-{ config, pkgs, ... }: {
+{
+  config,
+  pkgs,
+  ...
+}: {
   services.nix-daemon.enable = true;
 
   #homebrew
@@ -65,7 +69,6 @@
 
     NSGlobalDomain.AppleInterfaceStyleSwitchesAutomatically = true;
   };
-
 
   # Enable sudo touch id authentication
   security.pam.enableSudoTouchIdAuth = true;

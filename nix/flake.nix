@@ -3,7 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    
+
     nix-darwin.url = "github:LnL7/nix-darwin";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -18,15 +18,21 @@
     };
   };
 
-  outputs = inputs@{ self, nix-darwin, nixos-wsl, nixpkgs, home-manager }:
-  {
+  outputs = inputs @ {
+    self,
+    nix-darwin,
+    nixos-wsl,
+    nixpkgs,
+    home-manager,
+  }: {
     # Build darwin flake using:
     darwinConfigurations."Felixs-MacBook-Air" = nix-darwin.lib.darwinSystem {
       system = "aarch64-darwin";
       modules = [
         ./hosts/system.nix
         ./hosts/darwin/darwin.nix
-        home-manager.darwinModules.home-manager {
+        home-manager.darwinModules.home-manager
+        {
           home-manager = {
             useGlobalPkgs = true;
             useUserPackages = true;
@@ -44,7 +50,8 @@
           nixos-wsl.nixosModules.default
           ./hosts/system.nix
           ./hosts/wsl/wsl.nix
-          home-manager.nixosModules.home-manager {
+          home-manager.nixosModules.home-manager
+          {
             home-manager = {
               useGlobalPkgs = true;
               useUserPackages = true;

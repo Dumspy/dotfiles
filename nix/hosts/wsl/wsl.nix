@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ... }: {
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}: {
   system.stateVersion = "24.05";
 
   programs.nix-ld.enable = true;
@@ -10,12 +15,12 @@
 
   # Enable Docker
   virtualisation.docker.enable = true;
-  users.users.nixos.extraGroups = [ "docker" ];
+  users.users.nixos.extraGroups = ["docker"];
 
   services.resolved = {
     enable = true;
     dnssec = "false";
-    domains = [ "~." ];
+    domains = ["~."];
     dnsovertls = "false";
   };
 

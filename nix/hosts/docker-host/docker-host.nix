@@ -1,10 +1,15 @@
-{ config, pkgs, lib, ... }: {
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}: {
   system.stateVersion = "24.11";
 
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-    ];
+  imports = [
+    # Include the results of the hardware scan.
+    ./hardware-configuration.nix
+  ];
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -44,7 +49,7 @@
   users.users.nixos = {
     isNormalUser = true;
     description = "nixos";
-    extraGroups = [ "networkmanager" "wheel" "docker"];
+    extraGroups = ["networkmanager" "wheel" "docker"];
     packages = with pkgs; [];
   };
 
@@ -53,16 +58,15 @@
   virtualisation.oci-containers = {
     backend = "docker";
     containers = {
-      hello-world = import ./containers/hello-world.nix { inherit config pkgs; };
-      nginx-proxy-manager = import ./containers/nginx-proxy-manager.nix { inherit config pkgs; };
+      hello-world = import ./containers/hello-world.nix {inherit config pkgs;};
+      nginx-proxy-manager = import ./containers/nginx-proxy-manager.nix {inherit config pkgs;};
     };
   };
-  
 
   services.openssh.enable = true;
   users.users."nixos".openssh.authorizedKeys.keys = [
-  "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHuBvk3U7Pdlf5vUV6eH1VvUDigRHDRMp+d+pdo7jTky main-key"
-];
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHuBvk3U7Pdlf5vUV6eH1VvUDigRHDRMp+d+pdo7jTky main-key"
+  ];
 
   environment.systemPackages = [
     pkgs.gcc

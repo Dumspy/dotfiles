@@ -1,10 +1,12 @@
-{ config, pkgs, ... }:
-
 {
+  config,
+  pkgs,
+  ...
+}: {
   imports = [
     ../home.nix
   ];
-  
+
   home.file = {
     ".ssh_pipe".source = ../../../zsh/.ssh_pipe;
   };
@@ -16,7 +18,7 @@
 
   programs.git = {
     enable = true;
-    
+
     userName = "Felix Berger";
     userEmail = "felix.enok.berger@gmail.com";
 
