@@ -1,5 +1,5 @@
 {
-  description = "Example nix-darwin system flake";
+  description = "Flake for managing my NixOS, nix-darwin, and WSL systems.";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
