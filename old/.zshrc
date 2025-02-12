@@ -1,6 +1,3 @@
-# starship
-eval "$(starship init zsh)"
-
 # fnm
 FNM_PATH="/Users/felix.berger/Library/Application Support/fnm"
 if [ -d "$FNM_PATH" ]; then
@@ -12,16 +9,9 @@ eval "$(fnm env --use-on-cd --shell zsh)"
 # rbenv
 eval "$(rbenv init -)"
 
-# 1password
-export SSH_AUTH_SOCK=~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
-
-# fzf
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 # fzf git
 source ~/fzf-git.sh/fzf-git.sh
 
-# zsh_profile
-source ~/.zsh_profile
 # direnv
 eval "$(direnv hook zsh)"
 
