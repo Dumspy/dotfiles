@@ -21,7 +21,6 @@
 
   environment.systemPackages = [
     pkgs.socat
-    pkgs.pyenv
     pkgs.gcc
     pkgs.gnumake
   ];
