@@ -8,6 +8,7 @@
     enable = true;
     virtualHosts."ha.local".extraConfig = ''
       reverse_proxy http://192.168.1.201:8123
+      tls internal
     '';
   };
 
