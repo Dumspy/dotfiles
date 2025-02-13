@@ -1,0 +1,24 @@
+name: Test and Lint Nix Config
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    if: github.repository == 'dumspy/dotfiles'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v27
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+
+      - name: Verify flake configuration
+        run: nix develop -c nix flake check ./nix
+
+      - name: Lint Nix code with Alejandra
+        run: nix develop -c alejandra --check .
