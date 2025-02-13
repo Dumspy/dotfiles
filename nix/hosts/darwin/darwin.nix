@@ -74,7 +74,7 @@
   security.pam.enableSudoTouchIdAuth = true;
 
   # The platform the configuration will be used on.
-  nixpkgs.hostPlatform = "aarch64-darwin";'
+  nixpkgs.hostPlatform = "aarch64-darwin";
 
   #SOPS Overrides
   sops.age.keyFile = "/Users/felix.berger/.config/sops/keys.txt";
