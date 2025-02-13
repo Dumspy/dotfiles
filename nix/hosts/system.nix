@@ -5,6 +5,13 @@
 }: {
   nixpkgs.config.allowUnfree = true;
 
+  #GC
+  nix.gc = {
+		automatic = true;
+		dates = "weekly";
+		options = "--delete-older-than 30d";
+	};
+
   # Necessary for using flakes on this system.
   nix.settings.experimental-features = "nix-command flakes";
 
@@ -24,10 +31,17 @@
     pkgs.starship
     pkgs.tmux
     pkgs.fzf
+    pkgs._1password-cli
   ];
 
   # Fonts
   fonts.packages = [
     pkgs.nerd-fonts.jetbrains-mono
   ];
+
+  # SOPS
+  sops.defaultSopsFile = ../secrets/secrets.yaml;
+  sops.defaultSopsFormat = "yaml";
+
+  sops.age.keyFile = "home/nixos/.config/sops/keys.txt";
 }

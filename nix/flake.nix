@@ -3,10 +3,13 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    sops-nix.url = "github:Mic92/sops-nix";
 
-    nix-darwin.url = "github:LnL7/nix-darwin";
-    nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
-
+    nix-darwin = {
+      url = "github:LnL7/nix-darwin";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    
     nixos-wsl = {
       url = "github:nix-community/NixOS-WSL/main";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -24,6 +27,7 @@
     nixos-wsl,
     nixpkgs,
     home-manager,
+    sops-nix
   }: {
     # Build darwin flake using:
     darwinConfigurations."Felixs-MacBook-Air" = nix-darwin.lib.darwinSystem {
@@ -48,6 +52,7 @@
         system = "x86_64-linux";
         modules = [
           nixos-wsl.nixosModules.default
+          sops-nix.nixosModules.sops
           ./hosts/system.nix
           ./hosts/wsl/wsl.nix
           home-manager.nixosModules.home-manager
@@ -64,6 +69,7 @@
       docker-host = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
+          sops-nix.nixosModules.sops
           ./hosts/system.nix
           ./hosts/docker-host/docker-host.nix
         ];
