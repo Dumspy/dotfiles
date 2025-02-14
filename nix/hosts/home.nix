@@ -20,8 +20,6 @@
   ];
 
   home.file = {
-    #".zshrc".source = ../../zsh/.zshrc;
-    #".zsh_profile".source = ../../zsh/.zsh_profile;
     ".gitignore_global".source = ../../git/.gitignore_global;
     ".config/tmux/tmux.conf".source = ../../tmux/tmux.conf;
     "scripts/".source = ../../scripts;

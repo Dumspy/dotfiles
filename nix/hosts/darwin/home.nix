@@ -16,7 +16,6 @@
     ".config/zed/settings.json".source = ../../../zed/settings.json;
     ".config/zed/tasks.json".source = ../../../zed/tasks.json;
     ".config/ghostty".source = ../../../ghostty;
-    ".gitconfig".source = ../../../git/.gitconfig;
   };
 
   programs.ssh = {
