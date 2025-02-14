@@ -33,6 +33,7 @@
     darwinConfigurations."Felixs-MacBook-Air" = nix-darwin.lib.darwinSystem {
       system = "aarch64-darwin";
       modules = [
+        sops-nix.nixosModules.sops
         ./hosts/system.nix
         ./hosts/darwin/darwin.nix
         home-manager.darwinModules.home-manager

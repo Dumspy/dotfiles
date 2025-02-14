@@ -40,8 +40,12 @@
   ];
 
   # SOPS
-  sops.defaultSopsFile = ../secrets/secrets.yaml;
+  sops.defaultSopsFile = ../secrets/secrets.enc.yaml;
   sops.defaultSopsFormat = "yaml";
 
-  sops.age.keyFile = "home/nixos/.config/sops/keys.txt";
+  sops.age.keyFile = "home/nixos/.config/sops/age/keys.txt";
+
+  sops.secrets = {
+    "op_service_account/token" = { };
+  };
 }
