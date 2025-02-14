@@ -17,6 +17,7 @@
     ../modules/zsh.nix
     ../modules/starship.nix
     ../modules/fzf.nix
+    ../modules/git.nix
   ];
 
   home.file = {
