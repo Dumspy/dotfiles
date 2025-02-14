@@ -11,6 +11,12 @@
     ".ssh_pipe".source = ../../../zsh/.ssh_pipe;
   };
 
+  programs.zsh = {
+    initExtra = ''
+      source ~/.ssh_pipe
+    '';
+  };
+
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
   home.username = "nixos";

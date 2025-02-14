@@ -13,11 +13,16 @@
   # changes in each release.
   home.stateVersion = "24.11";
 
+  imports = [
+    ../modules/zsh.nix
+    ../modules/starship.nix
+    ../modules/fzf.nix
+  ];
+
   home.file = {
-    ".zshrc".source = ../../zsh/.zshrc;
-    ".zsh_profile".source = ../../zsh/.zsh_profile;
+    #".zshrc".source = ../../zsh/.zshrc;
+    #".zsh_profile".source = ../../zsh/.zsh_profile;
     ".gitignore_global".source = ../../git/.gitignore_global;
-    ".config/starship".source = ../../starship;
     ".config/tmux/tmux.conf".source = ../../tmux/tmux.conf;
     "scripts/".source = ../../scripts;
   };
