@@ -32,9 +32,9 @@
 
   #Users
   users.users = {
-    "felix.berger" = {
-      name = "felix.berger";
-      home = "/Users/felix.berger";
+    "${username}" = {
+      name = "${username}";
+      home = "/Users/${username}";
     };
   };
   nix.configureBuildUsers = true;
@@ -77,5 +77,5 @@
   nixpkgs.hostPlatform = "aarch64-darwin";
 
   #SOPS Overrides
-  sops.age.keyFile = "/Users/felix.berger/.config/sops/keys.txt";
+  sops.age.keyFile = "/Users/${username}/.config/sops/keys.txt";
 }

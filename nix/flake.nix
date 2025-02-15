@@ -74,6 +74,7 @@
             home-manager = {
               useGlobalPkgs = true;
               useUserPackages = true;
+              extraSpecialArgs = specialArgs;
               users.${username} = import ./hosts/wsl/home.nix;
             };
           }
