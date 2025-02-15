@@ -1,6 +1,7 @@
 {
   config,
   pkgs,
+  username,
   ...
 }: {
   imports = [
@@ -19,8 +20,8 @@
 
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
-  home.username = "nixos";
-  home.homeDirectory = "/home/nixos";
+  home.username = "${username}";
+  home.homeDirectory = "/home/${username}";
 
   programs.git = {
     extraConfig = {

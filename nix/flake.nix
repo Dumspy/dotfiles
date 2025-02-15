@@ -3,9 +3,12 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    sops-nix.url = "github:Mic92/sops-nix";
 
-    nix-darwin.url = "github:LnL7/nix-darwin";
-    nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
+    nix-darwin = {
+      url = "github:LnL7/nix-darwin";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     nixos-wsl = {
       url = "github:nix-community/NixOS-WSL/main";
@@ -24,30 +27,46 @@
     nixos-wsl,
     nixpkgs,
     home-manager,
+    sops-nix,
   }: {
     # Build darwin flake using:
-    darwinConfigurations."Felixs-MacBook-Air" = nix-darwin.lib.darwinSystem {
-      system = "aarch64-darwin";
-      modules = [
-        ./hosts/system.nix
-        ./hosts/darwin/darwin.nix
-        home-manager.darwinModules.home-manager
-        {
-          home-manager = {
-            useGlobalPkgs = true;
-            useUserPackages = true;
-            users."felix.berger" = import ./hosts/darwin/home.nix;
-          };
-        }
-      ];
+    darwinConfigurations = let
+      username = "felix.berger";
+    in let
+      specialArgs = {inherit username;};
+    in {
+      "Felixs-MacBook-Air" = nix-darwin.lib.darwinSystem {
+        system = "aarch64-darwin";
+        specialArgs = specialArgs;
+        modules = [
+          sops-nix.nixosModules.sops
+          ./hosts/system.nix
+          ./hosts/darwin/darwin.nix
+          home-manager.darwinModules.home-manager
+          {
+            home-manager = {
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              extraSpecialArgs = specialArgs;
+              users.${username} = import ./hosts/darwin/home.nix;
+            };
+          }
+        ];
+      };
     };
 
     # Build nixosConfigurations using:
-    nixosConfigurations = {
+    nixosConfigurations = let
+      username = "nixos";
+    in let
+      specialArgs = {inherit username;};
+    in {
       wsl = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
+        specialArgs = specialArgs;
         modules = [
           nixos-wsl.nixosModules.default
+          sops-nix.nixosModules.sops
           ./hosts/system.nix
           ./hosts/wsl/wsl.nix
           home-manager.nixosModules.home-manager
@@ -55,7 +74,8 @@
             home-manager = {
               useGlobalPkgs = true;
               useUserPackages = true;
-              users.nixos = import ./hosts/wsl/home.nix;
+              extraSpecialArgs = specialArgs;
+              users.${username} = import ./hosts/wsl/home.nix;
             };
           }
         ];
@@ -63,7 +83,9 @@
 
       docker-host = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
+        specialArgs = specialArgs;
         modules = [
+          sops-nix.nixosModules.sops
           ./hosts/system.nix
           ./hosts/docker-host/docker-host.nix
         ];

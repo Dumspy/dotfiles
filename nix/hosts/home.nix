@@ -18,6 +18,7 @@
     ../modules/starship.nix
     ../modules/fzf.nix
     ../modules/git.nix
+    ../modules/direnv.nix
   ];
 
   home.file = {
@@ -27,10 +28,4 @@
   };
 
   programs.home-manager.enable = true;
-
-  programs.direnv = {
-    enable = true;
-    nix-direnv.enable = true;
-    enableZshIntegration = true;
-  };
 }
