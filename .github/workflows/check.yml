@@ -18,7 +18,7 @@ jobs:
           nix_path: nixpkgs=channel:nixos-unstable
 
       - name: Create dummy secrets
-        run: echo "dummy" > secrets/secrets.enc.yaml && git add secrets/secrets.enc.yaml
+        run: echo "dummy" > secrets/secrets.enc.yaml && git add -f secrets/secrets.enc.yaml
 
       - name: Verify flake configuration
         run: nix develop -c nix flake check ./nix
