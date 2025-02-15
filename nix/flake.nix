@@ -31,15 +31,18 @@
   }: {
     # Build darwin flake using:
     darwinConfigurations = let
-      username = "felix.berger";
+      me = {
+        username = "felix.berger";
+        homePrefix = "/Users/felix.berger";
+      };
     in let
-      specialArgs = {inherit username;};
+      specialArgs = {inherit me;};
     in {
       "Felixs-MacBook-Air" = nix-darwin.lib.darwinSystem {
         system = "aarch64-darwin";
         specialArgs = specialArgs;
         modules = [
-          sops-nix.nixosModules.sops
+          sops-nix.darwinModules.sops
           ./hosts/system.nix
           ./hosts/darwin/darwin.nix
           home-manager.darwinModules.home-manager
@@ -48,7 +51,7 @@
               useGlobalPkgs = true;
               useUserPackages = true;
               extraSpecialArgs = specialArgs;
-              users.${username} = import ./hosts/darwin/home.nix;
+              users.${me.username} = import ./hosts/darwin/home.nix;
             };
           }
         ];
@@ -57,9 +60,12 @@
 
     # Build nixosConfigurations using:
     nixosConfigurations = let
-      username = "nixos";
+      me = {
+        username = "nixos";
+        homePrefix = "/home/nixos";
+      };
     in let
-      specialArgs = {inherit username;};
+      specialArgs = {inherit me;};
     in {
       wsl = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
@@ -75,7 +81,7 @@
               useGlobalPkgs = true;
               useUserPackages = true;
               extraSpecialArgs = specialArgs;
-              users.${username} = import ./hosts/wsl/home.nix;
+              users.${me.username} = import ./hosts/wsl/home.nix;
             };
           }
         ];

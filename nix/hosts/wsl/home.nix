@@ -1,7 +1,7 @@
 {
   config,
   pkgs,
-  username,
+  me,
   ...
 }: {
   imports = [
@@ -20,12 +20,13 @@
 
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
-  home.username = "${username}";
-  home.homeDirectory = "/home/${username}";
+  home.username = "${me.username}";
+  home.homeDirectory = "${me.homePrefix}";
 
   programs.git = {
     extraConfig = {
       gpg.ssh.program = "/mnt/c/Users/felix/AppData/Local/1Password/app/8/op-ssh-sign-wsl";
+      core.sshCommand = "ssh.exe";
     };
   };
 }

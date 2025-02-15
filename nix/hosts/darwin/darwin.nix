@@ -1,6 +1,7 @@
 {
   config,
   pkgs,
+  me,
   ...
 }: {
   services.nix-daemon.enable = true;
@@ -32,9 +33,9 @@
 
   #Users
   users.users = {
-    "${username}" = {
-      name = "${username}";
-      home = "/Users/${username}";
+    "${me.username}" = {
+      name = "${me.username}";
+      home = "${me.homePrefix}";
     };
   };
   nix.configureBuildUsers = true;
@@ -76,6 +77,7 @@
   # The platform the configuration will be used on.
   nixpkgs.hostPlatform = "aarch64-darwin";
 
-  #SOPS Overrides
-  sops.age.keyFile = "/Users/${username}/.config/sops/keys.txt";
+  # For some reason sops darwin has default keys....
+  sops.gnupg.sshKeyPaths = [];
+  sops.age.sshKeyPaths = [];
 }

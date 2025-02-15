@@ -1,7 +1,7 @@
 {
   config,
   pkgs,
-  username,
+  me,
   ...
 }: {
   imports = [
@@ -10,8 +10,8 @@
 
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
-  home.username = "felix.berger";
-  home.homeDirectory = "/Users/felix.berger";
+  home.username = "${me.username}";
+  home.homeDirectory = "${me.homePrefix}";
 
   home.file = {
     ".config/zed/settings.json".source = ../../../zed/settings.json;
