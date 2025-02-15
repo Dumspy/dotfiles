@@ -1,0 +1,4 @@
+if git diff --cached --name-only | grep -q 'secrets.enc.yaml'; then
+  echo "Error: secrets.enc.yaml is staged, aborting."
+  exit 1
+fi

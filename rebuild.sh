@@ -9,8 +9,10 @@ systems=(
 selected=$(printf "%s\n" "${!systems[@]}" | fzf --prompt="Select system to rebuild: ")
 
 if [[ -n "$selected" ]]; then
+  git add -f $HOME/dotfiles/nix/secrets/secrets.enc.yaml
   command=${systems[$selected]}
   eval "sudo $command"
+  git restore --staged $HOME/dotfiles/nix/secrets/secrets.enc.yaml
 else
   echo "No system selected."
 fi

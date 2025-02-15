@@ -1,6 +1,7 @@
 {
   config,
   pkgs,
+  username,
   ...
 }: {
   nixpkgs.config.allowUnfree = true;
@@ -14,9 +15,6 @@
 
   # Necessary for using flakes on this system.
   nix.settings.experimental-features = "nix-command flakes";
-
-  # Enable alternative shell support in nix-darwin.
-  programs.zsh.enable = true;
 
   # List packages installed in system profile. To search by name, run:
   # $ nix-env -qaP | grep wget
@@ -43,9 +41,18 @@
   sops.defaultSopsFile = ../secrets/secrets.enc.yaml;
   sops.defaultSopsFormat = "yaml";
 
-  sops.age.keyFile = "home/nixos/.config/sops/age/keys.txt";
+  sops.age.keyFile = "home/${username}/.config/sops/age/keys.txt";
 
   sops.secrets = {
-    "op_service_account/token" = { };
+    "op_service_account/token" = {
+      owner = "${username}";
+    };
+  };
+
+  programs.zsh = {
+    enable = true;
+    shellInit = ''
+      export OP_SERVICE_ACCOUNT_TOKEN="$(cat ${config.sops.secrets."op_service_account/token".path})"
+    '';
   };
 }

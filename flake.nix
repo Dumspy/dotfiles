@@ -19,6 +19,11 @@
             alejandra
             sops
           ];
+
+          shellHook = ''
+            chmod +x .githooks/*
+            cp -r .githooks/* .git/hooks
+          '';
         };
       }
     );

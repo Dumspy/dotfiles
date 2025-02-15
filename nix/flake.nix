@@ -30,27 +30,40 @@
     sops-nix,
   }: {
     # Build darwin flake using:
-    darwinConfigurations."Felixs-MacBook-Air" = nix-darwin.lib.darwinSystem {
-      system = "aarch64-darwin";
-      modules = [
-        sops-nix.nixosModules.sops
-        ./hosts/system.nix
-        ./hosts/darwin/darwin.nix
-        home-manager.darwinModules.home-manager
-        {
-          home-manager = {
-            useGlobalPkgs = true;
-            useUserPackages = true;
-            users."felix.berger" = import ./hosts/darwin/home.nix;
-          };
-        }
-      ];
+    darwinConfigurations = let
+      username = "felix.berger";
+    in let
+      specialArgs = {inherit username;};
+    in {
+      "Felixs-MacBook-Air" = nix-darwin.lib.darwinSystem {
+        system = "aarch64-darwin";
+        specialArgs = specialArgs;
+        modules = [
+          sops-nix.nixosModules.sops
+          ./hosts/system.nix
+          ./hosts/darwin/darwin.nix
+          home-manager.darwinModules.home-manager
+          {
+            home-manager = {
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              extraSpecialArgs = specialArgs;
+              users.${username} = import ./hosts/darwin/home.nix;
+            };
+          }
+        ];
+      };
     };
 
     # Build nixosConfigurations using:
-    nixosConfigurations = {
+    nixosConfigurations = let
+      username = "nixos";
+    in let
+      specialArgs = {inherit username;};
+    in {
       wsl = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
+        specialArgs = specialArgs;
         modules = [
           nixos-wsl.nixosModules.default
           sops-nix.nixosModules.sops
@@ -61,7 +74,7 @@
             home-manager = {
               useGlobalPkgs = true;
               useUserPackages = true;
-              users.nixos = import ./hosts/wsl/home.nix;
+              users.${username} = import ./hosts/wsl/home.nix;
             };
           }
         ];
@@ -69,6 +82,7 @@
 
       docker-host = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
+        specialArgs = specialArgs;
         modules = [
           sops-nix.nixosModules.sops
           ./hosts/system.nix
