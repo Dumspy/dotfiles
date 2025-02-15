@@ -1,16 +1,31 @@
 {
   config,
   pkgs,
-  username,
+  me,
   ...
 }: {
   nixpkgs.config.allowUnfree = true;
 
   #GC
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 30d";
+  nix = {
+    gc =
+      {
+        automatic = true;
+        options = "--delete-older-than 30d";
+      }
+      // (
+        if pkgs.stdenv.isLinux
+        then {
+          dates = "weekly";
+        }
+        else {
+          interval = {
+            Weekday = 0;
+            Hour = 0;
+            Minute = 0;
+          };
+        }
+      );
   };
 
   # Necessary for using flakes on this system.
@@ -41,11 +56,11 @@
   sops.defaultSopsFile = ../secrets/secrets.enc.yaml;
   sops.defaultSopsFormat = "yaml";
 
-  sops.age.keyFile = "home/${username}/.config/sops/age/keys.txt";
+  sops.age.keyFile = "${me.homePrefix}/.config/sops/age/keys.txt";
 
   sops.secrets = {
     "op_service_account/token" = {
-      owner = "${username}";
+      owner = "${me.username}";
     };
   };
 

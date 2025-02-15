@@ -17,7 +17,6 @@
       github.user = "dumspy";
       core.excludesfile = "~/.gitignore_global";
       core.hooksPath = "~/git-hooks";
-      core.sshCommand = "ssh.exe";
       push.autoSetupRemote = true;
       gpg.format = "ssh";
       commit.gpgSign = true;
