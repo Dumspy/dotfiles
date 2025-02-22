@@ -28,5 +28,11 @@
     pkgs.socat # required for ssh pipe from Windows to WSL
     pkgs.gcc
     pkgs.gnumake
+    pkgs.wslu # add wslu package
   ];
+
+  # Set default browser for WSL
+  environment.variables = {
+    BROWSER = "wslview";
+  };
 }
