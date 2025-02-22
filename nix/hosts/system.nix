@@ -45,6 +45,7 @@
     pkgs.tmux
     pkgs.fzf
     pkgs._1password-cli
+    pkgs.difftastic
   ];
 
   # Fonts
