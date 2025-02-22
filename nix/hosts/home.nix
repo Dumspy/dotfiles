@@ -19,6 +19,7 @@
     ../modules/fzf.nix
     ../modules/git.nix
     ../modules/direnv.nix
+    ../modules/neovim.nix
   ];
 
   home.file = {
