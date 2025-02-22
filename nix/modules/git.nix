@@ -20,6 +20,7 @@
       push.autoSetupRemote = true;
       gpg.format = "ssh";
       commit.gpgSign = true;
+      diff.external = "difft";
     };
   };
 }
