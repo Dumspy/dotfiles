@@ -19,6 +19,7 @@
       "raycast"
       "zed"
       "visual-studio-code"
+      "visual-studio-code@insiders"
       "bruno"
     ];
     onActivation = {

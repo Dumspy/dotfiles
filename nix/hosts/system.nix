@@ -52,6 +52,7 @@
   # Fonts
   fonts.packages = [
     pkgs.nerd-fonts.jetbrains-mono
+    pkgs.iosevka
   ];
 
   # SOPS
