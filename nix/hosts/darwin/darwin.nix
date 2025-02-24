@@ -21,6 +21,7 @@
       "visual-studio-code"
       "visual-studio-code@insiders"
       "bruno"
+      "dbeaver-community"
     ];
     onActivation = {
       autoUpdate = true;
