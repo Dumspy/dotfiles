@@ -4,7 +4,7 @@
   me,
   ...
 }: {
-  services.nix-daemon.enable = true;
+  nix.enable = true;
 
   #homebrew
   homebrew = {
@@ -40,8 +40,6 @@
       home = "${me.homePrefix}";
     };
   };
-  nix.configureBuildUsers = true;
-  nix.useDaemon = true;
 
   # Set Git commit hash for darwin-version.
   #system.configurationRevision = self.rev or self.dirtyRev or null;
@@ -74,7 +72,7 @@
   };
 
   # Enable sudo touch id authentication
-  security.pam.enableSudoTouchIdAuth = true;
+  security.pam.services.sudo_local.touchIdAuth = true;
 
   # The platform the configuration will be used on.
   nixpkgs.hostPlatform = "aarch64-darwin";
