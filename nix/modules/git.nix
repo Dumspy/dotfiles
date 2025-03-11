@@ -21,6 +21,7 @@
       gpg.format = "ssh";
       commit.gpgSign = true;
       diff.external = "difft";
+      core.editor = "nvim";
     };
   };
 }
