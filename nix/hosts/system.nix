@@ -65,6 +65,9 @@
     "op_service_account/token" = {
       owner = "${me.username}";
     };
+    "cloudflare/.env" = {
+      owner = "${me.username}";
+    };
   };
 
   programs.zsh = {
