@@ -15,9 +15,10 @@ in {
 
       domain = "internal.rger.dev";
       extraDomainNames = ["*.internal.rger.dev"];
+      
       dnsProvider = "cloudflare";
-      dnsResolver = "1.1.1.1:53";
       dnsPropagationCheck = true;
+
       environmentFile = config.sops.secrets."cloudflare/.env".path;
     };
   };
