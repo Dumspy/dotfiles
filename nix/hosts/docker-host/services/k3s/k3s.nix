@@ -38,7 +38,7 @@
         cp /etc/rancher/k3s/k3s.yaml ${me.homePrefix}/.kube/config
         
         echo "Setting proper ownership and permissions..."
-        chown -R nixos:nixos ${me.homePrefix}/.kube/config
+        chown nixos:users ${me.homePrefix}/.kube/config
         chmod 600 ${me.homePrefix}/.kube/config
         
         echo "Kubeconfig setup completed successfully."
