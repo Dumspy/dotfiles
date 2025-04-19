@@ -15,10 +15,8 @@ in {
 
       domain = "internal.rger.dev";
       extraDomainNames = ["*.internal.rger.dev"];
-      
       dnsProvider = "cloudflare";
       dnsPropagationCheck = true;
-
       environmentFile = config.sops.secrets."cloudflare/.env".path;
     };
   };
@@ -27,7 +25,7 @@ in {
     enable = true;
 
     virtualHosts."router.internal.rger.dev".extraConfig = ''
-      reverse_proxy http://192.168.1.1
+      reverse_proxy https://192.168.1.1
 
       tls ${certloc}/cert.pem ${certloc}/key.pem {
         protocols tls1.3
@@ -35,7 +33,7 @@ in {
     '';
 
     virtualHosts."pve.internal.rger.dev".extraConfig = ''
-      reverse_proxy http://192.168.1.200:8006
+      reverse_proxy https://192.168.1.200:8006
 
       tls ${certloc}/cert.pem ${certloc}/key.pem {
         protocols tls1.3
