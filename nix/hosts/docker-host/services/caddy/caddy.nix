@@ -5,6 +5,36 @@
   ...
 }: let
   certloc = "/var/lib/acme/internal.rger.dev";
+
+  # Helper function for creating virtual hosts with similar configs
+  mkVirtualHost = {
+    name,
+    target,
+    isHttps ? false,
+  }: {
+    name = "${name}.internal.rger.dev";
+    value.extraConfig = ''
+      reverse_proxy ${
+        if isHttps
+        then "https"
+        else "http"
+      }://${target} ${
+        if isHttps
+        then ''
+          {
+            transport http {
+              tls_insecure_skip_verify
+            }
+          }
+        ''
+        else ""
+      }
+
+      tls ${certloc}/cert.pem ${certloc}/key.pem {
+        protocols tls1.3
+      }
+    '';
+  };
 in {
   security.acme = {
     acceptTerms = true;
@@ -24,29 +54,23 @@ in {
   services.caddy = {
     enable = true;
 
-    virtualHosts."router.internal.rger.dev".extraConfig = ''
-      reverse_proxy https://192.168.1.1
-
-      tls ${certloc}/cert.pem ${certloc}/key.pem {
-        protocols tls1.3
-      }
-    '';
-
-    virtualHosts."pve.internal.rger.dev".extraConfig = ''
-      reverse_proxy https://192.168.1.200:8006
-
-      tls ${certloc}/cert.pem ${certloc}/key.pem {
-        protocols tls1.3
-      }
-    '';
-
-    virtualHosts."ha.internal.rger.dev".extraConfig = ''
-      reverse_proxy http://192.168.1.201:8123
-
-      tls ${certloc}/cert.pem ${certloc}/key.pem {
-        protocols tls1.3
-      }
-    '';
+    virtualHosts = builtins.listToAttrs [
+      (mkVirtualHost {
+        name = "router";
+        target = "192.168.1.1";
+        isHttps = true;
+      })
+      (mkVirtualHost {
+        name = "pve";
+        target = "192.168.1.200:8006";
+        isHttps = true;
+      })
+      (mkVirtualHost {
+        name = "ha";
+        target = "192.168.1.201:8123";
+        isHttps = false;
+      })
+    ];
   };
 
   networking.firewall.allowedTCPPorts = [80 443];
