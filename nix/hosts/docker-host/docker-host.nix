@@ -65,4 +65,8 @@
     pkgs.gnumake
     pkgs.k9s
   ];
+
+  environment.variables = {
+    KUBECONFIG = "$HOME/.kube/config";
+  };
 }
