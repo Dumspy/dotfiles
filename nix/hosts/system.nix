@@ -47,6 +47,7 @@
     pkgs._1password-cli
     pkgs.neovim
     pkgs.difftastic
+    pkgs.kubectl
   ];
 
   # Fonts
