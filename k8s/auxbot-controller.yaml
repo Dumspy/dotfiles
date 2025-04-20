@@ -56,6 +56,16 @@ spec:
               fieldPath: metadata.namespace
         - name: WORKER_IMAGE
           value: "ghcr.io/dumspy/auxbot-worker:latest"
+        - name: DISCORD_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: auxbot-secrets
+              key: DISCORD_CLIENT_ID
+        - name: DISCORD_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: auxbot-secrets
+              key: DISCORD_TOKEN 
         resources:
           limits:
             cpu: 500m
