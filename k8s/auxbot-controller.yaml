@@ -49,6 +49,19 @@ spec:
         imagePullPolicy: Always 
         ports:
         - containerPort: 3000
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 5
         env:
         - name: K8S_NAMESPACE
           valueFrom:
