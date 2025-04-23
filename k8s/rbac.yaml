@@ -11,6 +11,9 @@ metadata:
   namespace: default
 rules:
 - apiGroups: [""]
+  resources: ["deployments"]
+  verbs: ["create", "get", "list", "watch", "delete"]
+- apiGroups: [""]
   resources: ["services"]
   verbs: ["create", "get", "list", "watch", "delete"]
 ---
