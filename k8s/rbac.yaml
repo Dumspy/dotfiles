@@ -10,7 +10,7 @@ metadata:
   name: job-creator
   namespace: default
 rules:
-- apiGroups: ["apps"]
+- apiGroups: ["apps", "services"]
   resources: ["services", "pods", "deployments"]
   verbs: ["create", "get", "list", "watch", "delete", "patch", "update"]
 ---
