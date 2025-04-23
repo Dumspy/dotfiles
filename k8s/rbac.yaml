@@ -10,8 +10,11 @@ metadata:
   name: job-creator
   namespace: default
 rules:
-- apiGroups: ["apps", "services"]
-  resources: ["services", "pods", "deployments"]
+- apiGroups: [""]
+  resources: ["services", "pods"]
+  verbs: ["create", "get", "list", "watch", "delete", "patch", "update"]
+- apiGroups: ["apps"]
+  resources: ["deployments"]
   verbs: ["create", "get", "list", "watch", "delete", "patch", "update"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
