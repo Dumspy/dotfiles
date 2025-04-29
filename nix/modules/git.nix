@@ -20,8 +20,13 @@
       push.autoSetupRemote = true;
       gpg.format = "ssh";
       commit.gpgSign = true;
-      diff.external = "difft";
       core.editor = "nvim";
+    };
+
+    aliases = {
+      dlog = "-c diff.external=difft log --ext-diff";
+      dshow = "-c diff.external=difft show --ext-diff";
+      ddiff = "-c diff.external=difft diff";
     };
   };
 }
