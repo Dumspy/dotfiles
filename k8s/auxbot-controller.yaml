@@ -1,0 +1,88 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: auxbot-controller
+  labels: 
+    app: auxbot-controller
+spec:
+  selector:
+    app: auxbot-controller
+  ports:
+  - name: auxbot-controller-api
+    port: 80
+    targetPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auxbot-controller-loadbalancer
+  labels: 
+    app: auxbot-controller
+spec:
+  selector:
+    app: auxbot-controller
+  ports:
+  - port: 30000
+    targetPort: 3000
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auxbot-controller
+  labels:
+    app: auxbot-controller
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auxbot-controller
+  template:
+    metadata:
+      labels:
+        app: auxbot-controller
+    spec:
+      serviceAccountName: controller-service-account
+      containers:
+      - name: controller
+        image: ghcr.io/dumspy/auxbot-controller:latest
+        imagePullPolicy: Always 
+        ports:
+        - containerPort: 3000
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        env:
+        - name: K8S_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: WORKER_IMAGE
+          value: "ghcr.io/dumspy/auxbot-worker:latest"
+        - name: DISCORD_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: auxbot-secrets
+              key: DISCORD_CLIENT_ID
+        - name: DISCORD_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: auxbot-secrets
+              key: DISCORD_TOKEN
+        resources:
+          limits:
+            cpu: 500m
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            memory: 256Mi

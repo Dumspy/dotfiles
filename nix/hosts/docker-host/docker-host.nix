@@ -7,10 +7,10 @@
   system.stateVersion = "24.11";
 
   imports = [
-    # Include the results of the hardware scan.
     ./hardware-configuration.nix
-    ./services/docker/docker.nix
+    #./services/docker/docker.nix # Docker is being replaced by k3s
     ./services/caddy/caddy.nix
+    ./services/k3s/k3s.nix
   ];
 
   # Bootloader.
@@ -63,5 +63,10 @@
   environment.systemPackages = [
     pkgs.gcc
     pkgs.gnumake
+    pkgs.k9s
   ];
+
+  environment.variables = {
+    KUBECONFIG = "$HOME/.kube/config";
+  };
 }

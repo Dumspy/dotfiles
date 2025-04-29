@@ -47,6 +47,7 @@
     pkgs._1password-cli
     pkgs.neovim
     pkgs.difftastic
+    pkgs.kubectl
   ];
 
   # Fonts
@@ -66,6 +67,12 @@
       owner = "${me.username}";
     };
     "cloudflare/.env" = {
+      owner = "${me.username}";
+    };
+    "auxbot/discord_token" = {
+      owner = "${me.username}";
+    };
+    "auxbot/discord_client_id" = {
       owner = "${me.username}";
     };
   };
