@@ -17,9 +17,7 @@
 
     certs."internal.rger.dev" = {
       domain = "internal.rger.dev";
-      extraDomains = [
-        "*.internal.rger.dev"
-      ];
+      extraDomainNames = ["*.internal.rger.dev"];
     };
   };
 
