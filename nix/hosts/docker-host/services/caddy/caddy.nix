@@ -61,6 +61,12 @@
         };
     };
   };
+
+  systemd.services.caddy = {
+    after = ["acme-internal.rger.dev.service"];
+    wantedBy = [ "multi-user.target" ];
+  };
+
   users.users.caddy.extraGroups = [ "acme" ];
 
   networking.firewall.allowedTCPPorts = [80 443];
