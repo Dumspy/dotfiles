@@ -3,7 +3,7 @@
   pkgs,
   lib,
   ...
-}: {
+}:{
   security.acme = {
     acceptTerms = true;
     defaults.email = "felix.enok.berger@gmail.com";
@@ -23,37 +23,29 @@
   services.caddy = {
     enable = true;
 
-    virtualHosts = let
-      sharedConfig = {
-        useACMEHost = "internal.rger.dev";
+    virtualHosts = let sharedConfig = {
+      useACMEHost = "internal.rger.dev";
+    }; in {
+      router = sharedConfig // {
+        hostName = "router.internal.rger.dev";
+        extraConfig = ''
+          reverse_proxy https://192.168.1.1
+        '';
       };
-    in {
-      router =
-        sharedConfig
-        // {
-          name = "router.internal.rger.dev";
-          value.extraConfig = ''
-            reverse_proxy https://192.168.1.1
-          '';
-        };
 
-      pve =
-        sharedConfig
-        // {
-          name = "pve.internal.rger.dev";
-          value.extraConfig = ''
-            reverse_proxy https://192.168.1.200:8006
-          '';
-        };
+      pve = sharedConfig // {
+        hostName = "pve.internal.rger.dev";
+        extraConfig = ''
+          reverse_proxy https://192.168.1.200:8006
+        '';
+      };
 
-      ha =
-        sharedConfig
-        // {
-          name = "ha.internal.rger.dev";
-          value.extraConfig = ''
-            reverse_proxy http://192.168.1.201:8123
-          '';
-        };
+      ha = sharedConfig // {
+        hostName = "ha.internal.rger.dev";
+        extraConfig = ''
+          reverse_proxy http://192.168.1.201:8123
+        '';
+      };
     };
   };
 
