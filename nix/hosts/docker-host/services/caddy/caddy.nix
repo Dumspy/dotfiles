@@ -42,17 +42,21 @@ in {
 
     certs."internal.rger.dev" = {
       group = config.services.caddy.group;
+      systemd.before = ["caddy.service"];
 
       domain = "internal.rger.dev";
       extraDomainNames = ["*.internal.rger.dev"];
       dnsProvider = "cloudflare";
       dnsPropagationCheck = true;
       environmentFile = config.sops.secrets."cloudflare/.env".path;
+      preliminarySelfsigned = false;  # Disable self-signed certificate
     };
   };
 
   services.caddy = {
     enable = true;
+
+    systemd.services.caddy.after = ["acme-internal.rger.dev.service"];
 
     virtualHosts = builtins.listToAttrs [
       (mkVirtualHost {
