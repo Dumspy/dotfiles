@@ -6,15 +6,20 @@
 }: {
   security.acme = {
     acceptTerms = true;
-    defaults.email = "felix.enok.berger@gmail.com";
     preliminarySelfsigned = false;
 
-    certs."internal.rger.dev" = {
-      group = "acme";
-      domain = "*.internal.rger.dev";
+    defaults = {
+      email = "felix.enok.berger@gmail.com";
       dnsProvider = "cloudflare";
-      dnsPropagationCheck = true;
+      dnsResolver = "1.1.1.1:53";
       environmentFile = config.sops.secrets."cloudflare/.env".path;
+    };
+
+    certs."internal.rger.dev" = {
+      domain = "internal.rger.dev";
+      extraDomains = [
+        "*.internal.rger.dev"
+      ];
     };
   };
 
@@ -24,9 +29,6 @@
 
   services.caddy = {
     enable = true;
-    globalConfig = ''
-      auto_https disable_certs
-    '';
 
     virtualHosts = let
       sharedConfig = {
@@ -64,10 +66,8 @@
 
   systemd.services.caddy = {
     after = ["acme-internal.rger.dev.service"];
-    wantedBy = [ "multi-user.target" ];
+    wantedBy = ["multi-user.target"];
   };
-
-  users.users.caddy.extraGroups = [ "acme" ];
 
   networking.firewall.allowedTCPPorts = [80 443];
 }
