@@ -10,7 +10,7 @@
     preliminarySelfsigned = false;
 
     certs."internal.rger.dev" = {
-      group = config.services.caddy.group;
+      group = "acme";
       domain = "*.internal.rger.dev";
       dnsProvider = "cloudflare";
       dnsPropagationCheck = true;
@@ -24,6 +24,9 @@
 
   services.caddy = {
     enable = true;
+    globalConfig = ''
+      auto_https disable_certs
+    '';
 
     virtualHosts = let
       sharedConfig = {
@@ -58,6 +61,7 @@
         };
     };
   };
+  users.users.caddy.extraGroups = [ "acme" ];
 
   networking.firewall.allowedTCPPorts = [80 443];
 }
