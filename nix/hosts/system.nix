@@ -75,7 +75,7 @@
     "auxbot/discord_client_id" = {
       owner = "${me.username}";
     };
-    "auxbot/sentry_dsn" = {
+    "auxbot/sentry_dns" = {
       owner = "${me.username}";
     };
   };
