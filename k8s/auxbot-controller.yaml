@@ -79,6 +79,11 @@ spec:
             secretKeyRef:
               name: auxbot-secrets
               key: DISCORD_TOKEN
+        - name: SENTRY_DSN
+          valueFrom:
+            secretKeyRef:
+              name: auxbot-secrets
+              key: SENTRY_DSN
         resources:
           limits:
             cpu: 500m

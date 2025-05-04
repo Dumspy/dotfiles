@@ -75,6 +75,9 @@
     "auxbot/discord_client_id" = {
       owner = "${me.username}";
     };
+    "auxbot/sentry_dsn" = {
+      owner = "${me.username}";
+    };
   };
 
   programs.zsh = {
