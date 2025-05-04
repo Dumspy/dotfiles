@@ -29,7 +29,7 @@
 
   services.caddy = {
     enable = true;
-    logFormat = "json";  # Enable detailed logging
+    logFormat = "console";  # Enable detailed logging
     globalConfig = ''
       debug
     '';
