@@ -33,13 +33,17 @@
     virtualHosts = let
       sharedConfig = {
         useACMEHost = "internal.rger.dev";
+        extraConfig = ''
+          tls {
+            load_files /var/lib/acme/internal.rger.dev/fullchain.pem /var/lib/acme/internal.rger.dev/key.pem
+          }
+        '';
       };
     in {
       router =
         sharedConfig
         // {
           hostName = "router.internal.rger.dev";
-          extraConfig = ''
             reverse_proxy https://192.168.1.1
           '';
         };
