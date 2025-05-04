@@ -28,7 +28,7 @@
 
   services.caddy = {
     enable = true;
-    logFormat = "level DEBUG";  # Enable detailed logging
+    logFormat = "level DEBUG"; # Enable detailed logging
 
     virtualHosts = let
       sharedConfig = {
@@ -40,7 +40,7 @@
         // {
           hostName = "router.internal.rger.dev";
           extraConfig = ''
-            reverse_proxy https://192.168.1.1 
+            reverse_proxy https://192.168.1.1
           '';
         };
 
