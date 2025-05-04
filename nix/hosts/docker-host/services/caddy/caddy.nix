@@ -15,16 +15,15 @@
       environmentFile = config.sops.secrets."cloudflare/.env".path;
     };
 
-    certs."rger.dev" = {
-      domain = "rger.dev";
+    certs."internal.rger.dev" = {
+      domain = "internal.rger.dev";
       extraDomainNames = [
-        "*.rger.dev"
         "*.internal.rger.dev"
       ];
     };
   };
 
-  systemd.services."acme-rger.dev" = {
+  systemd.services."acme-internal.rger.dev" = {
     before = ["caddy.service"];
   };
 
@@ -37,7 +36,7 @@
 
     virtualHosts = let
       sharedConfig = {
-        useACMEHost = "rger.dev";
+        useACMEHost = "internal.rger.dev";
       };
     in {
       router =
@@ -70,7 +69,7 @@
   };
 
   systemd.services.caddy = {
-    requires = ["acme-rger.dev.service"];
+    requires = ["acme-internal.rger.dev.service"];
   };
 
   networking.firewall.allowedTCPPorts = [80 443];
