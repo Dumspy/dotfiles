@@ -18,14 +18,15 @@
     };
 
     certs."internal.rger.dev" = {
-      domain = "internal.rger.dev";
+      domain = "*.internal.rger.dev";  # Wildcard certificate
+      extraDomainNames = ["internal.rger.dev"]; # Also include the base domain
       group = config.services.caddy.group;
     };
   };
 
   services.caddy = {
     enable = true;
-    logFormat = "level DEBUG"; # Enable detailed logging
+    logFormat = "level INFO";
 
     virtualHosts = let
       sharedConfig = {
@@ -37,7 +38,11 @@
         // {
           hostName = "router.internal.rger.dev";
           extraConfig = ''
-            reverse_proxy https://192.168.1.1
+            reverse_proxy https://192.168.1.1 {
+              transport http {
+                tls_insecure_skip_verify
+              }
+            }
           '';
         };
 
@@ -46,7 +51,11 @@
         // {
           hostName = "pve.internal.rger.dev";
           extraConfig = ''
-            reverse_proxy https://192.168.1.200:8006
+            reverse_proxy https://192.168.1.200:8006 {
+              transport http {
+                tls_insecure_skip_verify
+              }
+            }
           '';
         };
 
