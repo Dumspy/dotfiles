@@ -20,8 +20,8 @@
     certs."internal.rger.dev" = {
       domain = "internal.rger.dev";
       extraDomainNames = [
-        "router.internal.rger.dev",
-        "pve.internal.rger.dev",
+        "router.internal.rger.dev"
+        "pve.internal.rger.dev"
         "ha.internal.rger.dev"
       ];
       group = config.services.caddy.group;
