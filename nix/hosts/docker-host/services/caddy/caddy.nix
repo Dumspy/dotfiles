@@ -12,7 +12,6 @@
       email = "felix.enok.berger@gmail.com";
       dnsProvider = "cloudflare";
       dnsResolver = "1.1.1.1:53";
-      dnsPropagationCheck = false;
       environmentFile = config.sops.secrets."cloudflare/.env".path;
       reloadServices = ["caddy.service"];
     };
