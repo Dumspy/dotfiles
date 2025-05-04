@@ -19,9 +19,6 @@
 
     certs."internal.rger.dev" = {
       domain = "internal.rger.dev";
-      extraDomainNames = [
-        "*.internal.rger.dev"
-      ];
       group = config.services.caddy.group;
     };
   };
