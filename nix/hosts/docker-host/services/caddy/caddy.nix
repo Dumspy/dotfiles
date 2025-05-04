@@ -6,7 +6,6 @@
 }: {
   security.acme = {
     acceptTerms = true;
-    preliminarySelfsigned = false;
 
     defaults = {
       email = "felix.enok.berger@gmail.com";
@@ -14,6 +13,9 @@
       dnsResolver = "1.1.1.1:53";
       environmentFile = config.sops.secrets."cloudflare/.env".path;
       reloadServices = ["caddy.service"];
+      extraLegoFlags = [
+        "--dns.resolvers=1.1.1.1:53,8.8.8.8:53,9.9.9.9:53"  # Multiple DNS resolvers for redundancy
+      ];
     };
 
     certs."internal.rger.dev" = {
@@ -22,6 +24,13 @@
         "*.internal.rger.dev"
       ];
       group = config.services.caddy.group;
+    };
+  };
+
+  # Add a systemd override for the ACME service to give it more time
+  systemd.services."acme-internal.rger.dev" = {
+    serviceConfig = {
+      TimeoutStartSec = "5m";  # 15 minutes for the service to start
     };
   };
 
