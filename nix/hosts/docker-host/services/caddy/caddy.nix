@@ -12,7 +12,9 @@
       email = "felix.enok.berger@gmail.com";
       dnsProvider = "cloudflare";
       dnsResolver = "1.1.1.1:53";
+      dnsPropagationCheck = true;
       environmentFile = config.sops.secrets."cloudflare/.env".path;
+      reloadServices = ["caddy.service"];
     };
 
     certs."internal.rger.dev" = {
@@ -20,11 +22,8 @@
       extraDomainNames = [
         "*.internal.rger.dev"
       ];
+      group = config.services.caddy.group;
     };
-  };
-
-  systemd.services."acme-internal.rger.dev" = {
-    before = ["caddy.service"];
   };
 
   services.caddy = {
@@ -41,7 +40,7 @@
         // {
           hostName = "router.internal.rger.dev";
           extraConfig = ''
-            reverse_proxy https://192.168.1.1
+            reverse_proxy https://192.168.1.1 
           '';
         };
 
@@ -63,10 +62,6 @@
           '';
         };
     };
-  };
-
-  systemd.services.caddy = {
-    requires = ["acme-internal.rger.dev.service"];
   };
 
   networking.firewall.allowedTCPPorts = [80 443];
