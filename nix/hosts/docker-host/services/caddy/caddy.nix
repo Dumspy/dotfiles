@@ -15,22 +15,29 @@
       environmentFile = config.sops.secrets."cloudflare/.env".path;
     };
 
-    certs."internal.rger.dev" = {
-      domain = "internal.rger.dev";
-      extraDomainNames = ["*.internal.rger.dev"];
+    certs."rger.dev" = {
+      domain = "rger.dev";
+      extraDomainNames = [
+        "*.rger.dev"
+        "*.internal.rger.dev"
+      ];
     };
   };
 
-  systemd.services."acme-internal.rger.dev" = {
+  systemd.services."acme-rger.dev" = {
     before = ["caddy.service"];
   };
 
   services.caddy = {
     enable = true;
+    logFormat = "json";  # Enable detailed logging
+    globalConfig = ''
+      debug
+    '';
 
     virtualHosts = let
       sharedConfig = {
-        useACMEHost = "internal.rger.dev";
+        useACMEHost = "rger.dev";
       };
     in {
       router =
@@ -63,8 +70,7 @@
   };
 
   systemd.services.caddy = {
-    after = ["acme-internal.rger.dev.service"];
-    wantedBy = ["multi-user.target"];
+    requires = ["acme-rger.dev.service"];
   };
 
   networking.firewall.allowedTCPPorts = [80 443];
