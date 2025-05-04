@@ -44,6 +44,7 @@
         sharedConfig
         // {
           hostName = "router.internal.rger.dev";
+          extraConfig = ''
             reverse_proxy https://192.168.1.1
           '';
         };
