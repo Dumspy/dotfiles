@@ -29,10 +29,7 @@
 
   services.caddy = {
     enable = true;
-    logFormat = "console";  # Enable detailed logging
-    globalConfig = ''
-      debug
-    '';
+    logFormat = "level DEBUG";  # Enable detailed logging
 
     virtualHosts = let
       sharedConfig = {
