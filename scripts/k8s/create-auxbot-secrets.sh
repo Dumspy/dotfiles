@@ -16,7 +16,7 @@ echo "Creating Auxbot secrets in namespace: $NAMESPACE"
 # Paths to sops-nix secrets
 DISCORD_CLIENT_ID_PATH="/run/secrets/auxbot/discord_client_id"
 DISCORD_TOKEN_PATH="/run/secrets/auxbot/discord_token"
-SENTRY_DNS_PATH="/run/secrets/auxbot/sentry_dns"
+SENTRY_DSN_PATH="/run/secrets/auxbot/sentry_dsn"
 
 # Verify secrets exist
 if [ ! -f "$DISCORD_CLIENT_ID_PATH" ]; then
@@ -31,8 +31,8 @@ if [ ! -f "$DISCORD_TOKEN_PATH" ]; then
   exit 1
 fi
 
-if [ ! -f "$SENTRY_DNS_PATH" ]; then
-  echo "Error: Sentry DNS secret not found at $SENTRY_DNS_PATH"
+if [ ! -f "$SENTRY_DSN_PATH" ]; then
+  echo "Error: Sentry DSN secret not found at $SENTRY_DSN_PATH"
   echo "Make sure you've added this secret to your sops-nix configuration."
   exit 1
 fi
@@ -43,7 +43,7 @@ kubectl create secret generic auxbot-secrets \
   --namespace "$NAMESPACE" \
   --from-file=DISCORD_CLIENT_ID="$DISCORD_CLIENT_ID_PATH" \
   --from-file=DISCORD_TOKEN="$DISCORD_TOKEN_PATH" \
-  --from-file=SENTRY_DNS="$SENTRY_DNS_PATH" \
+  --from-file=SENTRY_DSN="$SENTRY_DSN_PATH" \
   --dry-run=client -o yaml | kubectl apply -f -
 
 echo "✅ Auxbot secrets successfully created in namespace: $NAMESPACE"
