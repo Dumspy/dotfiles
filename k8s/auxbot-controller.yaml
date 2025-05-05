@@ -37,7 +37,7 @@ spec:
         image: ghcr.io/dumspy/auxbot-controller:latest
         imagePullPolicy: Always 
         ports:
-        - name: auxbot-controller-api
+        - name: api
           containerPort: 3000
         - name: grpc
           containerPort: 50051
