@@ -8,23 +8,12 @@ spec:
   selector:
     app: auxbot-controller
   ports:
-  - name: auxbot-controller-api
+  - name: api
     port: 80
     targetPort: 3000
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: auxbot-controller-loadbalancer
-  labels: 
-    app: auxbot-controller
-spec:
-  selector:
-    app: auxbot-controller
-  ports:
-  - port: 30000
-    targetPort: 3000
-  type: LoadBalancer
+  - name: grpc
+    port: 50051
+    targetPort: 50051
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -72,6 +61,8 @@ spec:
               fieldPath: metadata.namespace
         - name: WORKER_IMAGE
           value: "ghcr.io/dumspy/auxbot-worker:latest"
+        - name: INACTIVITY_TIMEOUT_MINUTES
+          value: "2"
         - name: DISCORD_CLIENT_ID
           valueFrom:
             secretKeyRef:
