@@ -3,74 +3,75 @@
   pkgs,
   lib,
   ...
-}: let
-  certloc = "/var/lib/acme/internal.rger.dev";
-
-  # Helper function for creating virtual hosts with similar configs
-  mkVirtualHost = {
-    name,
-    target,
-    isHttps ? false,
-  }: {
-    name = "${name}.internal.rger.dev";
-    value.extraConfig = ''
-      reverse_proxy ${
-        if isHttps
-        then "https"
-        else "http"
-      }://${target} ${
-        if isHttps
-        then ''
-          {
-            transport http {
-              tls_insecure_skip_verify
-            }
-          }
-        ''
-        else ""
-      }
-
-      tls ${certloc}/cert.pem ${certloc}/key.pem {
-        protocols tls1.3
-      }
-    '';
-  };
-in {
+}: {
   security.acme = {
     acceptTerms = true;
-    defaults.email = "felix.enok.berger@gmail.com";
+
+    defaults = {
+      email = "felix.enok.berger@gmail.com";
+      dnsProvider = "cloudflare";
+      environmentFile = config.sops.secrets."cloudflare/.env".path;
+      reloadServices = ["caddy.service"];
+      extraLegoFlags = [
+        "--dns.resolvers=1.1.1.1:53,8.8.8.8:53,9.9.9.9:53"
+      ];
+    };
 
     certs."internal.rger.dev" = {
-      group = config.services.caddy.group;
-
       domain = "internal.rger.dev";
-      extraDomainNames = ["*.internal.rger.dev"];
-      dnsProvider = "cloudflare";
-      dnsPropagationCheck = true;
-      environmentFile = config.sops.secrets."cloudflare/.env".path;
+      extraDomainNames = [
+        "router.internal.rger.dev"
+        "pve.internal.rger.dev"
+        "ha.internal.rger.dev"
+      ];
+      group = config.services.caddy.group;
     };
   };
 
   services.caddy = {
     enable = true;
+    logFormat = "level INFO";
 
-    virtualHosts = builtins.listToAttrs [
-      (mkVirtualHost {
-        name = "router";
-        target = "192.168.1.1";
-        isHttps = true;
-      })
-      (mkVirtualHost {
-        name = "pve";
-        target = "192.168.1.200:8006";
-        isHttps = true;
-      })
-      (mkVirtualHost {
-        name = "ha";
-        target = "192.168.1.201:8123";
-        isHttps = false;
-      })
-    ];
+    virtualHosts = let
+      sharedConfig = {
+        useACMEHost = "internal.rger.dev";
+      };
+    in {
+      router =
+        sharedConfig
+        // {
+          hostName = "router.internal.rger.dev";
+          extraConfig = ''
+            reverse_proxy https://192.168.1.1 {
+              transport http {
+                tls_insecure_skip_verify
+              }
+            }
+          '';
+        };
+
+      pve =
+        sharedConfig
+        // {
+          hostName = "pve.internal.rger.dev";
+          extraConfig = ''
+            reverse_proxy https://192.168.1.200:8006 {
+              transport http {
+                tls_insecure_skip_verify
+              }
+            }
+          '';
+        };
+
+      ha =
+        sharedConfig
+        // {
+          hostName = "ha.internal.rger.dev";
+          extraConfig = ''
+            reverse_proxy http://192.168.1.201:8123
+          '';
+        };
+    };
   };
 
   networking.firewall.allowedTCPPorts = [80 443];
