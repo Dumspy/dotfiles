@@ -8,9 +8,8 @@
 
   imports = [
     ./hardware-configuration.nix
-    #./services/docker/docker.nix # Docker is being replaced by k3s
-    #./services/caddy/caddy.nix # Temporarily disabled because its not working
-    ./services/k3s/k3s.nix
+    ./services/k3s/default.nix
+    ./services/acme/default.nix
   ];
 
   # Bootloader.
