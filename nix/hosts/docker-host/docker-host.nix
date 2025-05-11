@@ -50,7 +50,6 @@
   users.groups = {
     certs = {
       gid = 1001;
-      description = "Certificates group";
     };
   };
 
