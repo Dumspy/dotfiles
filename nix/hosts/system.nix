@@ -48,6 +48,8 @@
     pkgs.neovim
     pkgs.difftastic
     pkgs.kubectl
+    pkgs.kubernetes-helm
+    pkgs.argocd
   ];
 
   # Fonts
@@ -67,15 +69,6 @@
       owner = "${me.username}";
     };
     "cloudflare/.env" = {
-      owner = "${me.username}";
-    };
-    "auxbot/discord_token" = {
-      owner = "${me.username}";
-    };
-    "auxbot/discord_client_id" = {
-      owner = "${me.username}";
-    };
-    "auxbot/sentry_dsn" = {
       owner = "${me.username}";
     };
   };
