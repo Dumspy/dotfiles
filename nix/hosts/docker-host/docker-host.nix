@@ -47,6 +47,13 @@
   # Configure console keymap
   console.keyMap = "dk-latin1";
 
+  user.groups = {
+    certs = {
+      gid = 1001;
+      description = "Certificates group";
+    };
+  };
+
   users.users.nixos = {
     isNormalUser = true;
     description = "nixos";
