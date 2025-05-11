@@ -50,7 +50,7 @@
   users.users.nixos = {
     isNormalUser = true;
     description = "nixos";
-    extraGroups = ["networkmanager" "wheel"];
+    extraGroups = ["networkmanager" "wheel" "certs"];
     packages = with pkgs; [];
   };
 

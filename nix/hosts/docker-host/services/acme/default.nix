@@ -9,7 +9,7 @@
     defaults.email = "felix.enok.berger@gmail.com";
 
     certs."internal.rger.dev" = {
-      group = config.services.caddy.group;
+      group = "certs";
       domain = "internal.rger.dev";
       extraDomainNames = ["*.internal.rger.dev"];
       dnsProvider = "cloudflare";
