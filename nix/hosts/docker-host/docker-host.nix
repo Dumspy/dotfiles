@@ -64,7 +64,6 @@
     pkgs.gcc
     pkgs.gnumake
     pkgs.k9s
-    pkgs.kubernetes-helm
   ];
 
   environment.variables = {

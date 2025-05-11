@@ -48,6 +48,8 @@
     pkgs.neovim
     pkgs.difftastic
     pkgs.kubectl
+    pkgs.kubernetes-helm
+    pkgs.argocd
   ];
 
   # Fonts
