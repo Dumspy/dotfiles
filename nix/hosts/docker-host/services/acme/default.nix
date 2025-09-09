@@ -13,6 +13,9 @@
       environmentFile = config.sops.secrets."cloudflare/.env".path;
       extraLegoFlags = [
         "--dns.resolvers=1.1.1.1:53,8.8.8.8:53"
+        "--dns.timeout=30s"
+        "--dns.propagation-timeout=600s"
+        "--dns.polling-interval=15s"
       ];
     };
 
