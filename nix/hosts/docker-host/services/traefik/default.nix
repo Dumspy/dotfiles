@@ -12,16 +12,14 @@
       entryPoints = {
         web = {
           address = ":80";
-          asDefault = true;
           http.redirections.entrypoint = {
             to = "websecure";
             scheme = "https";
           };
         };
-
         websecure = {
           address = ":443";
-          asDefault = true;
+          # The default certResolver for any router on this entrypoint
           http.tls.certResolver = "letsencrypt";
         };
       };
@@ -35,24 +33,40 @@
       certificatesResolvers.letsencrypt.acme = {
         email = "admin@rger.dev";
         storage = "/var/lib/traefik/acme.json";
-        httpChallenge.entryPoint = "web";
+        dnsChallenge = {
+          provider = "cloudflare";
+          resolvers = ["1.1.1.1:53" "8.8.8.8:53"];
+        };
+        # This tells the resolver which domains it is allowed to issue certs for.
+        domains = [
+          {
+            main = "internal.rger.dev";
+            sans = ["*.internal.rger.dev"];
+          }
+        ];
       };
 
+      # The dashboard itself is enabled here.
       api.dashboard = true;
     };
 
     dynamicConfigOptions = {
       http = {
         routers = {
+          dashboard = {
+            rule = "Host(`traefik.internal.rger.dev`)";
+            service = "api@internal"; # Special service name for the dashboard
+            entryPoints = ["websecure"];
+          };
+
           argocd = {
             rule = "Host(`argocd.internal.rger.dev`)";
             service = "argocd-service";
             entryPoints = ["websecure"];
-            tls = {
-              certResolver = "letsencrypt";
-            };
+            # No explicit tls block needed; it inherits from the websecure entrypoint.
           };
         };
+
         services = {
           argocd-service = {
             loadBalancer = {
