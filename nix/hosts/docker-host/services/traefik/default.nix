@@ -8,7 +8,7 @@
     enable = true;
     environmentFiles = [config.sops.secrets."cloudflare/.env".path];
 
-    staticConfigOptions = {
+  staticConfigOptions = {
       entryPoints = {
         web = {
           address = ":80";
@@ -42,8 +42,27 @@
     };
 
     dynamicConfigOptions = {
-      http.routers = {};
-      http.services = {};
+      http = {
+        routers = {
+          argocd = {
+            rule = "Host(`argocd.internal.rger.dev`)";
+            service = "argocd-service";
+            entryPoints = ["websecure"];
+            tls = {
+              certResolver = "letsencrypt";
+            };
+          };
+        };
+        services = {
+          argocd-service = {
+            loadBalancer = {
+              servers = [
+                { url = "http://192.168.1.200:30080"; }
+              ];
+            };
+          };
+        };
+      };
     };
   };
 }
