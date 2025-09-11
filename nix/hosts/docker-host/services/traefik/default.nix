@@ -8,7 +8,7 @@
     enable = true;
     environmentFiles = [config.sops.secrets."cloudflare/.env".path];
 
-  staticConfigOptions = {
+    staticConfigOptions = {
       entryPoints = {
         web = {
           address = ":80";
@@ -57,7 +57,7 @@
           argocd-service = {
             loadBalancer = {
               servers = [
-                { url = "http://192.168.1.200:30080"; }
+                {url = "http://192.168.1.200:30080";}
               ];
             };
           };
