@@ -6,7 +6,7 @@
 }: {
   services.traefik = {
     enable = true;
-    environmentFiles = [ config.sops.secrets."cloudflare/.env".path ];
+    environmentFiles = [config.sops.secrets."cloudflare/.env".path];
 
     staticConfigOptions = {
       entryPoints = {
