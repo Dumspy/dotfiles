@@ -14,8 +14,8 @@
           address = ":80";
           asDefault = true;
           http.redirections.entrypoint = {
-              to = "websecure";
-              scheme = "https";
+            to = "websecure";
+            scheme = "https";
           };
         };
 
