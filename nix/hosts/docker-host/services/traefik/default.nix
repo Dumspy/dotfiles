@@ -37,13 +37,6 @@
           provider = "cloudflare";
           resolvers = ["1.1.1.1:53" "8.8.8.8:53"];
         };
-        # This tells the resolver which domains it is allowed to issue certs for.
-        domains = [
-          {
-            main = "internal.rger.dev";
-            sans = ["*.internal.rger.dev"];
-          }
-        ];
       };
 
       # The dashboard itself is enabled here.
