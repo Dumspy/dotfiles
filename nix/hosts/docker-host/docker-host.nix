@@ -9,7 +9,7 @@
   imports = [
     ./hardware-configuration.nix
     ./services/k3s/default.nix
-    ./services/acme/default.nix
+    ./services/traefik/default.nix
   ];
 
   # Bootloader.
