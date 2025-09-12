@@ -39,7 +39,10 @@
           delayBeforeCheck = 30;
         };
         domains = [
-          { main = "internal.rger.dev"; sans = ["*.internal.rger.dev"]; }
+          {
+            main = "internal.rger.dev";
+            sans = ["*.internal.rger.dev"];
+          }
         ];
       };
 
