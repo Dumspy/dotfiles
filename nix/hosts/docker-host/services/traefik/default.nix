@@ -35,7 +35,7 @@
         storage = "/var/lib/traefik/acme.json";
         dnsChallenge = {
           provider = "cloudflare";
-          resolvers = ["8.8.8.8:53"];
+          resolvers = ["1.1.1.1:53" "1.0.0.1:53"];
         };
       };
 
@@ -56,7 +56,6 @@
             rule = "Host(`argocd.internal.rger.dev`)";
             service = "argocd-service";
             entryPoints = ["websecure"];
-            # No explicit tls block needed; it inherits from the websecure entrypoint.
           };
         };
 
