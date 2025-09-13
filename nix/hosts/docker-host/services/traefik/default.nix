@@ -12,6 +12,7 @@
       entryPoints = {
         web = {
           address = ":80";
+          asDefault = true;
           http.redirections.entrypoint = {
             to = "websecure";
             scheme = "https";
@@ -19,16 +20,8 @@
         };
         websecure = {
           address = ":443";
-          http = {
-            tls = {
-              certResolver = "letsencrypt";
-              domains = [
-                {
-                  main = "rger.dev";
-                }
-              ];
-            };
-          };
+          asDefault = true;
+          http.tls.certResolver = "letsencrypt";
         };
       };
 
@@ -43,7 +36,6 @@
         storage = "/var/lib/traefik/acme.json";
         dnsChallenge = {
           provider = "cloudflare";
-          resolvers = ["1.1.1.1:53" "1.0.0.1:53"];
           propagation = {
             delayBeforeChecks = 30;
           };
@@ -51,19 +43,29 @@
       };
 
       api.dashboard = true;
-      api.debug = true;
+      api.insecure = true;
     };
 
     dynamicConfigOptions = {
       http = {
         routers = {
-          dashboard = {
-            rule = "Host(`rger.dev`)";
-            service = "api@internal"; # Special service name for the dashboard
-            entryPoints = ["websecure"];
+          argocd = {
+            rule = "Host(`argocd.rger.dev`)";
+            service = "argocd-server";
+            tls.certResolver = "letsencrypt";
           };
+        };
+      };
+
+      services = {
+        argocd-server = {
+          loadBalancer.servers = [
+            {url = "http://192.168.1.202:30080";}
+          ];
         };
       };
     };
   };
+
+  networking.firewall.allowedTCPPorts = [80 443 8080];
 }
