@@ -25,7 +25,6 @@
               domains = [
                 {
                   main = "rger.dev";
-                  sans = ["*.rger.dev"];
                 }
               ];
             };
@@ -59,7 +58,7 @@
       http = {
         routers = {
           dashboard = {
-            rule = "Host(`traefik.rger.dev`)";
+            rule = "Host(`rger.dev`)";
             service = "api@internal"; # Special service name for the dashboard
             entryPoints = ["websecure"];
           };
