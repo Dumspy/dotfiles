@@ -22,9 +22,15 @@
           http = {
             tls = {
                 certResolver = "letsencrypt";
+                domains = [
+                  {
+                    main = "rger.dev";
+                    sans = ["*.rger.dev"];
+                  }
+                ];
+              };
             };
           };
-        };
       };
 
       log = {
@@ -39,11 +45,13 @@
         dnsChallenge = {
           provider = "cloudflare";
           resolvers = ["1.1.1.1:53" "1.0.0.1:53"];
+          delayBeforeCheck = 5;
         };
+        caServer = "https://acme-staging-v02.api.letsencrypt.org/directory";
       };
 
-      # The dashboard itself is enabled here.
       api.dashboard = true;
+      api.debug = true;
     };
 
     dynamicConfigOptions = {
