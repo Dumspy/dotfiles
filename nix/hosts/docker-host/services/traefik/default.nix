@@ -41,6 +41,12 @@
             delayBeforeChecks = 30;
           };
         };
+        domains = [
+          {
+            main = "rger.dev";
+            sans = ["*.rger.dev"];
+          }
+        ];
       };
 
       api.dashboard = true;
@@ -56,9 +62,6 @@
               service = "argocd";
               tls = {
                 certResolver = "letsencrypt";
-                domains = [
-                  { main = "argocd.rger.dev"; }
-                ];
               };
             };
         };
