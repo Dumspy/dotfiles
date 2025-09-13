@@ -40,7 +40,8 @@
           provider = "cloudflare";
           resolvers = ["1.1.1.1:53" "1.0.0.1:53"];
           propagation = {
-            disableChecks = true;
+            delayBeforeChecks = 30;
+            # disableChecks = true;
           };
         };
       };
