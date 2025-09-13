@@ -51,14 +51,14 @@
         routers = {
           argocd = {
             rule = "Host(`argocd.rger.dev`)";
-            service = "argocd-server";
+            service = "argocd";
             tls.certResolver = "letsencrypt";
           };
         };
       };
 
       services = {
-        argocd-server = {
+        argocd = {
           loadBalancer.servers = [
             {url = "http://192.168.1.202:30080";}
           ];
