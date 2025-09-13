@@ -12,21 +12,19 @@
       entryPoints = {
         web = {
           address = ":80";
-          asDefault = true;
           http.redirections.entrypoint = {
             to = "websecure";
             scheme = "https";
+            permanent = true;
           };
         };
+
         websecure = {
           address = ":443";
-          asDefault = true;
-          http.tls.domains = [
-            {
-              main = "rger.dev";
-              sans = ["*.rger.dev"];
-            }
-          ];
+          http.tls = {
+            certResolver = "letsencrypt";
+            domains = [{ main = "n0t3x1l.dev"; sans = [ "*.n0t3x1l.dev" ]; }];
+          };
         };
       };
 
