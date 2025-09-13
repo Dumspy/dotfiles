@@ -50,13 +50,13 @@
       http = {
         routers = {
           dashboard = {
-            rule = "Host(`traefik.internal.rger.dev`)";
+            rule = "Host(`traefik.rger.dev`)";
             service = "api@internal"; # Special service name for the dashboard
             entryPoints = ["websecure"];
           };
 
           argocd = {
-            rule = "Host(`argocd.internal.rger.dev`)";
+            rule = "Host(`argocd.rger.dev`)";
             service = "argocd-service";
             entryPoints = ["websecure"];
           };
