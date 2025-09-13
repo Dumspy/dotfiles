@@ -22,12 +22,6 @@
           http = {
             tls = {
                 certResolver = "letsencrypt";
-                domains = [
-                  {
-                    main = "internal.rger.dev";
-                    sans = ["*.internal.rger.dev"];
-                  }
-                ];
               };
             };
           };
@@ -45,9 +39,9 @@
         dnsChallenge = {
           provider = "cloudflare";
           resolvers = ["1.1.1.1:53" "1.0.0.1:53"];
-          delayBeforeCheck = 30;
+          delayBeforeChecks = 120;
+          disableChecks = true;
         };
-        caServer = "https://acme-staging-v02.api.letsencrypt.org/directory";
       };
 
       api.dashboard = true;
