@@ -21,12 +21,11 @@
         websecure = {
           address = ":443";
           asDefault = true;
-          http.tls.certResolver = "letsencrypt";
         };
       };
 
       log = {
-        level = "DEBUG";
+        level = "INFO";
         filePath = "/var/lib/traefik/traefik.log";
         format = "json";
       };
