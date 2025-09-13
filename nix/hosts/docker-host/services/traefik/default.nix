@@ -55,13 +55,12 @@
             tls.certResolver = "letsencrypt";
           };
         };
-      };
-
-      services = {
-        argocd = {
-          loadBalancer.servers = [
-            {url = "http://192.168.1.202:30080";}
-          ];
+        services = {
+          argocd = {
+            loadBalancer.servers = [
+              {url = "http://192.168.1.202:30080";}
+            ];
+          };
         };
       };
     };
