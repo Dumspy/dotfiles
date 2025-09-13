@@ -21,12 +21,13 @@
           address = ":443";
           http = {
             tls = {
-              certResolver = "letsencrypt";
-              domains = [
-                {
-                  main = "internal.rger.dev";
-                }
-              ];
+                certResolver = "letsencrypt";
+                domains = [
+                  {
+                    main = "internal.rger.dev";
+                    sans = ["*.internal.rger.dev"];
+                  }
+                ];
             };
           };
         };
