@@ -22,6 +22,12 @@
           http = {
             tls = {
               certResolver = "letsencrypt";
+              domains = [
+                {
+                  main = "rger.dev";
+                  sans = ["*.rger.dev"];
+                }
+              ];
             };
           };
         };
@@ -41,7 +47,6 @@
           resolvers = ["1.1.1.1:53" "1.0.0.1:53"];
           propagation = {
             delayBeforeChecks = 30;
-            # disableChecks = true;
           };
         };
       };
@@ -54,7 +59,7 @@
       http = {
         routers = {
           dashboard = {
-            rule = "Host(`internal.rger.dev`)";
+            rule = "Host(`traefik.rger.dev`)";
             service = "api@internal"; # Special service name for the dashboard
             entryPoints = ["websecure"];
           };
