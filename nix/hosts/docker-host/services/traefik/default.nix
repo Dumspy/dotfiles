@@ -60,6 +60,9 @@
               service = "argocd";
               tls = {
                 certResolver = "letsencrypt";
+                domains = [
+                  { main = "rger.dev"; sans = ["*.rger.dev"]; }
+                ];
               };
             };
         };
