@@ -22,12 +22,6 @@
           http = {
             tls = {
                 certResolver = "letsencrypt";
-                domains = [
-                  {
-                    main = "internal.rger.dev";
-                    sans = ["*.internal.rger.dev"];
-                  }
-                ];
             };
           };
         };
