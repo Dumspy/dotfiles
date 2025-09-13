@@ -63,9 +63,6 @@
             entryPoints = ["websecure"];
           };
         };
-
-        services = {
-        };
       };
     };
   };
