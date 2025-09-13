@@ -54,7 +54,12 @@
               rule = "Host(`argocd.rger.dev`)";
               entryPoints = ["websecure"];
               service = "argocd";
-              tls.certResolver = "letsencrypt";
+              tls = {
+                certResolver = "letsencrypt";
+                domains = [
+                  { main = "argocd.rger.dev"; }
+                ];
+              };
             };
         };
         services = {
