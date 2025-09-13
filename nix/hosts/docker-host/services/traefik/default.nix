@@ -24,8 +24,8 @@
                 certResolver = "letsencrypt";
                 domains = [
                   {
-                    main = "rger.dev";
-                    sans = ["*.rger.dev"];
+                    main = "internal.rger.dev";
+                    sans = ["*.internal.rger.dev"];
                   }
                 ];
               };
@@ -45,7 +45,7 @@
         dnsChallenge = {
           provider = "cloudflare";
           resolvers = ["1.1.1.1:53" "1.0.0.1:53"];
-          delayBeforeCheck = 5;
+          delayBeforeCheck = 30;
         };
         caServer = "https://acme-staging-v02.api.letsencrypt.org/directory";
       };
@@ -58,26 +58,13 @@
       http = {
         routers = {
           dashboard = {
-            rule = "Host(`traefik.rger.dev`)";
+            rule = "Host(`internal.rger.dev`)";
             service = "api@internal"; # Special service name for the dashboard
-            entryPoints = ["websecure"];
-          };
-
-          argocd = {
-            rule = "Host(`argocd.rger.dev`)";
-            service = "argocd-service";
             entryPoints = ["websecure"];
           };
         };
 
         services = {
-          argocd-service = {
-            loadBalancer = {
-              servers = [
-                {url = "http://192.168.1.202:30080";}
-              ];
-            };
-          };
         };
       };
     };
