@@ -26,7 +26,7 @@
       };
 
       log = {
-        level = "INFO";
+        level = "DEBUG";
         filePath = "/var/lib/traefik/traefik.log";
         format = "json";
       };
@@ -36,7 +36,9 @@
         storage = "/var/lib/traefik/acme.json";
         dnsChallenge = {
           provider = "cloudflare";
+          resolvers = ["1.1.1.1:53" "8.8.8.8:53"];
           propagation = {
+            disableChecks = true;
             delayBeforeChecks = 30;
           };
         };
@@ -49,11 +51,12 @@
     dynamicConfigOptions = {
       http = {
         routers = {
-          argocd = {
-            rule = "Host(`argocd.rger.dev`)";
-            service = "argocd";
-            tls.certResolver = "letsencrypt";
-          };
+            argocd = {
+              rule = "Host(`argocd.rger.dev`)";
+              entryPoints = ["websecure"];
+              service = "argocd";
+              tls.certResolver = "letsencrypt";
+            };
         };
         services = {
           argocd = {
