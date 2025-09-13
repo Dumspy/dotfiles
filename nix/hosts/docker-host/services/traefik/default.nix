@@ -53,32 +53,32 @@
       api.dashboard = true;
     };
 
-    # dynamicConfigOptions = {
-    #   http = {
-    #     routers = {
-    #       dashboard = {
-    #         rule = "Host(`traefik.internal.rger.dev`)";
-    #         service = "api@internal"; # Special service name for the dashboard
-    #         entryPoints = ["websecure"];
-    #       };
+    dynamicConfigOptions = {
+      http = {
+        routers = {
+          dashboard = {
+            rule = "Host(`traefik.internal.rger.dev`)";
+            service = "api@internal"; # Special service name for the dashboard
+            entryPoints = ["websecure"];
+          };
 
-    #       argocd = {
-    #         rule = "Host(`argocd.internal.rger.dev`)";
-    #         service = "argocd-service";
-    #         entryPoints = ["websecure"];
-    #       };
-    #     };
+          argocd = {
+            rule = "Host(`argocd.internal.rger.dev`)";
+            service = "argocd-service";
+            entryPoints = ["websecure"];
+          };
+        };
 
-    #     services = {
-    #       argocd-service = {
-    #         loadBalancer = {
-    #           servers = [
-    #             {url = "http://192.168.1.200:30080";}
-    #           ];
-    #         };
-    #       };
-    #     };
-    #   };
-    # };
+        services = {
+          argocd-service = {
+            loadBalancer = {
+              servers = [
+                {url = "http://192.168.1.202:30080";}
+              ];
+            };
+          };
+        };
+      };
+    };
   };
 }
