@@ -21,6 +21,12 @@
         websecure = {
           address = ":443";
           asDefault = true;
+          http.tls.domains = [
+            {
+              main = "rger.dev";
+              sans = ["*.rger.dev"];
+            }
+          ];
         };
       };
 
@@ -41,12 +47,6 @@
             delayBeforeChecks = 30;
           };
         };
-        domains = [
-          {
-            main = "rger.dev";
-            sans = ["*.rger.dev"];
-          }
-        ];
       };
 
       api.dashboard = true;
