@@ -23,7 +23,7 @@
           address = ":443";
           http.tls = {
             certResolver = "letsencrypt";
-            domains = [{ main = "n0t3x1l.dev"; sans = [ "*.n0t3x1l.dev" ]; }];
+            domains = [{ main = "rger.dev"; sans = [ "*.rger.dev" ]; }];
           };
         };
       };
