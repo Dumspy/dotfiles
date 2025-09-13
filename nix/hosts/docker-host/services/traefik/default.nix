@@ -39,7 +39,7 @@
         dnsChallenge = {
           provider = "cloudflare";
           resolvers = ["1.1.1.1:53" "1.0.0.1:53"];
-          delayBeforeChecks = 120;
+          delayBeforeChecks = 60;
           disableChecks = true;
         };
       };
