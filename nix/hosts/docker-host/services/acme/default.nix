@@ -8,7 +8,7 @@
     acceptTerms = true;
 
     defaults = {
-      email = "felix.enok.berger@gmail.com";
+      email = "admin@rger.dev";
       dnsProvider = "cloudflare";
       environmentFile = config.sops.secrets."cloudflare/.env".path;
       extraLegoFlags = [
@@ -16,9 +16,9 @@
       ];
     };
 
-    certs."internal.rger.dev" = {
-      domain = "internal.rger.dev";
-      extraDomainNames = ["*.internal.rger.dev"];
+    certs."rger.dev" = {
+      domain = "rger.dev";
+      extraDomainNames = ["*.rger.dev"];
       group = "certs";
     };
   };
