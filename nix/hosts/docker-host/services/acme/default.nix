@@ -11,13 +11,13 @@
       email = "admin@rger.dev";
       dnsProvider = "cloudflare";
       dnsResolver = "1.1.1.1:53";
-      dnsPropagationCheck=false;
+      # dnsPropagationCheck=false;
       environmentFile = config.sops.secrets."cloudflare/.env".path;
     };
 
     certs."rger.dev" = {
       domain = "rger.dev";
-      extraDomainNames = ["*.rger.dev"];
+      # extraDomainNames = ["*.rger.dev"];
       group = "certs";
     };
   };
