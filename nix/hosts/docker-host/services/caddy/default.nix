@@ -24,16 +24,9 @@
 in {
   services.caddy = {
     enable = true;
-    virtualHosts = builtins.listToAttrs [
-      (mkVirtualHost {
-        name = "router";
-        target = "192.168.1.1";
-      })
-
-      (mkVirtualHost {
-        name = "pve";
-        target = "192.168.1.200:8006";
-      })
+    virtualHosts."router.rger.dev".extraConfig = ''
+      reverse_proxy http://192.168.1.1
+    '';
     ];
   };
 
