@@ -37,7 +37,7 @@
       tls = {
         certificates = [
           {
-            certFile = "/var/lib/acme/rger.dev/fullchain.pem";
+            certFile = "/var/lib/acme/rger.dev/cert.pem";
             keyFile = "/var/lib/acme/rger.dev/key.pem";
           }
         ];
