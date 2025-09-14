@@ -16,7 +16,6 @@
         protocols tls1.3
       }
     '';
-    automaticHttps = false;
   };
 
   networking.firewall.allowedTCPPorts = [80 443];
