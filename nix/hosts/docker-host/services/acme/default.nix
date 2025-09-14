@@ -19,7 +19,7 @@
     certs."rger.dev" = {
       domain = "rger.dev";
       extraDomainNames = ["*.rger.dev"];
-      group = "certs";
+      group = config.services.caddy.group;
     };
   };
 }
