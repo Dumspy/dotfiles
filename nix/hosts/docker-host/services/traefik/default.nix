@@ -6,7 +6,6 @@
 }: {
   services.traefik = {
     enable = true;
-    environmentFiles = [config.sops.secrets."cloudflare/.env".path];
 
     staticConfigOptions = {
       entryPoints = {
@@ -18,17 +17,8 @@
             permanent = true;
           };
         };
-
         websecure = {
           address = ":443";
-          http.tls = {
-            certificates = [
-              {
-                certFile = "/var/lib/acme/rger.dev/cert.pem";
-                keyFile = "/var/lib/acme/rger.dev/key.pem";
-              }
-            ];
-          };
         };
       };
 
@@ -42,6 +32,16 @@
       api.insecure = true;
     };
 
+    certificateResolvers.myresolver = {
+      acme.certificates = [
+        {
+          certFile = "/var/lib/acme/rger.dev/cert.pem";
+          keyFile = "/var/lib/acme/rger.dev/key.pem";
+          domains = ["rger.dev" "*.rger.dev"];
+        }
+      ];
+    };
+
     dynamicConfigOptions = {
       http = {
         routers = {
@@ -49,6 +49,9 @@
             rule = "Host(`argocd.rger.dev`)";
             entryPoints = ["websecure"];
             service = "argocd";
+            tls = {
+              certResolver = "myresolver";
+            };
           };
         };
         services = {
