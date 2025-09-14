@@ -19,11 +19,11 @@
         };
         websecure = {
           address = ":443";
-        };
+          http.tls = {};
       };
 
       log = {
-        level = "INFO";
+        level = "DEBUG";
         filePath = "/var/lib/traefik/traefik.log";
         format = "json";
       };

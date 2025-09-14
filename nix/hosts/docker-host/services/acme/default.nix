@@ -13,7 +13,7 @@
       dnsResolver = "1.1.1.1:53";
       # dnsPropagationCheck=false;
       environmentFile = config.sops.secrets."cloudflare/.env".path;
-      reloadServices = ["caddy.service"];
+      reloadServices = ["traefik.service"];
     };
 
     certs."rger.dev" = {
