@@ -19,7 +19,14 @@
         };
         websecure = {
           address = ":443";
-          http.tls = {};
+          http.tls = {
+            certificates = [
+              {
+                certFile = "/var/lib/acme/rger.dev/fullchain.pem";
+                keyFile = "/var/lib/acme/rger.dev/key.pem";
+              }
+            ];
+          };
         };
       };
 
@@ -34,14 +41,6 @@
     };
 
     dynamicConfigOptions = {
-      tls = {
-        certificates = [
-          {
-            certFile = "/var/lib/acme/rger.dev/fullchain.pem";
-            keyFile = "/var/lib/acme/rger.dev/key.pem";
-          }
-        ];
-      };
       http = {
         routers = {
           argocd = {
