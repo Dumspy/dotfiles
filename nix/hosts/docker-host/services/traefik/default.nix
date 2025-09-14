@@ -48,13 +48,11 @@
             rule = "Host(`argocd.rger.dev`)";
             entryPoints = ["websecure"];
             service = "argocd";
-            tls=true;
           };
           proxmox = {
             rule = "Host(`proxmox.rger.dev`)";
             entryPoints = ["websecure"];
             service = "proxmox";
-            tls=true;
           };
         };
         services = {
