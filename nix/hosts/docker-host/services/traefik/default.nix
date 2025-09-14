@@ -49,11 +49,21 @@
             entryPoints = ["websecure"];
             service = "argocd";
           };
+          proxmox = {
+            rule = "Host(`proxmox.rger.dev`)";
+            entryPoints = ["websecure"];
+            service = "proxmox";
+          };
         };
         services = {
           argocd = {
             loadBalancer.servers = [
               {url = "http://192.168.1.202:30080";}
+            ];
+          };
+          proxmox = {
+            loadBalancer.servers = [
+              {url = "https://192.168.1.200:8006";}
             ];
           };
         };
