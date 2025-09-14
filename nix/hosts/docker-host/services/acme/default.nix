@@ -16,7 +16,7 @@
     };
 
     certs."rger.dev" = {
-      domain = "rger.dev";
+      domain = "*.rger.dev";
       # extraDomainNames = ["*.rger.dev"];
       group = "certs";
     };
