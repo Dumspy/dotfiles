@@ -24,20 +24,17 @@
 in {
   services.caddy = {
     enable = true;
-    virtualHosts."localhost".extraConfig = ''
-      respond "Hello, world!"
-    '';
-    # virtualHosts = builtins.listToAttrs [
-    #   (mkVirtualHost {
-    #     name = "router";
-    #     target = "192.168.1.1";
-    #   })
+    virtualHosts = builtins.listToAttrs [
+      (mkVirtualHost {
+        name = "router";
+        target = "192.168.1.1";
+      })
 
-    #   (mkVirtualHost {
-    #     name = "pve";
-    #     target = "192.168.1.200:8006";
-    #   })
-    # ];
+      (mkVirtualHost {
+        name = "pve";
+        target = "192.168.1.200:8006";
+      })
+    ];
   };
 
   networking.firewall.allowedTCPPorts = [80 443];
