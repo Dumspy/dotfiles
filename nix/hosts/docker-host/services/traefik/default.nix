@@ -8,6 +8,16 @@
     enable = true;
 
     staticConfigOptions = {
+        certificateResolvers.myresolver = {
+        acme.certificates = [
+            {
+            certFile = "/var/lib/acme/rger.dev/cert.pem";
+            keyFile = "/var/lib/acme/rger.dev/key.pem";
+            domains = ["rger.dev" "*.rger.dev"];
+            }
+        ];
+        };
+
       entryPoints = {
         web = {
           address = ":80";
@@ -30,16 +40,6 @@
 
       api.dashboard = true;
       api.insecure = true;
-    };
-
-    certificateResolvers.myresolver = {
-      acme.certificates = [
-        {
-          certFile = "/var/lib/acme/rger.dev/cert.pem";
-          keyFile = "/var/lib/acme/rger.dev/key.pem";
-          domains = ["rger.dev" "*.rger.dev"];
-        }
-      ];
     };
 
     dynamicConfigOptions = {
