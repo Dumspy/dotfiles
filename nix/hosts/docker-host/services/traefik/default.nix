@@ -33,6 +33,14 @@
     };
 
     dynamicConfigOptions = {
+      tls = {
+        certificates = [
+          {
+            certFile = "/var/lib/acme/rger.dev/fullchain.pem";
+            keyFile = "/var/lib/acme/rger.dev/key.pem";
+          }
+        ];
+      };
       http = {
         routers = {
           argocd = {
@@ -49,12 +57,6 @@
           };
         };
       };
-      tls = [
-        {
-          certFile = "/var/lib/acme/rger.dev/cert.pem";
-          keyFile = "/var/lib/acme/rger.dev/key.pem";
-        }
-      ];
     };
   };
 
