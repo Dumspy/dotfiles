@@ -20,6 +20,7 @@
         websecure = {
           address = ":443";
           http.tls = {};
+        };
       };
 
       log = {
@@ -59,6 +60,5 @@
       };
     };
   };
-
   networking.firewall.allowedTCPPorts = [80 443 8080];
 }
