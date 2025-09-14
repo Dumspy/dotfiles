@@ -11,6 +11,15 @@
       entryPoints = {
         web = {
           address = ":80";
+          http.redirections.entrypoint = {
+            to = "websecure";
+            scheme = "https";
+            permanent = true;
+          };
+        };
+        websecure = {
+          address = ":443";
+          http.tls = {};
         };
       };
 
@@ -26,10 +35,19 @@
 
     dynamicConfigOptions = {
       tls = {
+        stores = {
+          default = {
+            defaultCertificate = {
+              certFile = "/var/lib/acme/rger.dev/cert.pem";
+              keyFile = "/var/lib/acme/rger.dev/key.pem";
+            };
+          };
+        };
         certificates = [
           {
             certFile = "/var/lib/acme/rger.dev/cert.pem";
             keyFile = "/var/lib/acme/rger.dev/key.pem";
+            stores = "default";
           }
         ];
       };
@@ -37,12 +55,12 @@
         routers = {
           argocd = {
             rule = "Host(`argocd.rger.dev`)";
-            entryPoints = ["web"];
+            entryPoints = ["websecure"];
             service = "argocd";
           };
           proxmox = {
             rule = "Host(`proxmox.rger.dev`)";
-            entryPoints = ["web"];
+            entryPoints = ["websecure"];
             service = "proxmox";
           };
         };
