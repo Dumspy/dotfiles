@@ -27,7 +27,6 @@ in {
     virtualHosts."router.rger.dev".extraConfig = ''
       reverse_proxy http://192.168.1.1
     '';
-    ];
   };
 
   networking.firewall.allowedTCPPorts = [80 443];
