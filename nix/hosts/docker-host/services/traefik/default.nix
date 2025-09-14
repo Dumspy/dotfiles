@@ -8,16 +8,6 @@
     enable = true;
 
     staticConfigOptions = {
-        certificateResolvers.myresolver = {
-        acme.certificates = [
-            {
-            certFile = "/var/lib/acme/rger.dev/cert.pem";
-            keyFile = "/var/lib/acme/rger.dev/key.pem";
-            domains = ["rger.dev" "*.rger.dev"];
-            }
-        ];
-        };
-
       entryPoints = {
         web = {
           address = ":80";
@@ -49,9 +39,6 @@
             rule = "Host(`argocd.rger.dev`)";
             entryPoints = ["websecure"];
             service = "argocd";
-            tls = {
-              certResolver = "myresolver";
-            };
           };
         };
         services = {
@@ -62,6 +49,12 @@
           };
         };
       };
+      tls = [
+        {
+          certFile = "/var/lib/acme/rger.dev/cert.pem";
+          keyFile = "/var/lib/acme/rger.dev/key.pem";
+        }
+      ];
     };
   };
 
