@@ -19,14 +19,7 @@
         };
         websecure = {
           address = ":443";
-          http.tls = {
-            certificates = [
-              {
-                certFile = "/var/lib/acme/rger.dev/fullchain.pem";
-                keyFile = "/var/lib/acme/rger.dev/key.pem";
-              }
-            ];
-          };
+          http.tls = {};
         };
       };
 
@@ -41,17 +34,27 @@
     };
 
     dynamicConfigOptions = {
+      tls = {
+        certificates = [
+          {
+            certFile = "/var/lib/acme/rger.dev/fullchain.pem";
+            keyFile = "/var/lib/acme/rger.dev/key.pem";
+          }
+        ];
+      };
       http = {
         routers = {
           argocd = {
             rule = "Host(`argocd.rger.dev`)";
             entryPoints = ["websecure"];
             service = "argocd";
+            tls=true;
           };
           proxmox = {
             rule = "Host(`proxmox.rger.dev`)";
             entryPoints = ["websecure"];
             service = "proxmox";
+            tls=true;
           };
         };
         services = {
