@@ -9,6 +9,19 @@
     environmentFiles = [config.sops.secrets."cloudflare/.env".path];
 
     staticConfigOptions = {
+      certificatesResolvers.letsencrypt.acme = {
+        email = "admin@rger.dev";
+        storage = "/var/lib/traefik/acme.json";
+        dnsChallenge = {
+          provider = "cloudflare";
+          resolvers = ["1.1.1.1:53" "8.8.8.8:53"];
+          propagation = {
+            disableChecks = true;
+            delayBeforeChecks = 30;
+          };
+        };
+      };
+
       entryPoints = {
         web = {
           address = ":80";
@@ -23,7 +36,12 @@
           address = ":443";
           http.tls = {
             certResolver = "letsencrypt";
-            domains = [{ main = "rger.dev"; sans = [ "*.rger.dev" ]; }];
+            domains = [
+              {
+                main = "rger.dev";
+                sans = ["*.rger.dev"];
+              }
+            ];
           };
         };
       };
@@ -34,19 +52,6 @@
         format = "json";
       };
 
-      certificatesResolvers.letsencrypt.acme = {
-        email = "admin@rger.dev";
-        storage = "/var/lib/traefik/acme.json";
-        dnsChallenge = {
-          provider = "cloudflare";
-          resolvers = ["1.1.1.1:53" "8.8.8.8:53"];
-          propagation = {
-            disableChecks = true;
-            delayBeforeChecks = 30;
-          };
-        };
-      };
-
       api.dashboard = true;
       api.insecure = true;
     };
@@ -54,17 +59,11 @@
     dynamicConfigOptions = {
       http = {
         routers = {
-            argocd = {
-              rule = "Host(`argocd.rger.dev`)";
-              entryPoints = ["websecure"];
-              service = "argocd";
-              tls = {
-                certResolver = "letsencrypt";
-                domains = [
-                  { main = "rger.dev"; sans = ["*.rger.dev"]; }
-                ];
-              };
-            };
+          argocd = {
+            rule = "Host(`argocd.rger.dev`)";
+            entryPoints = ["websecure"];
+            service = "argocd";
+          };
         };
         services = {
           argocd = {
