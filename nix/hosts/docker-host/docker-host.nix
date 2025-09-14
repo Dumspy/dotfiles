@@ -10,6 +10,7 @@
     ./hardware-configuration.nix
     ./services/k3s/default.nix
     ./services/acme/default.nix
+    ./services/caddy/default.nix
   ];
 
   # Bootloader.
