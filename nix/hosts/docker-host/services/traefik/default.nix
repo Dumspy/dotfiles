@@ -11,15 +11,6 @@
       entryPoints = {
         web = {
           address = ":80";
-          http.redirections.entrypoint = {
-            to = "websecure";
-            scheme = "https";
-            permanent = true;
-          };
-        };
-        websecure = {
-          address = ":443";
-          http.tls = {};
         };
       };
 
@@ -46,12 +37,12 @@
         routers = {
           argocd = {
             rule = "Host(`argocd.rger.dev`)";
-            entryPoints = ["websecure"];
+            entryPoints = ["web"];
             service = "argocd";
           };
           proxmox = {
             rule = "Host(`proxmox.rger.dev`)";
-            entryPoints = ["websecure"];
+            entryPoints = ["web"];
             service = "proxmox";
           };
         };
@@ -63,7 +54,7 @@
           };
           proxmox = {
             loadBalancer.servers = [
-              {url = "https://192.168.1.200:8006";}
+              {url = "http://192.168.1.200:8006";}
             ];
           };
         };
