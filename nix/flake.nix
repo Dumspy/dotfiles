@@ -38,13 +38,13 @@
     in let
       specialArgs = {inherit me;};
     in {
-      "Felixs-MacBook-Air" = nix-darwin.lib.darwinSystem {
+      darwin = nix-darwin.lib.darwinSystem {
         system = "aarch64-darwin";
         specialArgs = specialArgs;
         modules = [
           sops-nix.darwinModules.sops
           ./hosts/system.nix
-          ./hosts/darwin/darwin.nix
+          ./hosts/darwin/system.nix
           home-manager.darwinModules.home-manager
           {
             home-manager = {
@@ -67,14 +67,14 @@
     in let
       specialArgs = {inherit me;};
     in {
-      wsl = nixpkgs.lib.nixosSystem {
+      wsl-devbox = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = specialArgs;
         modules = [
           nixos-wsl.nixosModules.default
           sops-nix.nixosModules.sops
           ./hosts/system.nix
-          ./hosts/wsl/wsl.nix
+          ./hosts/wsl-devbox/system.nix
           home-manager.nixosModules.home-manager
           {
             home-manager = {
@@ -87,17 +87,24 @@
         ];
       };
 
-      docker-host = nixpkgs.lib.nixosSystem {
+      k3s-node = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = specialArgs;
         modules = [
           sops-nix.nixosModules.sops
           ./hosts/system.nix
-          ./hosts/docker-host/docker-host.nix
+          ./hosts/k3s-node/system.nix
         ];
       };
-    };
 
-    # darwinPackages = self.darwinConfigurations."Felixs-MacBook-Air".pkgs;
+      master-node = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        specialArgs = specialArgs;
+        modules = [
+          sops-nix.nixosModules.sops
+          ./hosts/system.nix
+          ./hosts/master-node/system.nix
+        ];
+    };
   };
 }
