@@ -81,7 +81,7 @@
               useGlobalPkgs = true;
               useUserPackages = true;
               extraSpecialArgs = specialArgs;
-              users.${me.username} = import ./hosts/wsl/home.nix;
+              users.${me.username} = import ./hosts/wsl-devbox/home.nix;
             };
           }
         ];
