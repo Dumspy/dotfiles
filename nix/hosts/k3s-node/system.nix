@@ -8,8 +8,7 @@
 
   imports = [
     ./hardware-configuration.nix
-    ./services/k3s/default.nix
-    ./services/acme/default.nix
+    ../../modules/system/k3s.nix
   ];
 
   # Bootloader.
@@ -18,7 +17,7 @@
 
   # Enable networking
   networking.networkmanager.enable = true;
-  networking.hostName = "docker-host";
+  networking.hostName = "k3s-node";
 
   # Set your time zone.
   time.timeZone = "Europe/Copenhagen";
@@ -62,7 +61,7 @@
 
   services.openssh.enable = true;
   users.users."nixos".openssh.authorizedKeys.keys = [
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHuBvk3U7Pdlf5vUV6eH1VvUDigRHDRMp+d+pdo7jTky main-key"
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTz½E5AAAAIHuBvk3U7Pdlf5vUV6eH1VvUDigRHDRMp+d+pdo7jTky main-key"
   ];
 
   environment.systemPackages = [
