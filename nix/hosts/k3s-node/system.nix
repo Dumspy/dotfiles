@@ -8,7 +8,7 @@
 
   imports = [
     ./hardware-configuration.nix
-    ../../modules/k3s.nix
+    ../../modules/system/k3s.nix
   ];
 
   # Bootloader.

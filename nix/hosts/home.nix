@@ -14,12 +14,12 @@
   home.stateVersion = "24.11";
 
   imports = [
-    ../modules/zsh.nix
-    ../modules/starship.nix
-    ../modules/fzf.nix
-    ../modules/git.nix
-    ../modules/direnv.nix
-    ../modules/neovim.nix
+    ../modules/home/zsh.nix
+    ../modules/home/starship.nix
+    ../modules/home/fzf.nix
+    ../modules/home/git.nix
+    ../modules/home/direnv.nix
+    ../modules/home/neovim.nix
   ];
 
   home.file = {
