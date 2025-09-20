@@ -21,7 +21,7 @@ fi
 if [[ -n "$selected" ]]; then
   git add -f $HOME/dotfiles/nix/secrets/secrets.enc.yaml
   command=${systems[$selected]}
-  if [[ "$selected" == "Felixs-MacBook-Air" ]]; then
+  if [[ "$selected" == "darwin" ]]; then
     eval "$command"
   else
     eval "sudo $command"
