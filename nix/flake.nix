@@ -105,6 +105,7 @@
           ./hosts/system.nix
           ./hosts/master-node/system.nix
         ];
+      };
     };
   };
 }
