@@ -58,25 +58,7 @@
     pkgs.iosevka
   ];
 
-  # SOPS
-  sops.defaultSopsFile = ../secrets/secrets.enc.yaml;
-  sops.defaultSopsFormat = "yaml";
-
-  sops.age.keyFile = "${me.homePrefix}/.config/sops/age/keys.txt";
-
-  sops.secrets = {
-    "op_service_account/token" = {
-      owner = "${me.username}";
-    };
-    "cloudflare/.env" = {
-      owner = "${me.username}";
-    };
-  };
-
   programs.zsh = {
     enable = true;
-    shellInit = ''
-      export OP_SERVICE_ACCOUNT_TOKEN="$(cat ${config.sops.secrets."op_service_account/token".path})"
-    '';
   };
 }

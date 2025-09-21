@@ -3,7 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    sops-nix.url = "github:Mic92/sops-nix";
+    opnix.url = "github:brizzbuzz/opnix";
 
     nix-darwin = {
       url = "github:LnL7/nix-darwin";
@@ -42,10 +42,10 @@
         system = "aarch64-darwin";
         specialArgs = specialArgs;
         modules = [
-          sops-nix.darwinModules.sops
+          opnix.darwinModules.default
+          home-manager.darwinModules.home-manager
           ./hosts/system.nix
           ./hosts/darwin/system.nix
-          home-manager.darwinModules.home-manager
           {
             home-manager = {
               useGlobalPkgs = true;
@@ -72,10 +72,10 @@
         specialArgs = specialArgs;
         modules = [
           nixos-wsl.nixosModules.default
-          sops-nix.nixosModules.sops
+          home-manager.nixosModules.home-manager
+          opnix.nixosModules.default
           ./hosts/system.nix
           ./hosts/wsl-devbox/system.nix
-          home-manager.nixosModules.home-manager
           {
             home-manager = {
               useGlobalPkgs = true;
@@ -91,7 +91,7 @@
         system = "x86_64-linux";
         specialArgs = specialArgs;
         modules = [
-          sops-nix.nixosModules.sops
+          opnix.nixosModules.default
           ./hosts/system.nix
           ./hosts/k3s-node/system.nix
         ];
@@ -101,7 +101,7 @@
         system = "x86_64-linux";
         specialArgs = specialArgs;
         modules = [
-          sops-nix.nixosModules.sops
+          opnix.nixosModules.default
           ./hosts/system.nix
           ./hosts/master-node/system.nix
         ];
