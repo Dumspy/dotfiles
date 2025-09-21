@@ -13,7 +13,7 @@
   };
 
   programs.zsh = {
-    initExtra = ''
+    initContent = ''
       source ~/.ssh_pipe
     '';
   };

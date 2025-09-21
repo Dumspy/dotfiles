@@ -23,6 +23,7 @@
 
   outputs = inputs @ {
     self,
+    opnix,
     nix-darwin,
     nixos-wsl,
     nixpkgs,
