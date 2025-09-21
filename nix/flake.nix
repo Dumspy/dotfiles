@@ -3,7 +3,11 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    opnix.url = "github:brizzbuzz/opnix";
+
+    opnix = {
+      url = "github:brizzbuzz/opnix/v0.7.0";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     nix-darwin = {
       url = "github:LnL7/nix-darwin";
@@ -37,7 +41,7 @@
         homePrefix = "/Users/felix.berger";
       };
     in let
-      specialArgs = {inherit me;};
+      specialArgs = {inherit me inputs;};
     in {
       darwin = nix-darwin.lib.darwinSystem {
         system = "aarch64-darwin";
@@ -66,15 +70,15 @@
         homePrefix = "/home/nixos";
       };
     in let
-      specialArgs = {inherit me;};
+      specialArgs = {inherit me inputs;};
     in {
       wsl-devbox = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = specialArgs;
         modules = [
+          opnix.nixosModules.default
           nixos-wsl.nixosModules.default
           home-manager.nixosModules.home-manager
-          opnix.nixosModules.default
           ./hosts/system.nix
           ./hosts/wsl-devbox/system.nix
           {
