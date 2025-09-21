@@ -19,14 +19,12 @@ else
 fi
 
 if [[ -n "$selected" ]]; then
-  git add -f $HOME/dotfiles/nix/secrets/secrets.enc.yaml
   command=${systems[$selected]}
   if [[ "$selected" == "darwin" ]]; then
     eval "$command"
   else
     eval "sudo $command"
   fi
-  git restore --staged $HOME/dotfiles/nix/secrets/secrets.enc.yaml
 else
   echo "No system selected."
 fi

@@ -76,8 +76,4 @@
 
   # The platform the configuration will be used on.
   nixpkgs.hostPlatform = "aarch64-darwin";
-
-  # For some reason sops darwin has default keys....
-  sops.gnupg.sshKeyPaths = [];
-  sops.age.sshKeyPaths = [];
 }

@@ -3,7 +3,11 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    sops-nix.url = "github:Mic92/sops-nix";
+
+    opnix = {
+      url = "github:brizzbuzz/opnix/v0.7.0";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     nix-darwin = {
       url = "github:LnL7/nix-darwin";
@@ -23,6 +27,7 @@
 
   outputs = inputs @ {
     self,
+    opnix,
     nix-darwin,
     nixos-wsl,
     nixpkgs,
@@ -36,16 +41,16 @@
         homePrefix = "/Users/felix.berger";
       };
     in let
-      specialArgs = {inherit me;};
+      specialArgs = {inherit me inputs;};
     in {
       darwin = nix-darwin.lib.darwinSystem {
         system = "aarch64-darwin";
         specialArgs = specialArgs;
         modules = [
-          sops-nix.darwinModules.sops
+          opnix.darwinModules.default
+          home-manager.darwinModules.home-manager
           ./hosts/system.nix
           ./hosts/darwin/system.nix
-          home-manager.darwinModules.home-manager
           {
             home-manager = {
               useGlobalPkgs = true;
@@ -65,17 +70,17 @@
         homePrefix = "/home/nixos";
       };
     in let
-      specialArgs = {inherit me;};
+      specialArgs = {inherit me inputs;};
     in {
       wsl-devbox = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = specialArgs;
         modules = [
+          opnix.nixosModules.default
           nixos-wsl.nixosModules.default
-          sops-nix.nixosModules.sops
+          home-manager.nixosModules.home-manager
           ./hosts/system.nix
           ./hosts/wsl-devbox/system.nix
-          home-manager.nixosModules.home-manager
           {
             home-manager = {
               useGlobalPkgs = true;
@@ -91,7 +96,7 @@
         system = "x86_64-linux";
         specialArgs = specialArgs;
         modules = [
-          sops-nix.nixosModules.sops
+          opnix.nixosModules.default
           ./hosts/system.nix
           ./hosts/k3s-node/system.nix
         ];
@@ -101,7 +106,7 @@
         system = "x86_64-linux";
         specialArgs = specialArgs;
         modules = [
-          sops-nix.nixosModules.sops
+          opnix.nixosModules.default
           ./hosts/system.nix
           ./hosts/master-node/system.nix
         ];

@@ -2,8 +2,13 @@
   config,
   pkgs,
   me,
+  inputs,
   ...
 }: {
+  imports = [
+    ../modules/system/onepassword.nix
+  ];
+
   nixpkgs.config.allowUnfree = true;
 
   #GC
@@ -44,12 +49,12 @@
     pkgs.starship
     pkgs.tmux
     pkgs.fzf
-    pkgs._1password-cli
     pkgs.neovim
     pkgs.difftastic
     pkgs.kubectl
     pkgs.kubernetes-helm
     pkgs.argocd
+    inputs.opnix.packages.${pkgs.system}.default
   ];
 
   # Fonts
@@ -58,25 +63,10 @@
     pkgs.iosevka
   ];
 
-  # SOPS
-  sops.defaultSopsFile = ../secrets/secrets.enc.yaml;
-  sops.defaultSopsFormat = "yaml";
-
-  sops.age.keyFile = "${me.homePrefix}/.config/sops/age/keys.txt";
-
-  sops.secrets = {
-    "op_service_account/token" = {
-      owner = "${me.username}";
-    };
-    "cloudflare/.env" = {
-      owner = "${me.username}";
-    };
-  };
-
   programs.zsh = {
     enable = true;
     shellInit = ''
-      export OP_SERVICE_ACCOUNT_TOKEN="$(cat ${config.sops.secrets."op_service_account/token".path})"
+      setopt HIST_IGNORE_SPACE
     '';
   };
 }

@@ -17,7 +17,6 @@
         devShells.default = pkgs.mkShell rec {
           packages = with pkgs; [
             alejandra
-            sops
           ];
 
           shellHook = ''
