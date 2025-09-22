@@ -6,6 +6,8 @@
 }: {
   nix.enable = true;
 
+  system.primaryUser = me.username;
+
   #homebrew
   homebrew = {
     enable = true;
