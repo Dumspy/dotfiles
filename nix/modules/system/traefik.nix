@@ -20,6 +20,11 @@
     environmentFiles = [config.services.onepassword-secrets.secretPaths.cloudflareEnv];
 
     staticConfigOptions = {
+      api = {
+        dashboard = true;
+        insecure = false;
+      };
+
       entryPoints = {
         web = {
           address = ":80";
@@ -31,7 +36,6 @@
         websecure = {
           address = ":443";
           asDefault = true;
-          http.tls.certResolver = "letsencrypt";
         };
       };
 
@@ -49,9 +53,6 @@
           resolvers = ["1.1.1.1:53" "1.0.0.1:53"];
           delayBeforeCheck = 15;
         };
-        domains = [
-          { main = "internal.rger.dev"; sans = ["*.internal.rger.dev"]; }
-        ];
       };
     };
 
@@ -62,12 +63,18 @@
             rule = "Host(`traefik.internal.rger.dev`)";
             service = "api@internal";
             entryPoints = ["websecure"];
+            tls = {
+              certResolver = "letsencrypt";
+            };
           };
 
           argocd = {
             rule = "Host(`argocd.internal.rger.dev`)";
             service = "argocd-service";
             entryPoints = ["websecure"];
+            tls = {
+              certResolver = "letsencrypt";
+            };
           };
         };
 
