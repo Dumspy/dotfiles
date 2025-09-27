@@ -37,7 +37,7 @@
           asDefault = true;
           http.tls = {
             certResolver = "letsencrypt";
-            dominas = [
+            domains = [
               {
                 main = "internal.rger.dev";
                 sans = ["*.internal.rger.dev"];
