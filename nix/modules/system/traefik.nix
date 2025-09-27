@@ -4,7 +4,6 @@
   lib,
   ...
 }: {
-
   services.onepassword-secrets.secrets = {
     cloudflareEnv = {
       reference = "op://NixSecrets/orthjfp4m5gvfp5vcnbhmjdxcy/env_version";
@@ -41,7 +40,7 @@
               main = "internal.rger.dev";
               sans = ["*.internal.rger.dev"];
             }
-          ]
+          ];
         };
       };
 
