@@ -36,6 +36,12 @@
         websecure = {
           address = ":443";
           asDefault = true;
+          tls.dominas = [
+            {
+              main = "internal.rger.dev";
+              sans = ["*.internal.rger.dev"];
+            }
+          ]
         };
       };
 
