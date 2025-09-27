@@ -8,6 +8,7 @@
 
   imports = [
     ./hardware-configuration.nix
+    ../../modules/system/traefik.nix
   ];
 
   # Bootloader.
