@@ -49,6 +49,9 @@
           resolvers = ["1.1.1.1:53" "1.0.0.1:53"];
           delayBeforeCheck = 15;
         };
+        domains = [
+          { main = "internal.rger.dev"; sans = ["*.internal.rger.dev"]; }
+        ];
       };
     };
 
