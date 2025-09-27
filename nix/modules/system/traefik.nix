@@ -35,12 +35,15 @@
         websecure = {
           address = ":443";
           asDefault = true;
-          tls.dominas = [
-            {
-              main = "internal.rger.dev";
-              sans = ["*.internal.rger.dev"];
-            }
-          ];
+          http.tls = {
+            certResolver = "letsencrypt";
+            dominas = [
+              {
+                main = "internal.rger.dev";
+                sans = ["*.internal.rger.dev"];
+              }
+            ];
+          };
         };
       };
 
@@ -68,18 +71,12 @@
             rule = "Host(`traefik.internal.rger.dev`)";
             service = "api@internal";
             entryPoints = ["websecure"];
-            tls = {
-              certResolver = "letsencrypt";
-            };
           };
 
           argocd = {
             rule = "Host(`argocd.internal.rger.dev`)";
             service = "argocd-service";
             entryPoints = ["websecure"];
-            tls = {
-              certResolver = "letsencrypt";
-            };
           };
         };
 
