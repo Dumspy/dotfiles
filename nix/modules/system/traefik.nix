@@ -16,8 +16,13 @@
   services.traefik = {
     enable = true;
 
-    environmentFiles = [config.services.onepassword-secrets.secretPaths.cloudflareEnv];
-
+    environmentFiles = [
+      config.services.onepassword-secrets.secretPaths.cloudflareEnv
+      (pkgs.writeText "traefik-lego-env" ''
+        LEGO_DISABLE_CNAME_SUPPORT=true
+      '')
+    ];
+    
     staticConfigOptions = {
       api = {
         dashboard = true;
