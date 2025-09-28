@@ -24,6 +24,7 @@
       "visual-studio-code@insiders"
       "bruno"
       "dbeaver-community"
+      "tailscale"
     ];
     onActivation = {
       autoUpdate = true;
