@@ -47,16 +47,10 @@
   # Configure console keymap
   console.keyMap = "dk-latin1";
 
-  users.groups = {
-    certs = {
-      gid = 1001;
-    };
-  };
-
   users.users.nixos = {
     isNormalUser = true;
     description = "nixos";
-    extraGroups = ["networkmanager" "wheel" "certs"];
+    extraGroups = ["networkmanager" "wheel"];
     packages = with pkgs; [];
   };
 
