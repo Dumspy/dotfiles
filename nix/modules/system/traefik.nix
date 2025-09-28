@@ -26,7 +26,7 @@
     staticConfigOptions = {
       api = {
         dashboard = true;
-        insecure = false;
+        insecure = true;
       };
 
       entryPoints = {
@@ -35,6 +35,7 @@
           http.redirections.entrypoint = {
             to = "websecure";
             scheme = "https";
+            permanent = true;
           };
         };
         websecure = {
@@ -44,8 +45,7 @@
             certResolver = "letsencrypt";
             domains = [
               {
-                main = "internal.rger.dev";
-                sans = ["*.internal.rger.dev"];
+                main = "*.internal.rger.dev";
               }
             ];
           };
@@ -64,7 +64,7 @@
         dnsChallenge = {
           provider = "cloudflare";
           resolvers = ["1.1.1.1:53" "1.0.0.1:53"];
-          delayBeforeCheck = 15;
+          propagation.delayBeforeChecks = 15;
         };
       };
     };
