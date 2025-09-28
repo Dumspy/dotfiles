@@ -9,6 +9,7 @@
   imports = [
     ./hardware-configuration.nix
     ../../modules/system/k3s.nix
+    ../../modules/system/tailscale.nix
   ];
 
   # Bootloader.

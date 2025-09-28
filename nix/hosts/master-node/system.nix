@@ -9,6 +9,7 @@
   imports = [
     ./hardware-configuration.nix
     ../../modules/system/traefik.nix
+    ../../modules/system/tailscale.nix
   ];
 
   # Bootloader.
