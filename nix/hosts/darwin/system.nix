@@ -33,6 +33,7 @@
     };
     brews = [
       "pyenv"
+      "opencode"
     ];
   };
 
@@ -43,6 +44,10 @@
       home = "${me.homePrefix}";
     };
   };
+
+  environment.systemPackages = [
+    pkgs.dotnetCorePackages.sdk_9_0-bin
+  ];
 
   # Set Git commit hash for darwin-version.
   #system.configurationRevision = self.rev or self.dirtyRev or null;
