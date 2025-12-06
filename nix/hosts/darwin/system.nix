@@ -33,7 +33,6 @@
     };
     brews = [
       "pyenv"
-      "opencode"
     ];
   };
 

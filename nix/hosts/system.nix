@@ -54,6 +54,7 @@
     pkgs.kubectl
     pkgs.kubernetes-helm
     pkgs.argocd
+    pkgs.opencode
     inputs.opnix.packages.${pkgs.system}.default
   ];
 
