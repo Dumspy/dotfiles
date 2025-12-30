@@ -14,8 +14,6 @@
   home.homeDirectory = "${me.homePrefix}";
 
   home.file = {
-    ".config/zed/settings.json".source = ../../../zed/settings.json;
-    ".config/zed/tasks.json".source = ../../../zed/tasks.json;
     ".config/ghostty".source = ../../../ghostty;
   };
 

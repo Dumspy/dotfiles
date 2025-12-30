@@ -13,6 +13,10 @@
   wsl.defaultUser = "nixos";
   wsl.wslConf.network.generateResolvConf = false;
 
+  imports = [
+    ../../modules/system/1password-agent.nix
+  ];
+
   # Enable Docker
   virtualisation.docker.enable = true;
   users.users.nixos.extraGroups = ["docker"];
