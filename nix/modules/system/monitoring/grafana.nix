@@ -9,7 +9,7 @@
     settings.server = {
       domain = "grafana.internal.rger.dev";
       http_port = 2342;
-      http_addr = "127.0.0.1";
+      http_addr = "0.0.0.0";
     };
 
     provision = {
@@ -29,4 +29,7 @@
       ];
     };
   };
+
+  # Allow Grafana port through firewall
+  networking.firewall.allowedTCPPorts = [2342];
 }
