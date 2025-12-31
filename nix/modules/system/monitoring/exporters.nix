@@ -42,8 +42,10 @@
                 FINAL_FILE="$TEXTFILE_DIR/nixos_metrics.prom"
 
                 # Get NixOS metrics
-                current_gen=$(${pkgs.nix}/bin/nixos-rebuild list-generations | ${pkgs.gnugrep}/bin/grep current | ${pkgs.gawk}/bin/awk '{print $1}')
-                channel=$(${pkgs.nix}/bin/nix-channel --list 2>/dev/null | ${pkgs.gnugrep}/bin/grep nixpkgs | ${pkgs.gawk}/bin/awk '{print $2}' | ${pkgs.gnused}/bin/sed 's/.*\///' || echo "unknown")
+                # Get current generation from profile link
+                current_gen=$(${pkgs.coreutils}/bin/readlink /nix/var/nix/profiles/system | ${pkgs.gnused}/bin/sed 's/.*-\([0-9]*\)-link/\1/' || echo "0")
+                # Get channel info (may not be available on flake systems)
+                channel=$(${pkgs.nix}/bin/nix-channel --list 2>/dev/null | ${pkgs.gnugrep}/bin/grep nixpkgs | ${pkgs.gawk}/bin/awk '{print $2}' | ${pkgs.gnused}/bin/sed 's/.*\///' || echo "flake")
                 rebuild_time=$(${pkgs.coreutils}/bin/stat -c %Y /run/current-system)
 
                 # Get dotfiles Git metrics
