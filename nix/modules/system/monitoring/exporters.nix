@@ -21,17 +21,17 @@
     ];
   };
 
-  # Create textfile collector directory
+  # Create textfile collector directory  
   systemd.tmpfiles.rules = [
-    "d /var/lib/node_exporter/textfile_collector 0755 node_exporter node_exporter -"
+    "d /var/lib/node_exporter/textfile_collector 0755 root root -"
   ];
 
   # Custom NixOS and dotfiles metrics exporter
   systemd.services.nixos-metrics-exporter = {
     description = "Export NixOS and dotfiles Git metrics for Prometheus";
+    after = ["prometheus-node-exporter.service"];
     serviceConfig = {
       Type = "oneshot";
-      User = "node_exporter";
       ExecStart = pkgs.writeShellScript "nixos-metrics-exporter" ''
                 set -euo pipefail
 
