@@ -10,6 +10,9 @@
     ./hardware-configuration.nix
     ../../modules/system/traefik.nix
     ../../modules/system/tailscale.nix
+    ../../modules/system/monitoring/prometheus.nix
+    ../../modules/system/monitoring/grafana.nix
+    ../../modules/system/monitoring/exporters.nix
   ];
 
   # Bootloader.

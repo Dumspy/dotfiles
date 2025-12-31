@@ -63,7 +63,10 @@
         storage = "/var/lib/traefik/acme.json";
         dnsChallenge = {
           provider = "cloudflare";
-          resolvers = ["1.1.1.1:53" "1.0.0.1:53"];
+          resolvers = [
+            "1.1.1.1:53"
+            "1.0.0.1:53"
+          ];
           propagation = {
             disableChecks = true;
             delayBeforeChecks = 20;
@@ -86,6 +89,12 @@
             service = "argocd-service";
             entryPoints = ["websecure"];
           };
+
+          grafana = {
+            rule = "Host(`grafana.internal.rger.dev`)";
+            service = "grafana-service";
+            entryPoints = ["websecure"];
+          };
         };
 
         services = {
@@ -96,10 +105,21 @@
               ];
             };
           };
+
+          grafana-service = {
+            loadBalancer = {
+              servers = [
+                {url = "http://127.0.0.1:2342";}
+              ];
+            };
+          };
         };
       };
     };
   };
 
-  networking.firewall.allowedTCPPorts = [80 443];
+  networking.firewall.allowedTCPPorts = [
+    80
+    443
+  ];
 }
