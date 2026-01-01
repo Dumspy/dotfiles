@@ -12,7 +12,7 @@ CURRENT_GEN=$(readlink /nix/var/nix/profiles/system | sed 's/.*-\([0-9]*\)-link/
 REBUILD_TIME=$(stat -c '%Y' /run/current-system)
 
 # Get dotfiles Git metrics
-DOTFILES_PATH="__DOTFILES_PATH__"
+DOTFILES_PATH="@__DOTFILES_PATH__@"
 
 if [ -d "$DOTFILES_PATH/.git" ]; then
   cd "$DOTFILES_PATH"

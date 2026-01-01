@@ -6,11 +6,8 @@
   ...
 }: let
   # Create the exporter script with substitutions
-  exporterScript = pkgs.substituteAll {
-    src = ./nixos-dotfiles-exporter.sh;
-    isExecutable = true;
+  exporterScript = pkgs.replaceVars ./nixos-dotfiles-exporter.sh {
     __DOTFILES_PATH__ = "${me.homePrefix}/dotfiles";
-    inherit (pkgs) bash git coreutils gnused hostname;
   };
 in {
   # Node exporter for system metrics
@@ -34,6 +31,10 @@ in {
     mkdir -pm 0775 /var/lib/node_exporter/textfile_collector
 
     cd /var/lib/node_exporter/textfile_collector
-    ${exporterScript} | ${pkgs.moreutils}/bin/sponge nixos-metrics.prom
+    
+    # Set PATH to include necessary tools
+    export PATH="${lib.makeBinPath [pkgs.coreutils pkgs.gnused pkgs.git pkgs.nettools pkgs.moreutils]}:$PATH"
+    
+    ${pkgs.bash}/bin/bash ${exporterScript} | ${pkgs.moreutils}/bin/sponge nixos-metrics.prom
   '';
 }
