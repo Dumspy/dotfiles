@@ -14,22 +14,35 @@ REBUILD_TIME=$(stat -c '%Y' /run/current-system)
 # Get dotfiles Git metrics
 DOTFILES_PATH="@__DOTFILES_PATH__@"
 
+echo "DEBUG: DOTFILES_PATH=$DOTFILES_PATH" >&2
+echo "DEBUG: Checking if directory exists..." >&2
+ls -la "$DOTFILES_PATH" >&2 || echo "DEBUG: Directory doesn't exist" >&2
+
 if [ -d "$DOTFILES_PATH/.git" ]; then
+  echo "DEBUG: .git directory found" >&2
   cd "$DOTFILES_PATH"
-  
-  GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "unknown")
-  GIT_COMMIT=$(git rev-parse --short HEAD 2>/dev/null || echo "unknown")
-  
+
+  # Configure git to trust this directory when running as root
+  # git config --global --add safe.directory "$DOTFILES_PATH" 2>&1 >&2 || true
+
+  echo "DEBUG: Running git commands..." >&2
+  GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD 2>&1 | tee /dev/stderr || echo "unknown")
+  GIT_COMMIT=$(git rev-parse --short HEAD 2>&1 | tee /dev/stderr || echo "unknown")
+
+  echo "DEBUG: GIT_BRANCH=$GIT_BRANCH" >&2
+  echo "DEBUG: GIT_COMMIT=$GIT_COMMIT" >&2
+
   # Check if repo is dirty
   if git diff --quiet 2>/dev/null && git diff --cached --quiet 2>/dev/null; then
     GIT_DIRTY=0
   else
     GIT_DIRTY=1
   fi
-  
+
   # Check commits behind (requires network, may fail)
   COMMITS_BEHIND=$(git fetch origin 2>/dev/null && git rev-list --count HEAD..origin/$GIT_BRANCH 2>/dev/null || echo 0)
 else
+  echo "DEBUG: .git directory NOT found" >&2
   GIT_BRANCH="unknown"
   GIT_COMMIT="unknown"
   GIT_DIRTY=0

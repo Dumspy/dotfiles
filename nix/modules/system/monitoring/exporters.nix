@@ -35,6 +35,9 @@ in {
     # Set PATH to include necessary tools
     export PATH="${lib.makeBinPath [pkgs.coreutils pkgs.gnused pkgs.git pkgs.nettools pkgs.moreutils]}:$PATH"
     
-    ${pkgs.bash}/bin/bash ${exporterScript} | ${pkgs.moreutils}/bin/sponge nixos-metrics.prom
+    # Run with debug output logged
+    ${pkgs.bash}/bin/bash ${exporterScript} 2>/var/lib/node_exporter/textfile_collector/exporter-debug.log | ${pkgs.moreutils}/bin/sponge nixos-metrics.prom
+    
+    echo "Metrics exported at $(date)" >> /var/lib/node_exporter/textfile_collector/exporter-debug.log
   '';
 }
