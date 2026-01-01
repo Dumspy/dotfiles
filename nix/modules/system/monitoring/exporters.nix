@@ -48,7 +48,10 @@
         export GIT_CONFIG_KEY_0="safe.directory"
         export GIT_CONFIG_VALUE_0="${me.homePrefix}/dotfiles"
         
-        ${exporterScript} | ${pkgs.moreutils}/bin/sponge /var/lib/node_exporter/textfile_collector/dotfiles-git.prom
+        # Log debug output to a separate file
+        ${exporterScript} 2>/var/lib/node_exporter/textfile_collector/dotfiles-git-debug.log | ${pkgs.moreutils}/bin/sponge /var/lib/node_exporter/textfile_collector/dotfiles-git.prom
+        
+        echo "Last run: $(date)" >> /var/lib/node_exporter/textfile_collector/dotfiles-git-debug.log
       '';
     };
   };

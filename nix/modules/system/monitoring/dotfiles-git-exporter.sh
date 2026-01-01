@@ -5,11 +5,22 @@ set -euo pipefail
 HOSTNAME=$(hostname)
 DOTFILES_PATH="@__DOTFILES_PATH__@"
 
+echo "DEBUG: DOTFILES_PATH=$DOTFILES_PATH" >&2
+echo "DEBUG: Running as user: $(whoami)" >&2
+echo "DEBUG: Current working directory: $(pwd)" >&2
+
 if [ -d "$DOTFILES_PATH/.git" ]; then
+  echo "DEBUG: .git directory found" >&2
   cd "$DOTFILES_PATH"
+  echo "DEBUG: Changed to: $(pwd)" >&2
   
-  GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "unknown")
-  GIT_COMMIT=$(git rev-parse --short HEAD 2>/dev/null || echo "unknown")
+  echo "DEBUG: Running git rev-parse for branch..." >&2
+  GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD 2>&1 | tee /dev/stderr || echo "unknown")
+  echo "DEBUG: GIT_BRANCH=$GIT_BRANCH" >&2
+  
+  echo "DEBUG: Running git rev-parse for commit..." >&2
+  GIT_COMMIT=$(git rev-parse --short HEAD 2>&1 | tee /dev/stderr || echo "unknown")
+  echo "DEBUG: GIT_COMMIT=$GIT_COMMIT" >&2
   
   # Check if repo is dirty
   if git diff --quiet 2>/dev/null && git diff --cached --quiet 2>/dev/null; then
@@ -19,9 +30,11 @@ if [ -d "$DOTFILES_PATH/.git" ]; then
   fi
   
   # Fetch and check commits behind
-  git fetch origin 2>/dev/null || true
+  echo "DEBUG: Fetching from origin..." >&2
+  git fetch origin 2>&1 >&2 || true
   COMMITS_BEHIND=$(git rev-list --count HEAD..origin/$GIT_BRANCH 2>/dev/null || echo 0)
 else
+  echo "DEBUG: .git directory NOT found at $DOTFILES_PATH" >&2
   GIT_BRANCH="unknown"
   GIT_COMMIT="unknown"
   GIT_DIRTY=0
