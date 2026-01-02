@@ -27,6 +27,24 @@
           };
         }
       ];
+
+      # Auto-provision dashboards
+      dashboards.settings = {
+        apiVersion = 1;
+        providers = [
+          {
+            name = "System Monitoring";
+            type = "file";
+            disableDeletion = false;
+            updateIntervalSeconds = 10;
+            allowUiUpdates = true;
+            options = {
+              path = ./dashboards;
+              foldersFromFilesStructure = false;
+            };
+          }
+        ];
+      };
     };
   };
 
