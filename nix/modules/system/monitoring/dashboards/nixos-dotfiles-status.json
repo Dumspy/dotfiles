@@ -25,7 +25,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": null
       },
       "fieldConfig": {
         "defaults": {
@@ -90,7 +90,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": null
           },
           "expr": "dotfiles_git_dirty{instance=~\"$instance\"}",
           "legendFormat": "{{instance}}",
@@ -103,7 +103,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": null
       },
       "fieldConfig": {
         "defaults": {
@@ -158,7 +158,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": null
           },
           "expr": "dotfiles_git_commits_behind{instance=~\"$instance\", branch=~\"$branch\"}",
           "legendFormat": "{{instance}}",
@@ -171,7 +171,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": null
       },
       "fieldConfig": {
         "defaults": {
@@ -222,7 +222,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": null
           },
           "expr": "nixos_generation_current{instance=~\"$instance\"}",
           "legendFormat": "{{instance}}",
@@ -235,7 +235,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": null
       },
       "fieldConfig": {
         "defaults": {
@@ -291,7 +291,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": null
           },
           "expr": "(time() - nixos_last_rebuild_timestamp{instance=~\"$instance\"}) / 60 / 60 / 24",
           "legendFormat": "{{instance}}",
@@ -304,7 +304,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": null
       },
       "fieldConfig": {
         "defaults": {
@@ -379,7 +379,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": null
           },
           "expr": "nixos_generation_current{instance=~\"$instance\"}",
           "legendFormat": "{{instance}}",
@@ -392,7 +392,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": null
       },
       "fieldConfig": {
         "defaults": {
@@ -439,7 +439,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": null
           },
           "expr": "nixos_last_rebuild_timestamp{instance=~\"$instance\"} * 1000",
           "legendFormat": "{{instance}}",
@@ -452,7 +452,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": null
       },
       "fieldConfig": {
         "defaults": {
@@ -540,7 +540,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": null
           },
           "expr": "dotfiles_git_info{instance=~\"$instance\"}",
           "format": "table",
@@ -572,7 +572,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": null
       },
       "fieldConfig": {
         "defaults": {
@@ -655,7 +655,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": null
           },
           "expr": "dotfiles_git_commits_behind{instance=~\"$instance\", branch=~\"$branch\"}",
           "legendFormat": "{{instance}} - {{branch}}",
@@ -668,7 +668,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": null
       },
       "fieldConfig": {
         "defaults": {
@@ -740,7 +740,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": null
           },
           "expr": "dotfiles_git_dirty{instance=~\"$instance\"} + dotfiles_git_commits_behind{instance=~\"$instance\", branch=~\"$branch\"} + (((time() - nixos_last_rebuild_timestamp{instance=~\"$instance\"}) / 60 / 60 / 24) > bool 7)",
           "legendFormat": "{{instance}}",
@@ -753,7 +753,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": null
       },
       "fieldConfig": {
         "defaults": {
@@ -818,7 +818,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": null
           },
           "expr": "dotfiles_git_dirty{instance=~\"$instance\"}",
           "legendFormat": "{{instance}}",
@@ -843,7 +843,7 @@
         },
         "datasource": {
           "type": "prometheus",
-          "uid": "prometheus"
+          "uid": null
         },
         "definition": "label_values(node_uname_info, instance)",
         "hide": 0,
@@ -870,7 +870,7 @@
         },
         "datasource": {
           "type": "prometheus",
-          "uid": "prometheus"
+          "uid": null
         },
         "definition": "label_values(dotfiles_git_info, branch)",
         "hide": 0,

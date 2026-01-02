@@ -25,7 +25,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": null
       },
       "fieldConfig": {
         "defaults": {
@@ -114,7 +114,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": null
           },
           "expr": "((100 - (avg by (instance) (irate(node_cpu_seconds_total{instance=\"master-node:9100\", mode=\"idle\"}[5m])) * 100)) > bool 80) + ((1 - (node_memory_MemAvailable_bytes{instance=\"master-node:9100\"} / node_memory_MemTotal_bytes{instance=\"master-node:9100\"})) * 100 > bool 80) + ((1 - (node_filesystem_avail_bytes{instance=\"master-node:9100\", mountpoint=\"/\"} / node_filesystem_size_bytes{instance=\"master-node:9100\", mountpoint=\"/\"})) * 100 > bool 80)",
           "legendFormat": "master-node",
@@ -127,7 +127,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": null
       },
       "fieldConfig": {
         "defaults": {
@@ -216,7 +216,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": null
           },
           "expr": "((100 - (avg by (instance) (irate(node_cpu_seconds_total{instance=\"k3s-node:9100\", mode=\"idle\"}[5m])) * 100)) > bool 80) + ((1 - (node_memory_MemAvailable_bytes{instance=\"k3s-node:9100\"} / node_memory_MemTotal_bytes{instance=\"k3s-node:9100\"})) * 100 > bool 80) + ((1 - (node_filesystem_avail_bytes{instance=\"k3s-node:9100\", mountpoint=\"/\"} / node_filesystem_size_bytes{instance=\"k3s-node:9100\", mountpoint=\"/\"})) * 100 > bool 80)",
           "legendFormat": "k3s-node",
@@ -229,7 +229,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": null
       },
       "fieldConfig": {
         "defaults": {
@@ -286,7 +286,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": null
           },
           "expr": "100 - (avg by (instance) (irate(node_cpu_seconds_total{instance=~\"master-node:9100|k3s-node:9100\", mode=\"idle\"}[5m])) * 100)",
           "legendFormat": "{{instance}}",
@@ -299,7 +299,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": null
       },
       "fieldConfig": {
         "defaults": {
@@ -356,7 +356,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": null
           },
           "expr": "(1 - (node_memory_MemAvailable_bytes{instance=~\"master-node:9100|k3s-node:9100\"} / node_memory_MemTotal_bytes{instance=~\"master-node:9100|k3s-node:9100\"})) * 100",
           "legendFormat": "{{instance}}",
@@ -369,7 +369,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": null
       },
       "fieldConfig": {
         "defaults": {
@@ -426,7 +426,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": null
           },
           "expr": "(1 - (node_filesystem_avail_bytes{instance=~\"master-node:9100|k3s-node:9100\", mountpoint=\"/\", fstype!~\"tmpfs|ramfs|devtmpfs|overlay\"} / node_filesystem_size_bytes{instance=~\"master-node:9100|k3s-node:9100\", mountpoint=\"/\", fstype!~\"tmpfs|ramfs|devtmpfs|overlay\"})) * 100",
           "legendFormat": "{{instance}}",
@@ -439,7 +439,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": null
       },
       "fieldConfig": {
         "defaults": {
@@ -527,7 +527,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": null
           },
           "expr": "100 - (avg by (instance) (irate(node_cpu_seconds_total{instance=~\"master-node:9100|k3s-node:9100\", mode=\"idle\"}[5m])) * 100)",
           "legendFormat": "{{instance}}",
@@ -540,7 +540,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": null
       },
       "fieldConfig": {
         "defaults": {
@@ -628,7 +628,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": null
           },
           "expr": "(1 - (node_memory_MemAvailable_bytes{instance=~\"master-node:9100|k3s-node:9100\"} / node_memory_MemTotal_bytes{instance=~\"master-node:9100|k3s-node:9100\"})) * 100",
           "legendFormat": "{{instance}}",
@@ -641,7 +641,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": null
       },
       "fieldConfig": {
         "defaults": {
@@ -732,7 +732,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": null
           },
           "expr": "rate(node_network_receive_bytes_total{instance=~\"master-node:9100|k3s-node:9100\", device!~\"lo|veth.*\"}[5m])",
           "legendFormat": "{{instance}} - {{device}} - RX",
@@ -741,7 +741,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": null
           },
           "expr": "rate(node_network_transmit_bytes_total{instance=~\"master-node:9100|k3s-node:9100\", device!~\"lo|veth.*\"}[5m])",
           "legendFormat": "{{instance}} - {{device}} - TX",
@@ -754,7 +754,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": null
       },
       "fieldConfig": {
         "defaults": {
@@ -840,7 +840,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": null
           },
           "expr": "node_load5{instance=~\"master-node:9100|k3s-node:9100\"}",
           "legendFormat": "{{instance}} - 5m",
@@ -853,7 +853,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": null
       },
       "fieldConfig": {
         "defaults": {
@@ -1105,7 +1105,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": null
           },
           "expr": "100 - (avg by (instance) (irate(node_cpu_seconds_total{instance=~\"master-node:9100|k3s-node:9100\", mode=\"idle\"}[5m])) * 100)",
           "format": "table",
@@ -1116,7 +1116,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": null
           },
           "expr": "(1 - (node_memory_MemAvailable_bytes{instance=~\"master-node:9100|k3s-node:9100\"} / node_memory_MemTotal_bytes{instance=~\"master-node:9100|k3s-node:9100\"})) * 100",
           "format": "table",
@@ -1127,7 +1127,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": null
           },
           "expr": "(1 - (node_filesystem_avail_bytes{instance=~\"master-node:9100|k3s-node:9100\", mountpoint=\"/\"} / node_filesystem_size_bytes{instance=~\"master-node:9100|k3s-node:9100\", mountpoint=\"/\"})) * 100",
           "format": "table",
@@ -1138,7 +1138,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": null
           },
           "expr": "time() - node_boot_time_seconds{instance=~\"master-node:9100|k3s-node:9100\"}",
           "format": "table",
@@ -1149,7 +1149,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": null
           },
           "expr": "nixos_generation_current{instance=~\"master-node:9100|k3s-node:9100\"}",
           "format": "table",
@@ -1160,7 +1160,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": null
           },
           "expr": "count by (instance) (node_systemd_unit_state{instance=~\"master-node:9100|k3s-node:9100\", state=\"failed\"}) OR on (instance) (node_uname_info{instance=~\"master-node:9100|k3s-node:9100\"} * 0)",
           "format": "table",
@@ -1171,7 +1171,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": null
           },
           "expr": "dotfiles_git_dirty{instance=~\"master-node:9100|k3s-node:9100\"}",
           "format": "table",
