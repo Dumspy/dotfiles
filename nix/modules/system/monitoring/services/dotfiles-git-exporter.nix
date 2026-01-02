@@ -9,7 +9,7 @@
   systemd.services.dotfiles-git-exporter = {
     description = "Export dotfiles Git metrics for Prometheus";
     after = ["network.target"];
-    path = with pkgs; [git coreutils gnused];
+    path = with pkgs; [git coreutils gnused nettools];
     
     serviceConfig = {
       Type = "oneshot";
