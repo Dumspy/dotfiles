@@ -20,7 +20,6 @@
         {
           name = "Prometheus";
           type = "prometheus";
-          uid = "prometheus";
           url = "http://localhost:9090";
           isDefault = true;
           jsonData = {
