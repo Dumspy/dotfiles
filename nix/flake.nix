@@ -44,9 +44,10 @@
       specialArgs = {inherit me inputs;};
     in {
       darwin = nix-darwin.lib.darwinSystem {
-        system = "aarch64-darwin";
         specialArgs = specialArgs;
         modules = [
+          {nixpkgs.hostPlatform = "aarch64-darwin";}
+
           opnix.darwinModules.default
           home-manager.darwinModules.home-manager
           ./hosts/system.nix
@@ -73,9 +74,10 @@
       specialArgs = {inherit me inputs;};
     in {
       wsl-devbox = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
         specialArgs = specialArgs;
         modules = [
+          {nixpkgs.hostPlatform = "x86_64-linux";}
+
           opnix.nixosModules.default
           nixos-wsl.nixosModules.default
           home-manager.nixosModules.home-manager
@@ -93,9 +95,10 @@
       };
 
       k3s-node = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
         specialArgs = specialArgs;
         modules = [
+          {nixpkgs.hostPlatform = "x86_64-linux";}
+
           opnix.nixosModules.default
           ./hosts/system.nix
           ./hosts/k3s-node/system.nix
@@ -103,9 +106,10 @@
       };
 
       master-node = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
         specialArgs = specialArgs;
         modules = [
+          {nixpkgs.hostPlatform = "x86_64-linux";}
+
           opnix.nixosModules.default
           ./hosts/system.nix
           ./hosts/master-node/system.nix

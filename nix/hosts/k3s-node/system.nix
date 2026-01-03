@@ -10,6 +10,7 @@
     ./hardware-configuration.nix
     ../../modules/system/k3s.nix
     ../../modules/system/tailscale.nix
+    ../../modules/system/monitoring/exporters.nix
   ];
 
   # Bootloader.
@@ -74,4 +75,7 @@
   environment.variables = {
     KUBECONFIG = "$HOME/.kube/config";
   };
+
+  # Allow Prometheus to scrape node_exporter (port 6443 already opened by k3s module)
+  networking.firewall.allowedTCPPorts = [9100];
 }
