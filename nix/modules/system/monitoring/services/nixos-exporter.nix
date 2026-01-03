@@ -29,7 +29,7 @@
       EOF
     '';
   in ''
-    mkdir -pm 0775 /var/lib/node_exporter/textfile_collector
+    mkdir -pm 0755 /var/lib/node_exporter/textfile_collector
     cd /var/lib/node_exporter/textfile_collector
     ${nixosExporter} | ${pkgs.moreutils}/bin/sponge nixos.prom
   '';
