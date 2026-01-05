@@ -32,7 +32,6 @@
     nixos-wsl,
     nixpkgs,
     home-manager,
-    sops-nix,
   }: {
     # Build darwin flake using:
     darwinConfigurations = let
