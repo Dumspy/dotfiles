@@ -18,11 +18,6 @@
           packages = with pkgs; [
             alejandra
           ];
-
-          shellHook = ''
-            chmod +x .githooks/*
-            cp -r .githooks/* .git/hooks
-          '';
         };
       }
     );
