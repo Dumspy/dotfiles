@@ -38,8 +38,8 @@
       unbind C-b
       bind C-Space send-prefix
 
-      # Reload config reminder - NixOS rebuild required
-      bind r display-message "Config is managed by NixOS. Run './rebuild.sh' to reload changes."
+      # Reload config reminder - Nix rebuild required
+      bind r display-message "Config is managed by Nix. Run './rebuild.sh' to reload changes."
 
       # Status bar configuration (catppuccin customization)
       set -g status-right-length 100
