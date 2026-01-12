@@ -55,7 +55,7 @@
     pkgs.kubernetes-helm
     pkgs.argocd
     pkgs.opencode
-    inputs.opnix.packages.${pkgs.system}.default
+    inputs.opnix.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
 
   # Fonts
