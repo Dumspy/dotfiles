@@ -1,0 +1,98 @@
+name: Update Flakes
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'  # Every Monday at 6 AM UTC (7 AM CET)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-flakes:
+    if: github.repository == 'dumspy/dotfiles'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v30
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+
+      - name: Update flakes
+        run: |
+          nix flake update
+          nix flake update ./nix
+
+      - name: Check for changes
+        id: check
+        run: |
+          if git diff --quiet flake.lock nix/flake.lock; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Close PRs if no changes
+        if: steps.check.outputs.has_changes == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr list --label "flake-updates" --json number --jq '.[].number' | while read -r pr; do
+            echo "No changes needed, closing PR #$pr"
+            gh pr close "$pr" --delete-branch --comment "Closing as flake.lock files are already up to date."
+          done
+
+      - name: Validate changes
+        if: steps.check.outputs.has_changes == 'true'
+        run: nix flake check ./nix
+
+      - name: Close old PRs
+        if: steps.check.outputs.has_changes == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr list --label "flake-updates" --json number --jq '.[].number' | while read -r pr; do
+            echo "Closing old PR #$pr"
+            gh pr close "$pr" --delete-branch --comment "Superseded by newer flake updates."
+          done
+
+      - name: Generate change summary
+        if: steps.check.outputs.has_changes == 'true'
+        id: summary
+        run: |
+          {
+            echo 'CHANGES<<EOF'
+            echo "Automated weekly update of flake.lock files."
+            echo ""
+            echo "Updated inputs:"
+            git diff flake.lock nix/flake.lock | grep -E '^\+.*"(narHash|rev|lastModified)"' | head -20 || echo "- See diff for details"
+            echo ""
+            echo "Run \`./rebuild.sh\` to test locally."
+            echo EOF
+          } >> $GITHUB_OUTPUT
+
+      - name: Create branch and commit
+        if: steps.check.outputs.has_changes == 'true'
+        run: |
+          BRANCH="automated/flake-updates-$(date +%Y-%m-%d)"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          git add flake.lock nix/flake.lock
+          git commit -m "chore: bump flake inputs"
+          git push -u origin "$BRANCH"
+          echo "BRANCH=$BRANCH" >> $GITHUB_ENV
+
+      - name: Create pull request
+        if: steps.check.outputs.has_changes == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr create \
+            --title "chore: bump flake inputs" \
+            --body "${{ steps.summary.outputs.CHANGES }}" \
+            --label "flake-updates"
