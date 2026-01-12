@@ -20,12 +20,15 @@
     ../modules/home/git.nix
     ../modules/home/direnv.nix
     ../modules/home/neovim.nix
+    ../modules/home/tmux.nix
   ];
 
   home.file = {
     ".gitignore_global".source = ../../git/.gitignore_global;
-    ".config/tmux/tmux.conf".source = ../../tmux/tmux.conf;
-    "scripts/".source = ../../scripts;
+    "scripts/tmux-sessionizer" = {
+      source = ../../scripts/tmux-sessionizer;
+      executable = true;
+    };
   };
 
   programs.home-manager.enable = true;
