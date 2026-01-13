@@ -48,7 +48,9 @@ jobs:
 
       - name: Validate changes
         if: steps.check.outputs.has_changes == 'true'
-        run: nix flake check ./nix
+        run: |
+          nix flake check
+          nix flake check ./nix
 
       - name: Close old PRs
         if: steps.check.outputs.has_changes == 'true'
