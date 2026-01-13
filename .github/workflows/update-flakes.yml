@@ -59,21 +59,6 @@ jobs:
           nix flake check
           nix flake check ./nix
 
-      - name: Generate change summary
-        if: steps.check.outputs.has_changes == 'true'
-        id: summary
-        run: |
-          {
-            echo 'CHANGES<<EOF'
-            echo "Automated weekly update of flake.lock files."
-            echo ""
-            echo "Updated inputs:"
-            git diff flake.lock nix/flake.lock | grep -E '^\+.*"(narHash|rev|lastModified)"' | head -20 || echo "- See diff for details"
-            echo ""
-            echo "Run \`./rebuild.sh\` to test locally."
-            echo EOF
-          } >> $GITHUB_OUTPUT
-
       - name: Create branch and commit
         if: steps.check.outputs.has_changes == 'true'
         run: |
@@ -92,5 +77,5 @@ jobs:
         run: |
           gh pr create \
             --title "chore: bump flake inputs" \
-            --body "${{ steps.summary.outputs.CHANGES }}" \
+            --body "" \
             --label "flake-updates"
