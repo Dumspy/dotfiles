@@ -85,7 +85,6 @@ jobs:
           git add flake.lock nix/flake.lock
           git commit -m "chore: bump flake inputs"
           git push -u origin "$BRANCH"
-          echo "BRANCH=$BRANCH" >> $GITHUB_ENV
 
       - name: Create pull request
         if: steps.check.outputs.has_changes == 'true'
