@@ -9,6 +9,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    opencode = {
+      url = "github:anomalyco/opencode";
+    };
+
     nix-darwin = {
       url = "github:LnL7/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -28,6 +32,7 @@
   outputs = inputs @ {
     self,
     opnix,
+    opencode,
     nix-darwin,
     nixos-wsl,
     nixpkgs,
