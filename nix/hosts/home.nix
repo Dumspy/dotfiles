@@ -21,14 +21,11 @@
     ../modules/home/direnv.nix
     ../modules/home/neovim.nix
     ../modules/home/tmux.nix
+    ../modules/home/tmux-sessionizer.nix
   ];
 
   home.file = {
     ".gitignore_global".source = ../../git/.gitignore_global;
-    "scripts/tmux-sessionizer" = {
-      source = ../../scripts/tmux-sessionizer;
-      executable = true;
-    };
   };
 
   programs.home-manager.enable = true;
