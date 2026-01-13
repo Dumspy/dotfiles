@@ -4,6 +4,7 @@
   ...
 }: let
   # Embed the full upstream tmux-sessionizer script
+  # Based of https://github.com/ThePrimeagen/tmux-sessionizer/tree/master
   tmux-sessionizer = pkgs.writeShellScriptBin "tmux-sessionizer" ''
     #!/usr/bin/env bash
 
