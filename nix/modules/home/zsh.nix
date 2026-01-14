@@ -25,7 +25,7 @@
       zstyle ':completion:*' menu no
       zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
 
-      bindkey -s ^f "~/scripts/tmux-sessionizer\n"
+      bindkey -s ^f "tmux-sessionizer\n"
     '';
   };
 }

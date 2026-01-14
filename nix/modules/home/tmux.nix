@@ -54,7 +54,7 @@
       bind % split-window -h -c "#{pane_current_path}"
 
       # Sessionizer (keep, cht.sh removed)
-      bind-key -r f run-shell "tmux neww ~/scripts/tmux-sessionizer"
+      bind-key -r f run-shell "tmux neww tmux-sessionizer"
     '';
   };
 }
