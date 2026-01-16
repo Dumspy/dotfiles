@@ -19,9 +19,10 @@ in {
 
       # MCP Servers
       mcp = {
-        grep = {
+        grep_app = {
           type = "remote";
           url = "https://mcp.grep.app";
+          enabled = true;
         };
       };
 
