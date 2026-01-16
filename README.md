@@ -57,3 +57,16 @@ npiperelay is needed for the SSH agent forwarding to work from the host system t
 Ensure that npiperelay is added to the PATH of the host Windows system.
 
 https://github.com/jstarks/npiperelay
+
+## Portable Dotfiles Export
+
+This repository includes a GitHub Action workflow to export the dotfiles for use on non-Nix systems (using GNU Stow).
+
+- **Workflow**: `.github/workflows/export-dotfiles.yml`
+- **Trigger**: Manual dispatch only.
+- **Output**: A `dotfiles-portable.tar.gz` release artifact containing the generated configuration files.
+
+To use the exported dotfiles:
+1. Download the artifact from the GitHub Release or Action run.
+2. Extract it to your home directory or dotfiles folder.
+3. Use `stow` to symlink the configurations.
