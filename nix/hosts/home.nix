@@ -22,6 +22,7 @@
     ../modules/home/neovim.nix
     ../modules/home/tmux.nix
     ../modules/home/tmux-sessionizer.nix
+    ../modules/home/opencode.nix
   ];
 
   home.file = {
