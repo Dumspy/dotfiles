@@ -17,6 +17,14 @@ in {
       # Add plugin
       plugin = [ "opencode-antigravity-auth@latest" ];
 
+      # MCP Servers
+      mcp = {
+        grep = {
+          type = "remote";
+          url = "https://mcp.grep.app";
+        };
+      };
+
       # Provider configuration
       provider = {
         google = {
