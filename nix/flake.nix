@@ -128,20 +128,20 @@
           username = "felix.berger";
           homePrefix = "/Users/felix.berger";
         };
-      in home-manager.lib.homeManagerConfiguration {
-         pkgs = nixpkgs.legacyPackages.x86_64-linux;
-         extraSpecialArgs = {inherit inputs me;};
-         modules = [
-           ./modules/home/portable.nix
-           ./hosts/darwin/home.nix
-           {
-             modules.portable.enable = true;
-             home.username = me.username;
-             home.homeDirectory = me.homePrefix;
-           }
-         ];
-      };
+      in
+        home-manager.lib.homeManagerConfiguration {
+          pkgs = nixpkgs.legacyPackages.x86_64-linux;
+          extraSpecialArgs = {inherit inputs me;};
+          modules = [
+            ./modules/home/portable.nix
+            ./hosts/darwin/home.nix
+            {
+              modules.portable.enable = true;
+              home.username = me.username;
+              home.homeDirectory = me.homePrefix;
+            }
+          ];
+        };
     };
-
   };
 }
