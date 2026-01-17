@@ -16,7 +16,7 @@
       "1password"
       "discord"
       "arc"
-      "docker-app"
+      "docker"
       "notion"
       "spotify"
       "raycast"
