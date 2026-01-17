@@ -155,13 +155,34 @@ in {
       permission = {
         "read" = {
           "*" = "allow";
+          ".direnv/*" = "deny";
           "*.env" = "deny";
           "*.env.*" = "deny";
           "*.envrc" = "deny";
           "secrets/*" = "deny";
         };
+        webfetch = "ask";
+        bash = {
+          "*" = "ask";
+          "ls*" = "allow";
+          "git status*" = "allow";
+          "git diff*" = "allow";
+          "git log*" = "allow";
+        };
+      };
+
+      formatter = {
+        alejandra = {
+          command = [
+            "alejandra"
+            "$FILE"
+          ];
+          extensions = [".nix"];
+        };
       };
     };
+
+    rules = "";
 
     # Custom agents for specialized tasks
     agents = {
