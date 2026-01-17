@@ -28,6 +28,16 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    agent-skills-nix = {
+      url = "github:kyure-a/agent-skills-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    vercel-agent-skills = {
+      url = "github:vercel-labs/agent-skills";
+      flake = false;
+    };
   };
 
   outputs = inputs @ {
@@ -38,6 +48,8 @@
     nixos-wsl,
     nixpkgs,
     home-manager,
+    agent-skills-nix,
+    vercel-agent-skills,
   }: {
     # Build darwin flake using:
     darwinConfigurations = let

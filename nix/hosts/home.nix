@@ -23,6 +23,7 @@
     ../modules/home/tmux.nix
     ../modules/home/tmux-sessionizer.nix
     ../modules/home/opencode.nix
+    ../modules/home/agent-skills.nix
   ];
 
   home.file = {
