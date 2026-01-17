@@ -3,8 +3,7 @@
   pkgs,
   me,
   ...
-}:
-{
+}: {
   nix.enable = true;
 
   system.primaryUser = me.username;
