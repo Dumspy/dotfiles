@@ -28,6 +28,12 @@ in {
       subdir = "skills";
     };
 
+    # Expo agent skills repositories
+    sources.expo-app-design = {
+      path = inputs.expo-agent-skills;
+      subdir = "plugins/expo-app-design/skills";
+    };
+
     # Enable skills from various sources
     skills.enable = [
       # Local skills (add your own here)
@@ -36,6 +42,14 @@ in {
       # Vercel skills
       "react-best-practices"
       "web-design-guidelines"
+
+      # Expo skills - app design
+      "api-routes"
+      "building-ui"
+      "data-fetching"
+      "dev-client"
+      "tailwind-setup"
+      "use-dom"
     ];
 
     # Deploy skills to OpenCode's native location

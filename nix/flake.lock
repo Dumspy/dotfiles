@@ -21,6 +21,22 @@
         "type": "github"
       }
     },
+    "expo-agent-skills": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1768504499,
+        "narHash": "sha256-Tub3StcMmEqM9E1d9cpyJIMchv38OOn79Gtn5AbOc1w=",
+        "owner": "expo",
+        "repo": "skills",
+        "rev": "960156c49c0973a4d796592f58dc4151907f204f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "expo",
+        "repo": "skills",
+        "type": "github"
+      }
+    },
     "flake-compat": {
       "flake": false,
       "locked": {
@@ -198,6 +214,7 @@
     "root": {
       "inputs": {
         "agent-skills-nix": "agent-skills-nix",
+        "expo-agent-skills": "expo-agent-skills",
         "home-manager": "home-manager_2",
         "nix-darwin": "nix-darwin",
         "nixos-wsl": "nixos-wsl",

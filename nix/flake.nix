@@ -38,6 +38,11 @@
       url = "github:vercel-labs/agent-skills";
       flake = false;
     };
+
+    expo-agent-skills = {
+      url = "github:expo/skills";
+      flake = false;
+    };
   };
 
   outputs = inputs @ {
@@ -50,6 +55,7 @@
     home-manager,
     agent-skills-nix,
     vercel-agent-skills,
+    expo-agent-skills,
   }: {
     # Build darwin flake using:
     darwinConfigurations = let
