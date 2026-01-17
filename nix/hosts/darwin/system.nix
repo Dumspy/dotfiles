@@ -3,7 +3,8 @@
   pkgs,
   me,
   ...
-}: {
+}:
+{
   nix.enable = true;
 
   system.primaryUser = me.username;
@@ -15,7 +16,7 @@
       "1password"
       "discord"
       "arc"
-      "docker"
+      "docker-app"
       "notion"
       "spotify"
       "raycast"
@@ -24,16 +25,14 @@
       "visual-studio-code@insiders"
       "bruno"
       "dbeaver-community"
-      "tailscale"
+      "tailscale-app"
+      "steipete/tap/codexbar"
     ];
     onActivation = {
       autoUpdate = true;
       cleanup = "uninstall";
       upgrade = true;
     };
-    brews = [
-      "pyenv"
-    ];
   };
 
   #Users
@@ -83,4 +82,8 @@
 
   # The platform the configuration will be used on.
   nixpkgs.hostPlatform = "aarch64-darwin";
+
+  environment.variables = {
+    NIX_HOST = "darwin";
+  };
 }

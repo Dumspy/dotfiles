@@ -20,11 +20,7 @@ fi
 
 if [[ -n "$selected" ]]; then
   command=${systems[$selected]}
-  if [[ "$selected" == "darwin" ]]; then
-    eval "$command"
-  else
-    eval "sudo $command"
-  fi
+  eval "sudo $command"
 else
   echo "No system selected."
 fi
