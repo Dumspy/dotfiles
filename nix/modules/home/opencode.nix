@@ -5,7 +5,34 @@
   ...
 }: let
   opencode = inputs.opencode;
+
+  # List of skill repositories to install - add more repos here as needed
+  skillRepos = [
+    "vercel-labs/agent-skills"
+    # Add additional repositories here:
+    # "your-org/custom-skills"
+    # "another-org/frontend-patterns"
+  ];
+
+  # Script to silently install opencode skills
+  # Note: This trusts the listed skill repositories.
+  # If any repository is compromised, malicious code could execute.
+  # Only add repositories you trust completely.
+  installScript = pkgs.writeShellScript "install-opencode-skills" ''
+    for repo in ${pkgs.lib.escapeShellArgs skillRepos}; do
+      if ! ${pkgs.bun}/bin/bunx add-skill "$repo" -a opencode --global -y >/dev/null 2>&1; then
+        echo "[opencode-skills] Warning: Failed to install skill from $repo" >&2
+      fi
+    done
+  '';
 in {
+  # Ensure bun is available for the activation script
+  home.packages = [pkgs.bun];
+
+  # Install opencode skills using tmpfiles (runs on rebuild)
+  systemd.user.tmpfiles.rules = [
+    "C ${config.home.homeDirectory}/.config/opencode/skill 0755 - - - ${installScript}"
+  ];
   programs.opencode = {
     enable = true;
     package = opencode.packages.${pkgs.stdenv.hostPlatform.system}.default;
