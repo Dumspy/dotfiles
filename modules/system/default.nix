@@ -1,16 +1,29 @@
 {
   config,
   lib,
-  pkgs,
+  isDarwin ? false,
   ...
 }: {
-  imports = [
-    ./onepassword.nix
-    ./1password-agent.nix
-    ./tailscale.nix
-    ./k3s.nix
-    ./traefik.nix
-    ./monitoring
-    ./openssh.nix
-  ];
+  imports =
+    [
+      ./onepassword.nix
+      ./1password-agent.nix
+      ./tailscale.nix
+      ./openssh.nix
+    ]
+    ++ (
+      if !isDarwin
+      then [./k3s.nix]
+      else []
+    )
+    ++ (
+      if !isDarwin
+      then [./traefik.nix]
+      else []
+    )
+    ++ (
+      if !isDarwin
+      then [./monitoring]
+      else []
+    );
 }
