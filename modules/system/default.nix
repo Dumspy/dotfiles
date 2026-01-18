@@ -7,10 +7,14 @@
   imports =
     [
       ./onepassword.nix
-      ./1password-agent.nix
       ./tailscale.nix
       ./openssh.nix
     ]
+    ++ (
+      if !isDarwin
+      then [./1password-agent.nix]
+      else []
+    )
     ++ (
       if !isDarwin
       then [./k3s.nix]
