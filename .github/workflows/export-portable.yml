@@ -1,0 +1,29 @@
+name: Export Portable Dotfiles
+
+on:
+  workflow_dispatch:
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+
+      - name: Build and export portable dotfiles
+        run: |
+          mkdir -p stow
+          GEN_PATH=$(nix build .#homeConfigurations.portable.activationPackage --no-link --print-out-paths)
+          cp -rL "$GEN_PATH/home-files/." stow/
+
+      - name: Sanitize Nix store references
+        run: ./scripts/sanitize-dotfiles.sh stow stow
+
+      - name: Upload portable dotfiles
+        uses: actions/upload-artifact@v4
+        with:
+          name: portable-dotfiles
+          path: stow/
+          retention-days: 30
