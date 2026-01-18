@@ -1,15 +1,66 @@
 {
-  description = "a devshell for editing my NixOS configs";
+  description = "Flake for managing my NixOS, nix-darwin, and WSL systems.";
+
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+
     flake-utils.url = "github:numtide/flake-utils";
+
+    opnix = {
+      url = "github:brizzbuzz/opnix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    opencode = {
+      url = "github:anomalyco/opencode";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    nix-darwin = {
+      url = "github:LnL7/nix-darwin";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    nixos-wsl = {
+      url = "github:nix-community/NixOS-WSL/main";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    agent-skills-nix = {
+      url = "github:kyure-a/agent-skills-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    vercel-agent-skills = {
+      url = "github:vercel-labs/agent-skills";
+      flake = false;
+    };
+
+    expo-agent-skills = {
+      url = "github:expo/skills";
+      flake = false;
+    };
   };
-  outputs = {
+
+  outputs = inputs @ {
     self,
+    opnix,
+    opencode,
+    nix-darwin,
+    nixos-wsl,
     nixpkgs,
     flake-utils,
+    home-manager,
+    agent-skills-nix,
+    vercel-agent-skills,
+    expo-agent-skills,
   }:
-    flake-utils.lib.eachDefaultSystem (
+    (flake-utils.lib.eachDefaultSystem (
       system: let
         pkgs = import nixpkgs {inherit system;};
       in {
@@ -20,5 +71,107 @@
           ];
         };
       }
-    );
+    ))
+    // {
+      # Build darwin flake using:
+      darwinConfigurations = let
+        me = {
+          username = "felix.berger";
+          homePrefix = "/Users/felix.berger";
+          publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHuBvk3U7Pdlf5vUV6eH1VvUDigRHDRMp+d+pdo7jTky main-key";
+        };
+      in let
+        specialArgs = {inherit me inputs;};
+      in {
+        darwin = nix-darwin.lib.darwinSystem {
+          specialArgs = specialArgs;
+          modules = [
+            {nixpkgs.hostPlatform = "aarch64-darwin";}
+
+            opnix.darwinModules.default
+            home-manager.darwinModules.home-manager
+            ./modules/system
+            ./hosts/system.nix
+            ./hosts/darwin/system.nix
+            {
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                extraSpecialArgs = specialArgs;
+                users.${me.username} = {
+                  imports = [
+                    ./modules/home
+                    ./hosts/home.nix
+                    ./hosts/darwin/home.nix
+                  ];
+                };
+              };
+            }
+          ];
+        };
+      };
+
+      # Build nixosConfigurations using:
+      nixosConfigurations = let
+        me = {
+          username = "nixos";
+          homePrefix = "/home/nixos";
+          publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHuBvk3U7Pdlf5vUV6eH1VvUDigRHDRMp+d+pdo7jTky main-key";
+        };
+      in let
+        specialArgs = {inherit me inputs;};
+      in {
+        wsl-devbox = nixpkgs.lib.nixosSystem {
+          specialArgs = specialArgs;
+          modules = [
+            {nixpkgs.hostPlatform = "x86_64-linux";}
+
+            opnix.nixosModules.default
+            nixos-wsl.nixosModules.default
+            home-manager.nixosModules.home-manager
+            ./modules/system
+            ./hosts/system.nix
+            ./hosts/wsl-devbox/system.nix
+            {
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                extraSpecialArgs = specialArgs;
+                users.${me.username} = {
+                  imports = [
+                    ./modules/home
+                    ./hosts/home.nix
+                    ./hosts/wsl-devbox/home.nix
+                  ];
+                };
+              };
+            }
+          ];
+        };
+
+        k3s-node = nixpkgs.lib.nixosSystem {
+          specialArgs = specialArgs;
+          modules = [
+            {nixpkgs.hostPlatform = "x86_64-linux";}
+
+            opnix.nixosModules.default
+            ./modules/system
+            ./hosts/system.nix
+            ./hosts/k3s-node/system.nix
+          ];
+        };
+
+        master-node = nixpkgs.lib.nixosSystem {
+          specialArgs = specialArgs;
+          modules = [
+            {nixpkgs.hostPlatform = "x86_64-linux";}
+
+            opnix.nixosModules.default
+            ./modules/system
+            ./hosts/system.nix
+            ./hosts/master-node/system.nix
+          ];
+        };
+      };
+    };
 }
