@@ -18,9 +18,5 @@
     agent-skills.enable = true;
   };
 
-  home.file = {
-    ".gitignore_global".source = ../../git/.gitignore_global;
-  };
-
   programs.home-manager.enable = true;
 }

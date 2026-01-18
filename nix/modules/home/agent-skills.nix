@@ -4,14 +4,12 @@
   pkgs,
   inputs,
   ...
-}:
-let
+}: let
   cfg = config.myModules.home.agent-skills;
   agent-skills-lib = inputs.agent-skills-nix.lib.agent-skills {
     inherit inputs lib;
   };
-in
-{
+in {
   imports = [
     inputs.agent-skills-nix.homeManagerModules.default
   ];

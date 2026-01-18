@@ -23,7 +23,7 @@ in {
 
     scrapeTargets = lib.mkOption {
       type = lib.types.listOf lib.types.str;
-      default = [];
+      default = ["master-node:9100" "k3s-node:9100"];
       description = "List of scrape targets (host:port format)";
     };
   };
