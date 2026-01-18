@@ -2,9 +2,10 @@
   config,
   lib,
   pkgs,
+  isDarwin,
   ...
 }: {
-  imports = lib.optionals (!pkgs.stdenv.isDarwin) [
+  imports = lib.optionals (!isDarwin) [
     ./exporters.nix
     ./grafana.nix
     ./prometheus.nix
