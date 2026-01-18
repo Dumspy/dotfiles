@@ -2,8 +2,7 @@
   config,
   lib,
   ...
-}:
-let
+}: let
   publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHuBvk3U7Pdlf5vUV6eH1VvUDigRHDRMp+d+pdo7jTky main-key";
 
   # Shared config for all non-darwin systems
@@ -29,21 +28,23 @@ let
   hostName = config.networking.hostName or "default";
 
   # Merge base with host-specific overrides
-  mergedHostConfig = lib.recursiveUpdate linuxDefault (hostConfigs.${hostName} or { });
-  hostConfig = if hostName == "darwin" then hostConfigs.darwin else mergedHostConfig;
+  mergedHostConfig = lib.recursiveUpdate linuxDefault (hostConfigs.${hostName} or {});
+  hostConfig =
+    if hostName == "darwin"
+    then hostConfigs.darwin
+    else mergedHostConfig;
 
   globalConfig = {
     dotfiles = "${hostConfig.homePrefix}/dotfiles";
     publicKey = publicKey;
-    sshKeys = [ publicKey ];
+    sshKeys = [publicKey];
   };
-in
-{
+in {
   config.var = lib.recursiveUpdate globalConfig hostConfig;
 
   options.var = lib.mkOption {
     type = lib.types.attrs;
-    default = { };
+    default = {};
     description = "Global configuration variables available to all modules";
   };
 }
