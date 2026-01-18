@@ -84,11 +84,7 @@
         darwin = mkDarwin {
           name = "darwin";
           specialArgs = {
-            me = {
-              username = "felix.berger";
-              homePrefix = "/Users/felix.berger";
-              publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHuBvk3U7Pdlf5vUV6eH1VvUDigRHDRMp+d+pdo7jTky main-key";
-            };
+            username = "felix.berger";
             inherit inputs;
           };
           extraModules = [
@@ -103,11 +99,7 @@
           name = "wsl-devbox";
           system = "x86_64-linux";
           specialArgs = {
-            me = {
-              username = "nixos";
-              homePrefix = "/home/nixos";
-              publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHuBvk3U7Pdlf5vUV6eH1VvUDigRHDRMp+d+pdo7jTky main-key";
-            };
+            username = "nixos";
             inherit inputs;
           };
           withHomeManager = true;
@@ -121,11 +113,7 @@
           name = "k3s-node";
           system = "x86_64-linux";
           specialArgs = {
-            me = {
-              username = "nixos";
-              homePrefix = "/home/nixos";
-              publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHuBvk3U7Pdlf5vUV6eH1VvUDigRHDRMp+d+pdo7jTky main-key";
-            };
+            username = "nixos";
             inherit inputs;
           };
           withHomeManager = false;
@@ -138,11 +126,7 @@
           name = "master-node";
           system = "x86_64-linux";
           specialArgs = {
-            me = {
-              username = "nixos";
-              homePrefix = "/home/nixos";
-              publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHuBvk3U7Pdlf5vUV6eH1VvUDigRHDRMp+d+pdo7jTky main-key";
-            };
+            username = "nixos";
             inherit inputs;
           };
           withHomeManager = false;

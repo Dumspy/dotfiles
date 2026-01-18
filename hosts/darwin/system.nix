@@ -1,12 +1,11 @@
 {
   config,
   pkgs,
-  me,
   ...
 }: {
   nix.enable = true;
 
-  system.primaryUser = me.username;
+  system.primaryUser = config.var.username;
 
   #homebrew
   homebrew = {
@@ -37,9 +36,9 @@
 
   #Users
   users.users = {
-    "${me.username}" = {
-      name = "${me.username}";
-      home = "${me.homePrefix}";
+    "${config.var.username}" = {
+      name = "${config.var.username}";
+      home = "${config.var.homePrefix}";
     };
   };
 

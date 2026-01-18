@@ -21,7 +21,7 @@
     };
     openssh = {
       enable = true;
-      authorizedKeys = [me.publicKey];
+      authorizedKeys = [config.var.publicKey];
     };
   };
 

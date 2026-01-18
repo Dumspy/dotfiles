@@ -16,6 +16,7 @@
       modules =
         [
           {nixpkgs.hostPlatform = "aarch64-darwin";}
+          (flakeRoot + /hosts/config.nix)
           (flakeRoot + /modules/system)
           (flakeRoot + /hosts/system.nix)
           (flakeRoot + /hosts/${name}/system.nix)
@@ -25,7 +26,7 @@
               useGlobalPkgs = true;
               useUserPackages = true;
               extraSpecialArgs = specialArgs;
-              users.${specialArgs.me.username} = {
+              users.${specialArgs.username} = {
                 imports = [
                   (flakeRoot + /modules/home)
                   (flakeRoot + /hosts/home.nix)
@@ -50,6 +51,7 @@
       modules =
         [
           {nixpkgs.hostPlatform = system;}
+          (flakeRoot + /hosts/config.nix)
           (flakeRoot + /modules/system)
           (flakeRoot + /hosts/system.nix)
           (flakeRoot + /hosts/${name}/system.nix)
@@ -63,7 +65,7 @@
                 useGlobalPkgs = true;
                 useUserPackages = true;
                 extraSpecialArgs = specialArgs;
-                users.${specialArgs.me.username} = {
+                users.${specialArgs.username} = {
                   imports = [
                     (flakeRoot + /modules/home)
                     (flakeRoot + /hosts/home.nix)
