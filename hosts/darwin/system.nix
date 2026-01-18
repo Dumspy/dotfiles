@@ -2,7 +2,8 @@
   config,
   pkgs,
   ...
-}: {
+}:
+{
   nix.enable = true;
 
   system.primaryUser = config.var.username;
@@ -58,7 +59,6 @@
     dock.tilesize = 48;
     dock.magnification = false;
     dock.persistent-apps = [
-      "/System/Applications/Launchpad.app"
       "/Applications/Arc.app"
       "/Applications/Discord.app"
       "/Applications/Ghostty.app"
