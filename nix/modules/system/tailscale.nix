@@ -1,10 +1,17 @@
 {
   config,
-  pkgs,
   lib,
+  pkgs,
   ...
-}: {
-  environment.systemPackages = [pkgs.tailscale];
+}: let
+  cfg = config.myModules.system.tailscale;
+in {
+  options.myModules.system.tailscale = {
+    enable = lib.mkEnableOption "Tailscale VPN";
+  };
 
-  services.tailscale.enable = true;
+  config = lib.mkIf cfg.enable {
+    environment.systemPackages = [pkgs.tailscale];
+    services.tailscale.enable = true;
+  };
 }

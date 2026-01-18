@@ -5,9 +5,7 @@
   inputs,
   ...
 }: {
-  imports = [
-    ../modules/system/onepassword.nix
-  ];
+  myModules.system.onepassword.enable = true;
 
   nixpkgs.config.allowUnfree = true;
 

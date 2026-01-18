@@ -8,10 +8,13 @@
 
   imports = [
     ./hardware-configuration.nix
-    ../../modules/system/k3s.nix
-    ../../modules/system/tailscale.nix
-    ../../modules/system/monitoring/exporters.nix
   ];
+
+  myModules.system = {
+    k3s.enable = true;
+    tailscale.enable = true;
+    monitoring.exporters.enable = true;
+  };
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;

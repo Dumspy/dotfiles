@@ -8,12 +8,17 @@
 
   imports = [
     ./hardware-configuration.nix
-    ../../modules/system/traefik.nix
-    ../../modules/system/tailscale.nix
-    ../../modules/system/monitoring/prometheus.nix
-    ../../modules/system/monitoring/grafana.nix
-    ../../modules/system/monitoring/exporters.nix
   ];
+
+  myModules.system = {
+    traefik.enable = true;
+    tailscale.enable = true;
+    monitoring = {
+      prometheus.enable = true;
+      grafana.enable = true;
+      exporters.enable = true;
+    };
+  };
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;

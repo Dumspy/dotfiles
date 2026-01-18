@@ -13,9 +13,7 @@
   home.username = "${me.username}";
   home.homeDirectory = "${me.homePrefix}";
 
-  home.file = {
-    ".config/ghostty".source = ../../../ghostty;
-  };
+  myModules.home.ghostty.enable = true;
 
   programs.ssh = {
     enable = true;

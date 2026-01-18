@@ -16,6 +16,7 @@
       "discord"
       "arc"
       "docker"
+      "ghostty"
       "notion"
       "spotify"
       "raycast"

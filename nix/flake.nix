@@ -73,6 +73,7 @@
 
           opnix.darwinModules.default
           home-manager.darwinModules.home-manager
+          ./modules/system
           ./hosts/system.nix
           ./hosts/darwin/system.nix
           {
@@ -80,7 +81,13 @@
               useGlobalPkgs = true;
               useUserPackages = true;
               extraSpecialArgs = specialArgs;
-              users.${me.username} = import ./hosts/darwin/home.nix;
+              users.${me.username} = {
+                imports = [
+                  ./modules/home
+                  ./hosts/home.nix
+                  ./hosts/darwin/home.nix
+                ];
+              };
             };
           }
         ];
@@ -104,6 +111,7 @@
           opnix.nixosModules.default
           nixos-wsl.nixosModules.default
           home-manager.nixosModules.home-manager
+          ./modules/system
           ./hosts/system.nix
           ./hosts/wsl-devbox/system.nix
           {
@@ -111,7 +119,13 @@
               useGlobalPkgs = true;
               useUserPackages = true;
               extraSpecialArgs = specialArgs;
-              users.${me.username} = import ./hosts/wsl-devbox/home.nix;
+              users.${me.username} = {
+                imports = [
+                  ./modules/home
+                  ./hosts/home.nix
+                  ./hosts/wsl-devbox/home.nix
+                ];
+              };
             };
           }
         ];
@@ -123,6 +137,7 @@
           {nixpkgs.hostPlatform = "x86_64-linux";}
 
           opnix.nixosModules.default
+          ./modules/system
           ./hosts/system.nix
           ./hosts/k3s-node/system.nix
         ];
@@ -134,6 +149,7 @@
           {nixpkgs.hostPlatform = "x86_64-linux";}
 
           opnix.nixosModules.default
+          ./modules/system
           ./hosts/system.nix
           ./hosts/master-node/system.nix
         ];

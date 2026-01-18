@@ -1,62 +1,65 @@
 {
   config,
+  lib,
   pkgs,
   inputs,
-  lib,
   ...
-}: let
+}:
+let
+  cfg = config.myModules.home.agent-skills;
   agent-skills-lib = inputs.agent-skills-nix.lib.agent-skills {
     inherit inputs lib;
   };
-in {
+in
+{
   imports = [
     inputs.agent-skills-nix.homeManagerModules.default
   ];
 
-  programs.agent-skills = {
-    enable = true;
+  options.myModules.home.agent-skills = {
+    enable = lib.mkEnableOption "agent-skills for AI coding assistants";
+  };
 
-    # Local skills source - points to skills directory in dotfiles root
-    sources.local = {
-      path = ../../../skills;
-      subdir = ".";
-    };
+  config = lib.mkIf cfg.enable {
+    programs.agent-skills = {
+      enable = true;
 
-    # Vercel agent skills repository
-    sources.vercel = {
-      path = inputs.vercel-agent-skills;
-      subdir = "skills";
-    };
+      sources.local = {
+        path = ../../../skills;
+        subdir = ".";
+      };
 
-    # Expo agent skills repositories
-    sources.expo-app-design = {
-      path = inputs.expo-agent-skills;
-      subdir = "plugins/expo-app-design/skills";
-    };
+      sources.vercel = {
+        path = inputs.vercel-agent-skills;
+        subdir = "skills";
+      };
 
-    # Enable skills from various sources
-    skills.enable = [
-      # Local skills (add your own here)
-      "example-skill"
+      sources.expo-app-design = {
+        path = inputs.expo-agent-skills;
+        subdir = "plugins/expo-app-design/skills";
+      };
 
-      # Vercel skills
-      "react-best-practices"
-      "web-design-guidelines"
+      skills.enable = [
+        "example-skill"
 
-      # Expo skills - app design
-      "api-routes"
-      "building-ui"
-      "data-fetching"
-      "dev-client"
-      "tailwind-setup"
-      "use-dom"
-    ];
+        # Vercel
+        "react-best-practices"
+        "web-design-guidelines"
 
-    # Deploy skills to OpenCode's native location
-    targets = {
-      opencode = {
-        dest = ".config/opencode/skill";
-        structure = "symlink-tree";
+        # Expo
+        "api-routes"
+        "building-ui"
+        "data-fetching"
+        "dev-client"
+        "tailwind-setup"
+        "use-dom"
+      ];
+
+      targets = {
+        opencode = {
+          dest = ".config/opencode/skill";
+          structure = "symlink-tree";
+        };
       };
     };
   };

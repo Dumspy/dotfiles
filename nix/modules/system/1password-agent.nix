@@ -1,9 +1,16 @@
 {
   config,
+  lib,
   pkgs,
   ...
-}: {
-  config = {
+}: let
+  cfg = config.myModules.system.onepassword-agent;
+in {
+  options.myModules.system.onepassword-agent = {
+    enable = lib.mkEnableOption "1Password SSH agent relay for WSL";
+  };
+
+  config = lib.mkIf cfg.enable {
     systemd.services."1password-agent" = {
       description = "1Password SSH Agent Relay";
       wantedBy = ["multi-user.target"];

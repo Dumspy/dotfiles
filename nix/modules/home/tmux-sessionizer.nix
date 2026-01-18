@@ -1,10 +1,13 @@
 {
   config,
+  lib,
   pkgs,
   ...
 }: let
-  # Embed the full upstream tmux-sessionizer script
-  # Based on https://github.com/ThePrimeagen/tmux-sessionizer/tree/master
+  cfg = config.myModules.home.tmux-sessionizer;
+
+  searchPathsStr = lib.concatStringsSep " " cfg.searchPaths;
+
   tmux-sessionizer = pkgs.writeShellScriptBin "tmux-sessionizer" ''
     #!/usr/bin/env bash
 
@@ -15,7 +18,7 @@
     # Search paths for git repositories with depth control
     # Format: path:depth (depth is optional, defaults to TS_MAX_DEPTH)
     # Only directories containing .git will be shown
-    TS_SEARCH_PATHS=($HOME/Documents:3 $HOME/dotfiles)
+    TS_SEARCH_PATHS=(${searchPathsStr})
 
     # Default max depth for paths without explicit depth
     TS_MAX_DEPTH=2
@@ -326,6 +329,17 @@
     switch_to "$selected_name"
   '';
 in {
-  # Add script to PATH
-  home.packages = [tmux-sessionizer];
+  options.myModules.home.tmux-sessionizer = {
+    enable = lib.mkEnableOption "tmux-sessionizer for quick project switching";
+
+    searchPaths = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = ["$HOME/Documents:3" "$HOME/dotfiles"];
+      description = "List of paths to search for git repositories. Format: path:depth";
+    };
+  };
+
+  config = lib.mkIf cfg.enable {
+    home.packages = [tmux-sessionizer];
+  };
 }

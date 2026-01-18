@@ -13,9 +13,7 @@
   wsl.defaultUser = "nixos";
   wsl.wslConf.network.generateResolvConf = false;
 
-  imports = [
-    ../../modules/system/1password-agent.nix
-  ];
+  myModules.system.onepassword-agent.enable = true;
 
   # Enable Docker
   virtualisation.docker.enable = true;
