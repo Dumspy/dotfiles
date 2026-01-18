@@ -2,8 +2,7 @@
   config,
   pkgs,
   ...
-}:
-{
+}: {
   nix.enable = true;
 
   system.primaryUser = config.var.username;
