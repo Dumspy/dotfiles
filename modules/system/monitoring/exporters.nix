@@ -24,6 +24,13 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
+    myModules.system.monitoring.nixos-exporter.enable = true;
+
+    myModules.system.monitoring.dotfiles-git-exporter = {
+      enable = true;
+      dotfilesPath = "/home/nixos/dotfiles";
+    };
+
     services.prometheus.exporters.node = lib.mkIf cfg.nodeExporter.enable {
       enable = true;
       enabledCollectors = [
