@@ -16,6 +16,7 @@ in {
 
   options.myModules.home.agent-skills = {
     enable = lib.mkEnableOption "agent-skills for AI coding assistants";
+    portable = lib.mkEnableOption "use copy-tree structure for portable dotfiles export";
   };
 
   config = lib.mkIf cfg.enable {
@@ -56,7 +57,7 @@ in {
       targets = {
         opencode = {
           dest = ".config/opencode/skill";
-          structure = "symlink-tree";
+          structure = if cfg.portable then "link" else "symlink-tree";
         };
       };
     };

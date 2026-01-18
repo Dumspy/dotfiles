@@ -9,6 +9,8 @@
     ./neovim.nix
     ./tmux.nix
     ./tmux-sessionizer.nix
+    ./opencode.nix
+    ./agent-skills.nix
     ./ssh.nix
   ];
 
@@ -22,6 +24,11 @@
     neovim.enable = true;
     tmux.enable = true;
     tmux-sessionizer.enable = true;
+    opencode.enable = true;
+    agent-skills = {
+      enable = true;
+      portable = true;
+    };
   };
 
   programs.home-manager.enable = true;
