@@ -4,11 +4,12 @@
   ...
 }:
 let
+  publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHuBvk3U7Pdlf5vUV6eH1VvUDigRHDRMp+d+pdo7jTky main-key";
+
   # Shared config for all non-darwin systems
   linuxDefault = {
     username = "nixos";
     homePrefix = "/home/nixos";
-    publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHuBvk3U7Pdlf5vUV6eH1VvUDigRHDRMp+d+pdo7jTky main-key";
     editor = "nvim";
   };
 
@@ -17,7 +18,6 @@ let
     darwin = {
       username = "felix.berger";
       homePrefix = "/Users/felix.berger";
-      publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHuBvk3U7Pdlf5vUV6eH1VvUDigRHDRMp+d+pdo7jTky main-key";
       editor = "zed";
     };
     wsl-devbox = {
@@ -32,10 +32,10 @@ let
   mergedHostConfig = lib.recursiveUpdate linuxDefault (hostConfigs.${hostName} or { });
   hostConfig = if hostName == "darwin" then hostConfigs.darwin else mergedHostConfig;
 
-  # Global defaults that apply to all hosts
   globalConfig = {
     dotfiles = "${hostConfig.homePrefix}/dotfiles";
-    sshKeys = [ hostConfig.publicKey ];
+    publicKey = publicKey;
+    sshKeys = [ publicKey ];
   };
 in
 {
