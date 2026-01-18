@@ -21,9 +21,9 @@
 
   services.resolved = {
     enable = true;
-    dnssec = "false";
-    domains = ["~."];
-    dnsovertls = "false";
+    settings.Resolve.DNSSEC = "false";
+    settings.Resolve.Domains = ["~."];
+    settings.Resolve.DNSOverTLS = "false";
   };
 
   environment.systemPackages = [
