@@ -42,12 +42,11 @@ jobs:
       - name: Update flakes
         run: |
           nix flake update
-          nix flake update --flake ./nix
 
       - name: Check for changes
         id: check
         run: |
-          if git diff --quiet flake.lock nix/flake.lock; then
+          if git diff --quiet flake.lock; then
             echo "has_changes=false" >> $GITHUB_OUTPUT
           else
             echo "has_changes=true" >> $GITHUB_OUTPUT
@@ -57,7 +56,6 @@ jobs:
         if: steps.check.outputs.has_changes == 'true'
         run: |
           nix flake check
-          nix flake check ./nix
 
       - name: Create branch and commit
         if: steps.check.outputs.has_changes == 'true'
@@ -66,7 +64,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -b "$BRANCH"
-          git add flake.lock nix/flake.lock
+          git add flake.lock
           git commit -m "chore: bump flake inputs"
           git push -u origin "$BRANCH"
 

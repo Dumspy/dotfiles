@@ -1,22 +1,26 @@
-# Agent Guidelines for NixOS Dotfiles
+# AGENTS.md
 
-## Build/Lint/Test Commands
-- **Check flake**: `nix flake check ./nix`
-- **Format code**: `alejandra .` (ALWAYS use alejandra before committing)
-- **Format check**: `alejandra --check .`
-- **Rebuild system**: `./rebuild.sh` (auto-detects system or uses $NIX_HOST)
-- **Enter dev shell**: ASK USER PERMISSION before entering `nix develop` or `nix-shell`
+## Build & Commands
+- **ALWAYS Rebuild with**: `./rebuild.sh` (auto-detects system or prompts)
+- **Format**: `alejandra` (Nix formatter, available in devShell)
+- **Dev shell**: `nix flake show` or `nix develop`
+
+## Architecture
+- **Type**: Declarative dotfiles/NixOS configuration management using Nix flakes
+- **Targets**: macOS (nix-darwin), NixOS (WSL, k3s-node, master-node)
+- **Key inputs**: nixpkgs, home-manager, nix-darwin, nixos-wsl, opnix (1Password secrets), opencode, agent-skills-nix
+- **Structure**:
+  - `/modules/system` → system-level configs (nix-darwin/nixos)
+  - `/modules/home` → home-manager configs
+  - `/hosts` → per-host configs (darwin, wsl-devbox, k3s-node, master-node)
+  - `/skills` → custom agent skills
+- **Secrets**: Managed via opnix (1Password CLI integration)
+- **SSH**: WSL uses npiperelay for host SSH agent forwarding
 
 ## Code Style
-- **Formatter**: Alejandra (configured in flake.nix:16)
-- **Indentation**: 2 spaces (.editorconfig)
-- **Nix conventions**: Use `let...in` for variable scoping, `inherit` for passing args
-- **Module structure**: Each module takes `{config, pkgs, ...}` and returns attrset
-- **Imports**: Follow nixpkgs for specialArgs pattern (`inherit me inputs`)
-
-## Important Notes
-- Never rebuild the entire system on another machine; always use `./rebuild.sh` for rebuilding
-- System configs: wsl-devbox, darwin, k3s-node, master-node
-- Main flake is in `nix/` subdirectory, not root
-- Git hooks auto-installed via devShell.shellHook
-- Use `nix flake check` before committing to catch issues early
+- **Formatting**: 2-space indent (see .editorconfig)
+- **Language**: Nix
+- **Pattern**: Declarative modules with specialArgs for per-host customization
+- **Config structure**: `mkDarwin` and `mkNixos` factory functions for system setup
+- **User config**: Per-system `specialArgs` includes username, homePrefix, SSH publicKey
+- **Imports**: Modular structure with explicit `imports` in module definitions

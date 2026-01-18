@@ -2,10 +2,10 @@
 
 declare -A systems
 systems=(
-  ["wsl-devbox"]="nixos-rebuild switch --flake $HOME/dotfiles/nix#wsl-devbox"
-  ["darwin"]="darwin-rebuild switch --flake $HOME/dotfiles/nix#darwin"
-  ["k3s-node"]="nixos-rebuild switch --flake $HOME/dotfiles/nix#k3s-node"
-  ["master-node"]="nixos-rebuild switch --flake $HOME/dotfiles/nix#master-node"
+  ["wsl-devbox"]="nixos-rebuild switch --flake $HOME/dotfiles#wsl-devbox"
+  ["darwin"]="darwin-rebuild switch --flake $HOME/dotfiles#darwin"
+  ["k3s-node"]="nixos-rebuild switch --flake $HOME/dotfiles#k3s-node"
+  ["master-node"]="nixos-rebuild switch --flake $HOME/dotfiles#master-node"
 )
 
 

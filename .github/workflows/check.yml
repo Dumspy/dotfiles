@@ -20,7 +20,7 @@ jobs:
           nix_path: nixpkgs=channel:nixos-unstable
           
       - name: Verify flake configuration
-        run: nix develop -c nix flake check ./nix
+        run: nix develop -c nix flake check .
 
       - name: Lint Nix code with Alejandra
         run: nix develop -c alejandra --check .
