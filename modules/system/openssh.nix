@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  me,
   ...
 }:
 with lib; {
@@ -16,6 +15,7 @@ with lib; {
 
   config = mkIf config.myModules.system.openssh.enable {
     services.openssh.enable = true;
-    users.users."${config.var.username}".openssh.authorizedKeys.keys = config.myModules.system.openssh.authorizedKeys;
+    users.users."${config.var.username}".openssh.authorizedKeys.keys =
+      config.myModules.system.openssh.authorizedKeys;
   };
 }

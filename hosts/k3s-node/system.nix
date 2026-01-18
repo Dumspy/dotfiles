@@ -2,7 +2,6 @@
   config,
   pkgs,
   lib,
-  me,
   ...
 }: {
   system.stateVersion = "24.11";
@@ -65,7 +64,11 @@
   users.users.nixos = {
     isNormalUser = true;
     description = "nixos";
-    extraGroups = ["networkmanager" "wheel" "certs"];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "certs"
+    ];
     packages = with pkgs; [];
   };
 
