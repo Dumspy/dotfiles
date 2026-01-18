@@ -1,7 +1,7 @@
 {
   config,
   lib,
-  isDarwin ? false,
+  pkgs,
   ...
 }: {
   imports =
@@ -10,24 +10,10 @@
       ./tailscale.nix
       ./openssh.nix
     ]
-    ++ (
-      if !isDarwin
-      then [./1password-agent.nix]
-      else []
-    )
-    ++ (
-      if !isDarwin
-      then [./k3s.nix]
-      else []
-    )
-    ++ (
-      if !isDarwin
-      then [./traefik.nix]
-      else []
-    )
-    ++ (
-      if !isDarwin
-      then [./monitoring]
-      else []
-    );
+    ++ lib.optionals (!pkgs.stdenv.isDarwin) [
+      ./1password-agent.nix
+      ./k3s.nix
+      ./traefik.nix
+      ./monitoring
+    ];
 }

@@ -1,23 +1,12 @@
 {
   config,
   lib,
-  isDarwin ? false,
+  pkgs,
   ...
 }: {
-  imports =
-    (
-      if !isDarwin
-      then [./exporters.nix]
-      else []
-    )
-    ++ (
-      if !isDarwin
-      then [./grafana.nix]
-      else []
-    )
-    ++ (
-      if !isDarwin
-      then [./prometheus.nix]
-      else []
-    );
+  imports = lib.optionals (!pkgs.stdenv.isDarwin) [
+    ./exporters.nix
+    ./grafana.nix
+    ./prometheus.nix
+  ];
 }

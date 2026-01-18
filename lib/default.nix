@@ -12,7 +12,7 @@
     extraModules ? [],
   }:
     nix-darwin.lib.darwinSystem {
-      specialArgs = specialArgs // {isDarwin = true;};
+      specialArgs = specialArgs;
       modules =
         [
           {nixpkgs.hostPlatform = "aarch64-darwin";}
@@ -47,7 +47,7 @@
     withHomeManager ? true,
   }:
     nixpkgs.lib.nixosSystem {
-      specialArgs = specialArgs // {isDarwin = false;};
+      specialArgs = specialArgs;
       modules =
         [
           {nixpkgs.hostPlatform = system;}
