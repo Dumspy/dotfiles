@@ -62,6 +62,7 @@
       me = {
         username = "felix.berger";
         homePrefix = "/Users/felix.berger";
+        publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHuBvk3U7Pdlf5vUV6eH1VvUDigRHDRMp+d+pdo7jTky main-key";
       };
     in let
       specialArgs = {inherit me inputs;};
@@ -99,6 +100,7 @@
       me = {
         username = "nixos";
         homePrefix = "/home/nixos";
+        publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHuBvk3U7Pdlf5vUV6eH1VvUDigRHDRMp+d+pdo7jTky main-key";
       };
     in let
       specialArgs = {inherit me inputs;};

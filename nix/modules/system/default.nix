@@ -11,5 +11,6 @@
     ./k3s.nix
     ./traefik.nix
     ./monitoring
+    ./openssh.nix
   ];
 }

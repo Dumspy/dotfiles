@@ -11,5 +11,6 @@
     ./tmux-sessionizer.nix
     ./opencode.nix
     ./agent-skills.nix
+    ./ssh.nix
   ];
 }

@@ -2,6 +2,7 @@
   config,
   pkgs,
   lib,
+  me,
   ...
 }: {
   system.stateVersion = "24.11";
@@ -17,6 +18,10 @@
       prometheus.enable = true;
       grafana.enable = true;
       exporters.enable = true;
+    };
+    openssh = {
+      enable = true;
+      authorizedKeys = [me.publicKey];
     };
   };
 
@@ -61,11 +66,6 @@
     extraGroups = ["networkmanager" "wheel"];
     packages = with pkgs; [];
   };
-
-  services.openssh.enable = true;
-  users.users."nixos".openssh.authorizedKeys.keys = [
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTz½E5AAAAIHuBvk3U7Pdlf5vUV6eH1VvUDigRHDRMp+d+pdo7jTky main-key"
-  ];
 
   environment.systemPackages = [
     pkgs.gcc
