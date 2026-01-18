@@ -3,6 +3,7 @@
   nix-darwin,
   nixos-wsl,
   home-manager,
+  flakeRoot ? ./..,
   ...
 }: {
   mkDarwin = {
@@ -15,9 +16,9 @@
       modules =
         [
           {nixpkgs.hostPlatform = "aarch64-darwin";}
-          ./modules/system
-          ./hosts/system.nix
-          ./hosts/${name}/system.nix
+          (flakeRoot + /modules/system)
+          (flakeRoot + /hosts/system.nix)
+          (flakeRoot + /hosts/${name}/system.nix)
           home-manager.darwinModules.home-manager
           {
             home-manager = {
@@ -26,9 +27,9 @@
               extraSpecialArgs = specialArgs;
               users.${specialArgs.me.username} = {
                 imports = [
-                  ./modules/home
-                  ./hosts/home.nix
-                  ./hosts/${name}/home.nix
+                  (flakeRoot + /modules/home)
+                  (flakeRoot + /hosts/home.nix)
+                  (flakeRoot + /hosts/${name}/home.nix)
                 ];
               };
             };
@@ -49,9 +50,9 @@
       modules =
         [
           {nixpkgs.hostPlatform = system;}
-          ./modules/system
-          ./hosts/system.nix
-          ./hosts/${name}/system.nix
+          (flakeRoot + /modules/system)
+          (flakeRoot + /hosts/system.nix)
+          (flakeRoot + /hosts/${name}/system.nix)
         ]
         ++ (
           if withHomeManager
@@ -64,9 +65,9 @@
                 extraSpecialArgs = specialArgs;
                 users.${specialArgs.me.username} = {
                   imports = [
-                    ./modules/home
-                    ./hosts/home.nix
-                    ./hosts/${name}/home.nix
+                    (flakeRoot + /modules/home)
+                    (flakeRoot + /hosts/home.nix)
+                    (flakeRoot + /hosts/${name}/home.nix)
                   ];
                 };
               };
