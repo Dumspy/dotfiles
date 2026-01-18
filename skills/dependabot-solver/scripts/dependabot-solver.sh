@@ -46,6 +46,9 @@ if [[ -z "$REPO" ]]; then
   exit 1
 fi
 
+OWNER="${REPO%/*}"
+REPO_NAME="${REPO##*/}"
+
 # Detect package manager
 detect_package_manager() {
   if [[ -f "package.json" ]]; then
@@ -71,25 +74,41 @@ PKG_MANAGER=$(detect_package_manager)
 
 echo "🔍 Fetching Dependabot alerts for $REPO..." >&2
 
-# Fetch open Dependabot alerts with full details
-ALERTS=$(gh api "repos/$REPO/dependabot/alerts" \
-  -f state=open \
-  --jq '.[] | {
-    number: .number,
-    package_name: .dependency.package.name,
-    ecosystem: .dependency.package.ecosystem,
-    severity: .security_advisory.severity,
-    summary: .security_advisory.summary,
-    description: .security_advisory.description,
-    vulnerabilities: [.security_fixes[] | {
-      vulnerable_version_range: .vulnerable_version_range,
-      patched_versions: .versions
-    }],
-    current_version: .dependency.manifest_path
-  }' 2>/dev/null || echo "[]")
+# Fetch via GraphQL - more reliable and feature-rich
+ALERTS_JSON=$(gh api graphql -f query='query($owner:String!, $name:String!) {
+  repository(owner: $owner, name: $name) {
+    vulnerabilityAlerts(first: 100, states: OPEN) {
+      nodes {
+        number
+        securityVulnerability {
+          package { name ecosystem }
+          severity
+          advisory { summary description }
+          vulnerableVersionRange
+          firstPatchedVersion { identifier }
+        }
+      }
+    }
+  }
+}' \
+  -f owner="$OWNER" \
+  -f name="$REPO_NAME" 2>/dev/null || echo '{"data":{"repository":{"vulnerabilityAlerts":{"nodes":[]}}}}')
 
-ALERT_COUNT=$(echo "$ALERTS" | jq 'length')
+# Parse alerts from GraphQL response
+ALERTS=$(echo "$ALERTS_JSON" | jq -c '.data.repository.vulnerabilityAlerts.nodes[] | {
+  number: .number,
+  package_name: .securityVulnerability.package.name,
+  ecosystem: .securityVulnerability.package.ecosystem,
+  severity: .securityVulnerability.severity,
+  vulnerable_version_range: .securityVulnerability.vulnerableVersionRange,
+  patched_version: .securityVulnerability.firstPatchedVersion.identifier
+}' 2>/dev/null || echo "")
+
+ALERT_COUNT=$(echo "$ALERTS" | jq -s 'length')
 echo "Found $ALERT_COUNT Dependabot alert(s)" >&2
+
+# Build JSON array of alerts
+ALERTS_ARRAY=$(echo "$ALERTS" | jq -s '.')
 
 # Output structured JSON with strategy
 OUTPUT=$(jq -n \
@@ -97,7 +116,7 @@ OUTPUT=$(jq -n \
   --arg strategy "$STRATEGY" \
   --arg base_branch "$BASE_BRANCH" \
   --arg pkg_manager "$PKG_MANAGER" \
-  --argjson alerts "$(echo "$ALERTS")" \
+  --argjson alerts "$ALERTS_ARRAY" \
   '{
     repository: $repo,
     strategy: $strategy,

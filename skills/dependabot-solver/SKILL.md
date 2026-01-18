@@ -21,7 +21,7 @@ Gathers Dependabot security alert data and structures it for LLM-driven resoluti
 
 1. **Run from repository root**
    ```bash
-   ./scripts/dependabot-solver.sh [STRATEGY] [BASE_BRANCH]
+    ~/.config/opencode/skill/dependabot-solver/scripts/dependabot-solver.sh [STRATEGY] [BASE_BRANCH]
    ```
 
 2. **Script returns JSON with**
@@ -39,14 +39,14 @@ Gathers Dependabot security alert data and structures it for LLM-driven resoluti
 
 ```bash
 # Get all alerts with default settings (consolidated, main branch)
-./scripts/dependabot-solver.sh
+~/.config/opencode/skill/dependabot-solver/scripts/dependabot-solver.sh
 
 # Get alerts for individual PR strategy
-./scripts/dependabot-solver.sh individual main
+~/.config/opencode/skill/dependabot-solver/scripts/dependabot-solver.sh individual main
 
 # Parse and use output
-ALERTS=$(./scripts/dependabot-solver.sh | jq '.alerts')
-PKG_MANAGER=$(./scripts/dependabot-solver.sh | jq -r '.package_manager')
+ALERTS=$(~/.config/opencode/skill/dependabot-solver/scripts/dependabot-solver.sh | jq '.alerts')
+PKG_MANAGER=$(~/.config/opencode/skill/dependabot-solver/scripts/dependabot-solver.sh | jq -r '.package_manager')
 ```
 
 ### Output Format
