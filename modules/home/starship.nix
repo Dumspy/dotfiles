@@ -165,19 +165,19 @@ in {
 
         # Language/tool symbols (nerd fonts)
         deno = {
-          format = " [deno](italic) [∫ $version](green bold)";
+          format = " [deno](italic #cad1d9) [∫ $version](#a6da95 bold)";
           version_format = "$\{raw\}";
         };
 
         lua = {
-          format = " [lua](italic) [$\{symbol\}$\{version\}]($style)";
+          format = " [lua](italic #cad1d9) [$\{symbol\}$\{version\}]($style)";
           version_format = "$\{raw\}";
           symbol = "⨀ ";
           style = "bold #eed49f";
         };
 
         nodejs = {
-          format = " [node](italic) [◫ ($version)](bold #a6da95)";
+          format = " [node](italic #cad1d9) [◫ ($version)](bold #a6da95)";
           version_format = "$\{raw\}";
           detect_files = ["package-lock.json" "yarn.lock"];
           detect_folders = ["node_modules"];
@@ -185,35 +185,35 @@ in {
         };
 
         python = {
-          format = " [py](italic) [$\{symbol\}$\{version\}]($style)";
+          format = " [py](italic #cad1d9) [$\{symbol\}$\{version\}]($style)";
           symbol = "[⌉](bold #91d7e3)⌊ ";
           version_format = "$\{raw\}";
           style = "bold #eed49f";
         };
 
         ruby = {
-          format = " [rb](italic) [$\{symbol\}$\{version\}]($style)";
+          format = " [rb](italic #cad1d9) [$\{symbol\}$\{version\}]($style)";
           symbol = "◆ ";
           version_format = "$\{raw\}";
           style = "bold #ed8796";
         };
 
         rust = {
-          format = " [rs](italic) [$symbol$version]($style)";
+          format = " [rs](italic #cad1d9) [$symbol$version]($style)";
           symbol = "⊃ ";
           version_format = "$\{raw\}";
           style = "bold #ed8796";
         };
 
         package = {
-          format = " [pkg](italic) [$symbol$version]($style)";
+          format = " [pkg](italic #cad1d9) [$symbol$version]($style)";
           version_format = "$\{raw\}";
           symbol = "◨ ";
           style = "#eed49f bold";
         };
 
         swift = {
-          format = " [sw](italic) [$\{symbol\}$\{version\}]($style)";
+          format = " [sw](italic #cad1d9) [$\{symbol\}$\{version\}]($style)";
           symbol = "◁ ";
           style = "bold #ed8796";
           version_format = "$\{raw\}";
@@ -222,7 +222,7 @@ in {
         # AWS (disabled by default for tmux clarity)
         aws = {
           disabled = true;
-          format = " [aws](italic) [$symbol $profile $region]($style)";
+          format = " [aws](italic #cad1d9) [$symbol $profile $region]($style)";
           style = "bold #8aadf4";
           symbol = "▲ ";
         };
@@ -230,7 +230,7 @@ in {
         # Other language modules
         buf = {
           symbol = "■ ";
-          format = " [buf](italic) [$symbol $version $buf_version]($style)";
+          format = " [buf](italic #cad1d9) [$symbol $version $buf_version]($style)";
         };
         c = {
           symbol = "ℂ ";
@@ -242,51 +242,51 @@ in {
         };
         conda = {
           symbol = "◯ ";
-          format = " conda [$symbol$environment]($style)";
+          format = " [conda](#cad1d9) [$symbol$environment]($style)";
         };
         pixi = {
           symbol = "■ ";
-          format = " pixi [$symbol$version ($environment )]($style)";
+          format = " [pixi](#cad1d9) [$symbol$version ($environment )]($style)";
         };
         dart = {
           symbol = "◁◅ ";
-          format = " dart [$symbol($version )]($style)";
+          format = " [dart](#cad1d9) [$symbol($version )]($style)";
         };
         docker_context = {
           symbol = "◧ ";
-          format = " docker [$symbol$context]($style)";
+          format = " [docker](#cad1d9) [$symbol$context]($style)";
         };
         elixir = {
           symbol = "△ ";
-          format = " exs [$symbol $version OTP $otp_version ]($style)";
+          format = " [exs](#cad1d9) [$symbol $version OTP $otp_version ]($style)";
         };
         elm = {
           symbol = "◩ ";
-          format = " elm [$symbol($version )]($style)";
+          format = " [elm](#cad1d9) [$symbol($version )]($style)";
         };
         golang = {
           symbol = "∩ ";
-          format = " go [$symbol($version )]($style)";
+          format = " [go](#cad1d9) [$symbol($version )]($style)";
         };
         haskell = {
           symbol = "❯λ ";
-          format = " hs [$symbol($version )]($style)";
+          format = " [hs](#cad1d9) [$symbol($version )]($style)";
         };
         java = {
           symbol = "∪ ";
-          format = " java [$\{symbol\}($\{version\} )]($style)";
+          format = " [java](#cad1d9) [$\{symbol\}($\{version\} )]($style)";
         };
         julia = {
           symbol = "◎ ";
-          format = " jl [$symbol($version )]($style)";
+          format = " [jl](#cad1d9) [$symbol($version )]($style)";
         };
         memory_usage = {
           symbol = "▪▫▪ ";
-          format = " mem [$\{ram\}( $\{swap\})]($style)";
+          format = " [mem](#cad1d9) [$\{ram\}( $\{swap\})]($style)";
         };
         nim = {
           symbol = "▴▲▴ ";
-          format = " nim [$symbol($version )]($style)";
+          format = " [nim](#cad1d9) [$symbol($version )]($style)";
         };
 
         nix_shell = {

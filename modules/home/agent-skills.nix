@@ -23,7 +23,7 @@ in {
       enable = true;
 
       sources.local = {
-        path = ../../skills;
+        path = ../../ai/skills;
         subdir = ".";
       };
 

@@ -3,35 +3,10 @@
 set -euo pipefail
 
 # Dependabot Solver Script
-# Fetches open Dependabot alerts and returns package info for LLM resolution
+# Fetches open Dependabot alerts and returns package info for consolidated PR resolution
 
-STRATEGY="${1:-consolidated}"
-BASE_BRANCH="${2:-main}"
-
-usage() {
-  cat <<EOF
-Usage: dependabot-solver.sh [STRATEGY] [BASE_BRANCH]
-
-Arguments:
-  STRATEGY       'consolidated' (single PR for all) or 'individual' (one per alert) [default: consolidated]
-  BASE_BRANCH    Target branch [default: main]
-
-Environment:
-  Must be run in an already-cloned repository with git remote 'origin'
-
-Examples:
-  dependabot-solver.sh
-  dependabot-solver.sh individual main
-
-Output:
-  JSON object with alerts and resolution info
-EOF
-  exit 1
-}
-
-if [[ "$STRATEGY" == "-h" || "$STRATEGY" == "--help" ]]; then
-  usage
-fi
+# Get current branch
+BASE_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
 # Check if we're in a git repo
 if ! git rev-parse --git-dir > /dev/null 2>&1; then
@@ -51,7 +26,7 @@ REPO_NAME="${REPO##*/}"
 
 # Detect package manager
 detect_package_manager() {
-  if [[ -f "package.json" ]]; then
+  if [[ -f "package-lock.json" ]]; then
     echo "npm"
   elif [[ -f "yarn.lock" ]]; then
     echo "yarn"
@@ -110,16 +85,14 @@ echo "Found $ALERT_COUNT Dependabot alert(s)" >&2
 # Build JSON array of alerts
 ALERTS_ARRAY=$(echo "$ALERTS" | jq -s '.')
 
-# Output structured JSON with strategy
+# Output structured JSON
 OUTPUT=$(jq -n \
   --arg repo "$REPO" \
-  --arg strategy "$STRATEGY" \
   --arg base_branch "$BASE_BRANCH" \
   --arg pkg_manager "$PKG_MANAGER" \
   --argjson alerts "$ALERTS_ARRAY" \
   '{
     repository: $repo,
-    strategy: $strategy,
     base_branch: $base_branch,
     package_manager: $pkg_manager,
     alert_count: ($alerts | length),

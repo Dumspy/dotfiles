@@ -4,10 +4,12 @@
   pkgs,
   inputs,
   ...
-}: let
+}:
+let
   cfg = config.myModules.home.opencode;
   opencode = inputs.opencode;
-in {
+in
+{
   options.myModules.home.opencode = {
     enable = lib.mkEnableOption "opencode AI coding assistant";
   };
@@ -21,7 +23,7 @@ in {
         theme = "catppuccin-macchiato";
         autoupdate = false;
 
-        plugin = ["opencode-antigravity-auth@latest"];
+        plugin = [ "opencode-antigravity-auth@latest" ];
 
         mcp = {
           grep_app = {
@@ -41,12 +43,20 @@ in {
                   output = 65535;
                 };
                 modalities = {
-                  input = ["text" "image" "pdf"];
-                  output = ["text"];
+                  input = [
+                    "text"
+                    "image"
+                    "pdf"
+                  ];
+                  output = [ "text" ];
                 };
                 variants = {
-                  low = {thinkingLevel = "low";};
-                  high = {thinkingLevel = "high";};
+                  low = {
+                    thinkingLevel = "low";
+                  };
+                  high = {
+                    thinkingLevel = "high";
+                  };
                 };
               };
               "antigravity-gemini-3-flash" = {
@@ -56,14 +66,26 @@ in {
                   output = 65536;
                 };
                 modalities = {
-                  input = ["text" "image" "pdf"];
-                  output = ["text"];
+                  input = [
+                    "text"
+                    "image"
+                    "pdf"
+                  ];
+                  output = [ "text" ];
                 };
                 variants = {
-                  minimal = {thinkingLevel = "minimal";};
-                  low = {thinkingLevel = "low";};
-                  medium = {thinkingLevel = "medium";};
-                  high = {thinkingLevel = "high";};
+                  minimal = {
+                    thinkingLevel = "minimal";
+                  };
+                  low = {
+                    thinkingLevel = "low";
+                  };
+                  medium = {
+                    thinkingLevel = "medium";
+                  };
+                  high = {
+                    thinkingLevel = "high";
+                  };
                 };
               };
               "antigravity-claude-sonnet-4-5" = {
@@ -73,8 +95,12 @@ in {
                   output = 64000;
                 };
                 modalities = {
-                  input = ["text" "image" "pdf"];
-                  output = ["text"];
+                  input = [
+                    "text"
+                    "image"
+                    "pdf"
+                  ];
+                  output = [ "text" ];
                 };
               };
               "antigravity-claude-sonnet-4-5-thinking" = {
@@ -84,12 +110,24 @@ in {
                   output = 64000;
                 };
                 modalities = {
-                  input = ["text" "image" "pdf"];
-                  output = ["text"];
+                  input = [
+                    "text"
+                    "image"
+                    "pdf"
+                  ];
+                  output = [ "text" ];
                 };
                 variants = {
-                  low = {thinkingConfig = {thinkingBudget = 8192;};};
-                  max = {thinkingConfig = {thinkingBudget = 32768;};};
+                  low = {
+                    thinkingConfig = {
+                      thinkingBudget = 8192;
+                    };
+                  };
+                  max = {
+                    thinkingConfig = {
+                      thinkingBudget = 32768;
+                    };
+                  };
                 };
               };
               "antigravity-claude-opus-4-5-thinking" = {
@@ -99,12 +137,24 @@ in {
                   output = 64000;
                 };
                 modalities = {
-                  input = ["text" "image" "pdf"];
-                  output = ["text"];
+                  input = [
+                    "text"
+                    "image"
+                    "pdf"
+                  ];
+                  output = [ "text" ];
                 };
                 variants = {
-                  low = {thinkingConfig = {thinkingBudget = 8192;};};
-                  max = {thinkingConfig = {thinkingBudget = 32768;};};
+                  low = {
+                    thinkingConfig = {
+                      thinkingBudget = 8192;
+                    };
+                  };
+                  max = {
+                    thinkingConfig = {
+                      thinkingBudget = 32768;
+                    };
+                  };
                 };
               };
               "gemini-2.5-flash" = {
@@ -114,8 +164,12 @@ in {
                   output = 65536;
                 };
                 modalities = {
-                  input = ["text" "image" "pdf"];
-                  output = ["text"];
+                  input = [
+                    "text"
+                    "image"
+                    "pdf"
+                  ];
+                  output = [ "text" ];
                 };
               };
               "gemini-2.5-pro" = {
@@ -125,8 +179,12 @@ in {
                   output = 65536;
                 };
                 modalities = {
-                  input = ["text" "image" "pdf"];
-                  output = ["text"];
+                  input = [
+                    "text"
+                    "image"
+                    "pdf"
+                  ];
+                  output = [ "text" ];
                 };
               };
               "gemini-3-flash-preview" = {
@@ -136,8 +194,12 @@ in {
                   output = 65536;
                 };
                 modalities = {
-                  input = ["text" "image" "pdf"];
-                  output = ["text"];
+                  input = [
+                    "text"
+                    "image"
+                    "pdf"
+                  ];
+                  output = [ "text" ];
                 };
               };
               "gemini-3-pro-preview" = {
@@ -147,8 +209,12 @@ in {
                   output = 65535;
                 };
                 modalities = {
-                  input = ["text" "image" "pdf"];
-                  output = ["text"];
+                  input = [
+                    "text"
+                    "image"
+                    "pdf"
+                  ];
+                  output = [ "text" ];
                 };
               };
             };
@@ -180,16 +246,18 @@ in {
               "alejandra"
               "$FILE"
             ];
-            extensions = [".nix"];
+            extensions = [ ".nix" ];
           };
         };
       };
 
       rules = "";
 
-      agents = {};
+      agents = { };
 
-      commands = {};
+      commands = {
+        "dependabot-solver" = ../../ai/commands/dependabot-solver.md;
+      };
     };
   };
 }
