@@ -4,12 +4,10 @@
   pkgs,
   inputs,
   ...
-}:
-let
+}: let
   cfg = config.myModules.home.opencode;
   opencode = inputs.opencode;
-in
-{
+in {
   options.myModules.home.opencode = {
     enable = lib.mkEnableOption "opencode AI coding assistant";
   };
@@ -23,7 +21,7 @@ in
         theme = "catppuccin-macchiato";
         autoupdate = false;
 
-        plugin = [ "opencode-antigravity-auth@latest" ];
+        plugin = ["opencode-antigravity-auth@latest"];
 
         mcp = {
           grep_app = {
@@ -48,7 +46,7 @@ in
                     "image"
                     "pdf"
                   ];
-                  output = [ "text" ];
+                  output = ["text"];
                 };
                 variants = {
                   low = {
@@ -71,7 +69,7 @@ in
                     "image"
                     "pdf"
                   ];
-                  output = [ "text" ];
+                  output = ["text"];
                 };
                 variants = {
                   minimal = {
@@ -100,7 +98,7 @@ in
                     "image"
                     "pdf"
                   ];
-                  output = [ "text" ];
+                  output = ["text"];
                 };
               };
               "antigravity-claude-sonnet-4-5-thinking" = {
@@ -115,7 +113,7 @@ in
                     "image"
                     "pdf"
                   ];
-                  output = [ "text" ];
+                  output = ["text"];
                 };
                 variants = {
                   low = {
@@ -142,7 +140,7 @@ in
                     "image"
                     "pdf"
                   ];
-                  output = [ "text" ];
+                  output = ["text"];
                 };
                 variants = {
                   low = {
@@ -169,7 +167,7 @@ in
                     "image"
                     "pdf"
                   ];
-                  output = [ "text" ];
+                  output = ["text"];
                 };
               };
               "gemini-2.5-pro" = {
@@ -184,7 +182,7 @@ in
                     "image"
                     "pdf"
                   ];
-                  output = [ "text" ];
+                  output = ["text"];
                 };
               };
               "gemini-3-flash-preview" = {
@@ -199,7 +197,7 @@ in
                     "image"
                     "pdf"
                   ];
-                  output = [ "text" ];
+                  output = ["text"];
                 };
               };
               "gemini-3-pro-preview" = {
@@ -214,7 +212,7 @@ in
                     "image"
                     "pdf"
                   ];
-                  output = [ "text" ];
+                  output = ["text"];
                 };
               };
             };
@@ -246,14 +244,14 @@ in
               "alejandra"
               "$FILE"
             ];
-            extensions = [ ".nix" ];
+            extensions = [".nix"];
           };
         };
       };
 
       rules = "";
 
-      agents = { };
+      agents = {};
 
       commands = {
         "dependabot-solver" = ../../ai/commands/dependabot-solver.md;
