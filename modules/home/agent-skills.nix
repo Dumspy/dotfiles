@@ -37,6 +37,11 @@ in {
         subdir = "plugins/expo-app-design/skills";
       };
 
+      sources.agent-browser = {
+        path = inputs.agent-browser;
+        subdir = "skills/agent-browser";
+      };
+
       skills.enable = [
         "dependabot-solver"
 
@@ -51,6 +56,9 @@ in {
         "dev-client"
         "tailwind-setup"
         "use-dom"
+
+        # Browser
+        "agent-browser"
       ];
 
       targets = {
