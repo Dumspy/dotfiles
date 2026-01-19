@@ -17,7 +17,7 @@ in {
       settings = {
         # Core settings
         add_newline = true;
-        continuation_prompt = "[▸▹ ](white)";
+        continuation_prompt = "[▸▹ ](#cad1d9)";
         format = ''          ($nix_shell$container$fill$git_metrics
           )$cmd_duration$hostname$localip$shlvl$shell$env_var$jobs$sudo$username$character'';
         right_format = ''$singularity$kubernetes$directory$vcsh$fossil_branch$git_branch$git_commit$git_state$git_status$hg_branch$pijul_channel$docker_context$package$c$cpp$cmake$cobol$daml$dart$deno$dotnet$elixir$elm$erlang$fennel$fortran$golang$guix_shell$haskell$haxe$helm$java$julia$kotlin$gradle$lua$nim$nodejs$ocaml$opa$perl$php$pulumi$purescript$python$raku$rlang$red$ruby$rust$scala$solidity$swift$terraform$vlang$vagrant$xmake$zig$buf$conda$pixi$meson$spack$memory_usage$aws$gcloud$openstack$azure$crystal$custom$status$os$battery$time'';
@@ -25,12 +25,12 @@ in {
         # Fill
         fill = {symbol = " ";};
 
-        # Character symbols
+        # Character symbols (Catppuccin Macchiato)
         character = {
           format = "$symbol ";
-          success_symbol = "[◎](bold yellow)";
-          error_symbol = "[○](italic magenta)";
-          vimcmd_symbol = "[■](italic green)";
+          success_symbol = "[◎](bold #eed49f)";
+          error_symbol = "[○](italic #ed8796)";
+          vimcmd_symbol = "[■](italic #a6da95)";
           vimcmd_replace_one_symbol = "◌";
           vimcmd_replace_symbol = "□";
           vimcmd_visual_symbol = "▼";
@@ -47,15 +47,15 @@ in {
         # Sudo
         sudo = {
           format = "[$symbol]($style)";
-          style = "bold magenta";
+          style = "bold #c6a0f6";
           symbol = "⋈┈";
           disabled = false;
         };
 
         # Username
         username = {
-          style_user = "yellow bold";
-          style_root = "magenta bold";
+          style_user = "#eed49f bold";
+          style_root = "#c6a0f6 bold";
           format = "[⭘ $user]($style) ";
           disabled = false;
           show_always = false;
@@ -68,28 +68,28 @@ in {
           truncation_symbol = "□ ";
           read_only = " ◈";
           use_os_path_sep = true;
-          style = "blue";
+          style = "#8aadf4";
           format = "[$path]($style)[$read_only]($read_only_style)";
-          repo_root_style = "bold blue";
-          repo_root_format = "[$before_root_path]($before_repo_root_style)[$repo_root]($repo_root_style)[$path]($style)[$read_only]($read_only_style) [△](bold blue)";
+          repo_root_style = "bold #8aadf4";
+          repo_root_format = "[$before_root_path]($before_repo_root_style)[$repo_root]($repo_root_style)[$path]($style)[$read_only]($read_only_style) [△](bold #8aadf4)";
         };
 
         # Command duration
         cmd_duration = {
-          format = "[◄ $duration ](white)";
+          format = "[◄ $duration ](#cad1d9)";
         };
 
         # Jobs
         jobs = {
           format = "[$symbol$number]($style) ";
-          style = "white";
-          symbol = "[▶](blue italic)";
+          style = "#cad1d9";
+          symbol = "[▶](#8aadf4 italic)";
         };
 
         # Local IP
         localip = {
           ssh_only = true;
-          format = " ◯[$localipv4](bold magenta)";
+          format = " ◯[$localipv4](bold #c6a0f6)";
           disabled = false;
         };
 
@@ -99,7 +99,7 @@ in {
           format = "[ $time]($style)";
           time_format = "%R";
           utc_time_offset = "local";
-          style = "white";
+          style = "#cad1d9";
         };
 
         # Battery
@@ -115,23 +115,23 @@ in {
         battery.display = [
           {
             threshold = 20;
-            style = "bold red";
+            style = "bold #ed8796";
           }
           {
             threshold = 60;
-            style = "magenta";
+            style = "#c6a0f6";
           }
           {
             threshold = 70;
-            style = "yellow";
+            style = "#eed49f";
           }
         ];
 
         # Git branch
         git_branch = {
           format = " [$branch(:$remote_branch)]($style)";
-          symbol = "[△](bold cyan)";
-          style = "cyan";
+          symbol = "[△](bold #91d7e3)";
+          style = "#91d7e3";
           truncation_symbol = "⋯";
           truncation_length = 11;
           ignore_branches = ["main" "master"];
@@ -141,26 +141,26 @@ in {
         # Git metrics
         git_metrics = {
           format = "([▴$added]($added_style))([▿$deleted]($deleted_style))";
-          added_style = "bold green";
-          deleted_style = "bold red";
+          added_style = "bold #a6da95";
+          deleted_style = "bold #ed8796";
           ignore_submodules = true;
           disabled = false;
         };
 
         # Git status
         git_status = {
-          style = "bold cyan";
+          style = "bold #91d7e3";
           format = "([⎪$ahead_behind$staged$modified$untracked$renamed$deleted$conflicted$stashed⎥]($style))";
-          conflicted = "[◪◦](magenta)";
-          ahead = "[▴│[$\{count\}](white)│](green)";
-          behind = "[▿│[$\{count\}](white)│](red)";
-          diverged = "[◇ ▴┤[$\{ahead_count\}](white)│▿┤[$\{behind_count\}](white)│](magenta)";
-          untracked = "[◌◦](yellow)";
-          stashed = "[◃◈](white)";
-          modified = "[●◦](yellow)";
-          staged = "[▪┤[$count](white)│](cyan)";
-          renamed = "[◎◦](cyan)";
-          deleted = "[✕](red)";
+          conflicted = "[◪◦](#c6a0f6)";
+          ahead = "[▴│[$\{count\}](#cad1d9)│](#a6da95)";
+          behind = "[▿│[$\{count\}](#cad1d9)│](#ed8796)";
+          diverged = "[◇ ▴┤[$\{ahead_count\}](#cad1d9)│▿┤[$\{behind_count\}](#cad1d9)│](#c6a0f6)";
+          untracked = "[◌◦](#eed49f)";
+          stashed = "[◃◈](#cad1d9)";
+          modified = "[●◦](#eed49f)";
+          staged = "[▪┤[$count](#cad1d9)│](#91d7e3)";
+          renamed = "[◎◦](#91d7e3)";
+          deleted = "[✕](#ed8796)";
         };
 
         # Language/tool symbols (nerd fonts)
@@ -173,11 +173,11 @@ in {
           format = " [lua](italic) [$\{symbol\}$\{version\}]($style)";
           version_format = "$\{raw\}";
           symbol = "⨀ ";
-          style = "bold yellow";
+          style = "bold #eed49f";
         };
 
         nodejs = {
-          format = " [node](italic) [◫ ($version)](bold green)";
+          format = " [node](italic) [◫ ($version)](bold #a6da95)";
           version_format = "$\{raw\}";
           detect_files = ["package-lock.json" "yarn.lock"];
           detect_folders = ["node_modules"];
@@ -186,36 +186,36 @@ in {
 
         python = {
           format = " [py](italic) [$\{symbol\}$\{version\}]($style)";
-          symbol = "[⌉](bold cyan)⌊ ";
+          symbol = "[⌉](bold #91d7e3)⌊ ";
           version_format = "$\{raw\}";
-          style = "bold yellow";
+          style = "bold #eed49f";
         };
 
         ruby = {
           format = " [rb](italic) [$\{symbol\}$\{version\}]($style)";
           symbol = "◆ ";
           version_format = "$\{raw\}";
-          style = "bold red";
+          style = "bold #ed8796";
         };
 
         rust = {
           format = " [rs](italic) [$symbol$version]($style)";
           symbol = "⊃ ";
           version_format = "$\{raw\}";
-          style = "bold red";
+          style = "bold #ed8796";
         };
 
         package = {
           format = " [pkg](italic) [$symbol$version]($style)";
           version_format = "$\{raw\}";
           symbol = "◨ ";
-          style = "yellow bold";
+          style = "#eed49f bold";
         };
 
         swift = {
           format = " [sw](italic) [$\{symbol\}$\{version\}]($style)";
           symbol = "◁ ";
-          style = "bold bright-red";
+          style = "bold #ed8796";
           version_format = "$\{raw\}";
         };
 
@@ -223,7 +223,7 @@ in {
         aws = {
           disabled = true;
           format = " [aws](italic) [$symbol $profile $region]($style)";
-          style = "bold blue";
+          style = "bold #8aadf4";
           symbol = "▲ ";
         };
 
@@ -290,12 +290,12 @@ in {
         };
 
         nix_shell = {
-          style = "bold blue";
+          style = "bold #8aadf4";
           symbol = "✶";
-          format = "[$symbol nix⎪$state⎪]($style) [$name](white)";
-          impure_msg = "[⌽](bold red)";
-          pure_msg = "[⌾](bold green)";
-          unknown_msg = "[◌](bold yellow)";
+          format = "[$symbol nix⎪$state⎪]($style) [$name](#cad1d9)";
+          impure_msg = "[⌽](bold #ed8796)";
+          pure_msg = "[⌾](bold #a6da95)";
+          unknown_msg = "[◌](bold #eed49f)";
         };
 
         spack = {
