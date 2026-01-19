@@ -67,4 +67,8 @@
       setopt HIST_IGNORE_SPACE
     '';
   };
+
+  environment.variables = {
+    PATH = "$HOME/.local/bin:$PATH";
+  };
 }
