@@ -47,7 +47,7 @@
     };
 
     agent-browser = {
-      url = "github:vercel-labs/agent-browser/399fd7a434583896ff11944e870ab480f1945f8b";
+      url = "github:vercel-labs/agent-browser?ref=main";
       flake = false;
     };
 
