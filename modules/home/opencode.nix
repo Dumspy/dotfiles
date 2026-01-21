@@ -38,16 +38,41 @@ in {
         permission = {
           "read" = {
             "*" = "allow";
+            # Secrets & credentials
             ".direnv/*" = "deny";
+            ".env" = "deny";
             "*.env" = "deny";
             "*.env.*" = "deny";
             "*.envrc" = "deny";
             "secrets/*" = "deny";
+            # Private keys & auth
+            ".ssh/*" = "deny";
+            ".gnupg/*" = "deny";
+            ".config/1password/*" = "deny";
+            "*.key" = "deny";
+            "*.pem" = "deny";
+            "*.p12" = "deny";
+            "*.pfx" = "deny";
+            # Cloud/container credentials
+            ".aws/*" = "deny";
+            ".docker/*" = "deny";
+            ".kube/*" = "deny";
+            # Version control internals
+            ".git/*" = "deny";
+            ".gitmodules" = "deny";
+            # Build artifacts (large, noisy)
+            "node_modules/*" = "deny";
+            ".venv/*" = "deny";
+            "venv/*" = "deny";
+            "dist/*" = "deny";
+            "build/*" = "deny";
+            "target/*" = "deny";
           };
           webfetch = "ask";
           bash = {
             "*" = "ask";
             "ls*" = "allow";
+            "pwd" = "allow";
             "git status*" = "allow";
             "git diff*" = "allow";
             "git log*" = "allow";
@@ -64,10 +89,6 @@ in {
           };
         };
       };
-
-      rules = "";
-
-      agents = {};
 
       commands = {
         "dependabot-solver" = ../../ai/commands/dependabot-solver.md;
