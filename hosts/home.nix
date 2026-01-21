@@ -16,6 +16,7 @@
     tmux-sessionizer.enable = true;
     opencode.enable = true;
     agent-skills.enable = true;
+    agent-browser.enable = true;
   };
 
   programs.home-manager.enable = true;

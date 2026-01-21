@@ -23,7 +23,7 @@ in {
       enable = true;
 
       sources.local = {
-        path = ../../skills;
+        path = ../../ai/skills;
         subdir = ".";
       };
 
@@ -35,6 +35,11 @@ in {
       sources.expo-app-design = {
         path = inputs.expo-agent-skills;
         subdir = "plugins/expo-app-design/skills";
+      };
+
+      sources.agent-browser = {
+        path = inputs.agent-browser;
+        subdir = "skills/agent-browser";
       };
 
       skills.enable = [
@@ -51,6 +56,9 @@ in {
         "dev-client"
         "tailwind-setup"
         "use-dom"
+
+        # Browser
+        "agent-browser"
       ];
 
       targets = {

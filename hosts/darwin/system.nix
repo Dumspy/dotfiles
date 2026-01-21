@@ -7,6 +7,8 @@
 
   system.primaryUser = config.var.username;
 
+  home-manager.backupFileExtension = "bak";
+
   #homebrew
   homebrew = {
     enable = true;

@@ -53,7 +53,6 @@ in {
         set -g status-left ""
         set -g status-right "#{E:@catppuccin_status_application}"
         set -ag status-right "#{E:@catppuccin_status_session}"
-        set -ag status-right "#{E:@catppuccin_status_uptime}"
 
         # Open new split panes in the same directory as the current pane
         bind '"' split-window -c "#{pane_current_path}"

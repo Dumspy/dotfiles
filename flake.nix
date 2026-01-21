@@ -45,6 +45,16 @@
       url = "github:expo/skills";
       flake = false;
     };
+
+    agent-browser = {
+      url = "github:vercel-labs/agent-browser";
+      flake = false;
+    };
+
+    llm-agents = {
+      url = "github:numtide/llm-agents.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs @ {
@@ -59,6 +69,8 @@
     agent-skills-nix,
     vercel-agent-skills,
     expo-agent-skills,
+    agent-browser,
+    llm-agents,
   }: let
     lib = (import ./lib) {
       inherit nixpkgs nix-darwin nixos-wsl home-manager;

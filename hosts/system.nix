@@ -67,4 +67,6 @@
       setopt HIST_IGNORE_SPACE
     '';
   };
+
+  environment.localBinInPath = true;
 }
