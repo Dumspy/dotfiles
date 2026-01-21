@@ -51,6 +51,11 @@
       flake = false;
     };
 
+    anthropics-agent-skills = {
+      url = "github:anthropics/skills";
+      flake = false;
+    };
+
     llm-agents = {
       url = "github:numtide/llm-agents.nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -70,6 +75,7 @@
     vercel-agent-skills,
     expo-agent-skills,
     agent-browser,
+    anthropics-agent-skills,
     llm-agents,
   }: let
     lib = (import ./lib) {

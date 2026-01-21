@@ -51,6 +51,7 @@
     pkgs.kubectl
     pkgs.kubernetes-helm
     pkgs.argocd
+    pkgs.jq
     inputs.opencode.packages.${pkgs.stdenv.hostPlatform.system}.default
     inputs.opnix.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];

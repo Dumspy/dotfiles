@@ -42,8 +42,16 @@ in {
         subdir = "skills/agent-browser";
       };
 
+      sources.anthropic-skills = {
+        path = inputs.anthropics-agent-skills;
+        subdir = "skills";
+      };
+
       skills.enable = [
         "dependabot-solver"
+
+        # Anthropic
+        "skill-creator"
 
         # Vercel
         "react-best-practices"

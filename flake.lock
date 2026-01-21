@@ -37,6 +37,22 @@
         "type": "github"
       }
     },
+    "anthropics-agent-skills": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1766254184,
+        "narHash": "sha256-pllFZoWRdtLliz/5pLWks0V9nKFMzeWoRcmFgu2UWi8=",
+        "owner": "anthropics",
+        "repo": "skills",
+        "rev": "69c0b1a0674149f27b61b2635f935524b6add202",
+        "type": "github"
+      },
+      "original": {
+        "owner": "anthropics",
+        "repo": "skills",
+        "type": "github"
+      }
+    },
     "blueprint": {
       "inputs": {
         "nixpkgs": [
@@ -255,11 +271,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1768708503,
-        "narHash": "sha256-M6dV+qgtAv7DWzxIVRtjruDOpYX/BmH9hrIp9jSEF4k=",
+        "lastModified": 1768994119,
+        "narHash": "sha256-JeDql5QprCQW7qlW6fFX5IKXra6xMvRZ6Kfogswbvjs=",
         "owner": "anomalyco",
         "repo": "opencode",
-        "rev": "073f9d99b58339e15e927ff4372d27d0f8ade5f2",
+        "rev": "64c80f1b512b5bf03a9132d39db71decfab10dc3",
         "type": "github"
       },
       "original": {
@@ -293,6 +309,7 @@
       "inputs": {
         "agent-browser": "agent-browser",
         "agent-skills-nix": "agent-skills-nix",
+        "anthropics-agent-skills": "anthropics-agent-skills",
         "expo-agent-skills": "expo-agent-skills",
         "flake-utils": "flake-utils",
         "home-manager": "home-manager_2",
