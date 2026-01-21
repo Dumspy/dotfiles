@@ -58,11 +58,11 @@ in {
         "web-design-guidelines"
 
         # Expo
-        "api-routes"
-        "building-ui"
-        "data-fetching"
-        "dev-client"
-        "tailwind-setup"
+        "expo-api-routes"
+        "building-native-ui"
+        "native-data-fetching"
+        "expo-dev-client"
+        "expo-tailwind-setup"
         "use-dom"
 
         # Browser

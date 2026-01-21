@@ -37,22 +37,22 @@
     };
 
     vercel-agent-skills = {
-      url = "github:vercel-labs/agent-skills";
+      url = "github:vercel-labs/agent-skills/dd157cbd26f5c1f1154214035d3f8c9d7fe87a1c";
       flake = false;
     };
 
     expo-agent-skills = {
-      url = "github:expo/skills";
+      url = "github:expo/skills/7b7ecb2a304ae94168aa45ad1de936ec59b9a949";
       flake = false;
     };
 
     agent-browser = {
-      url = "github:vercel-labs/agent-browser";
+      url = "github:vercel-labs/agent-browser/399fd7a434583896ff11944e870ab480f1945f8b";
       flake = false;
     };
 
     anthropics-agent-skills = {
-      url = "github:anthropics/skills";
+      url = "github:anthropics/skills/69c0b1a0674149f27b61b2635f935524b6add202";
       flake = false;
     };
 
