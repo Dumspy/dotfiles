@@ -34,6 +34,8 @@ echo "New revision for $name: $new_rev"
 # Check if there were actual changes
 if [ "$new_rev" = "$current_rev" ]; then
   echo "No changes detected"
+  # Revert flake.nix back to pinned state
+  sed -i "s|url = \"github:[^\"]*/${name}[^\"]*\";|url = \"github:${current_owner}/${name}/${current_rev}\";|" flake.nix
   if [ "${GITHUB_OUTPUT:-}" ]; then
     echo "updated=false" >>"$output_var"
   fi
