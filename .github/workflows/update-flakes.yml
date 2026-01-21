@@ -119,3 +119,8 @@ jobs:
           else
             echo "ℹ️ No changes detected - all inputs are up to date" >> $GITHUB_STEP_SUMMARY
           fi
+
+      - name: Cleanup temporary files
+        if: always()
+        run: |
+          rm -f updated_inputs.txt updated_summary.txt

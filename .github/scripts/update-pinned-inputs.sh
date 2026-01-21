@@ -34,7 +34,9 @@ echo "New revision for $name: $new_rev"
 # Check if there were actual changes
 if [ "$new_rev" = "$current_rev" ]; then
   echo "No changes detected"
-  echo "updated=false" >>"$output_var"
+  if [ "${GITHUB_OUTPUT:-}" ]; then
+    echo "updated=false" >>"$output_var"
+  fi
   exit 0
 fi
 
