@@ -15,6 +15,9 @@ in {
     programs.ghostty = {
       enable = true;
       package = null; # Installed via homebrew on Darwin
+      settings = {
+        font-size = 12;
+      };
     };
   };
 }
