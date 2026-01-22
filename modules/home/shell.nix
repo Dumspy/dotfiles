@@ -5,7 +5,6 @@
   ...
 }: let
   cfg = config.myModules.home.shell;
-  isDarwin = pkgs.stdenv.isDarwin;
 in {
   options.myModules.home.shell = {
     default = lib.mkOption {
@@ -25,7 +24,7 @@ in {
       zsh.enable = lib.mkDefault true;
       fish.enable = lib.mkDefault true;
     };
-    myModules.home.shell.aliases = lib.optionalAttrs isDarwin {
+    myModules.home.shell.aliases = lib.optionalAttrs pkgs.stdenv.isDarwin {
       finder = "open";
     };
   };

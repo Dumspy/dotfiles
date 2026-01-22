@@ -95,10 +95,8 @@
         pkgs = import nixpkgs {inherit system;};
       in {
         formatter = pkgs.alejandra;
-        devShells.default = pkgs.mkShell rec {
-          packages = with pkgs; [
-            alejandra
-          ];
+        devShells.default = pkgs.mkShell {
+          packages = [pkgs.alejandra];
         };
       }
     ))
