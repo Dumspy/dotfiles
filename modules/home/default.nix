@@ -15,5 +15,6 @@
     ./agent-skills.nix
     ./agent-browser.nix
     ./ssh.nix
+    ./lazygit.nix
   ];
 }

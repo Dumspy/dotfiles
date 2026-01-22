@@ -17,6 +17,7 @@
     opencode.enable = true;
     agent-skills.enable = true;
     agent-browser.enable = true;
+    lazygit.enable = true;
   };
 
   programs.home-manager.enable = true;
