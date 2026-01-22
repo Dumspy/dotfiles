@@ -13,7 +13,8 @@ in {
   config = lib.mkIf cfg.enable {
     programs.starship = {
       enable = true;
-      enableZshIntegration = true;
+      enableZshIntegration = config.myModules.home.zsh.enable;
+      enableFishIntegration = config.myModules.home.fish.enable;
       settings = {
         aws = {
           symbol = "  ";

@@ -14,7 +14,8 @@ in {
     programs.direnv = {
       enable = true;
       nix-direnv.enable = true;
-      enableZshIntegration = true;
+      enableZshIntegration = config.myModules.home.zsh.enable;
+      enableFishIntegration = config.myModules.home.fish.enable;
     };
   };
 }
