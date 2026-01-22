@@ -60,6 +60,11 @@
       url = "github:numtide/llm-agents.nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    stylix = {
+      url = "github:nix-community/stylix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs @ {
@@ -77,9 +82,10 @@
     agent-browser,
     anthropics-agent-skills,
     llm-agents,
+    stylix,
   }: let
     lib = (import ./lib) {
-      inherit nixpkgs nix-darwin nixos-wsl home-manager;
+      inherit nixpkgs nix-darwin nixos-wsl home-manager stylix;
       flakeRoot = ./.;
     };
     inherit (lib) mkDarwin mkNixos;

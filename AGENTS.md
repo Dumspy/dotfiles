@@ -17,6 +17,11 @@
 - **Secrets**: Managed via opnix (1Password CLI integration)
 - **SSH**: WSL uses npiperelay for host SSH agent forwarding
 
+## Theming
+- **Framework**: Stylix (nix-community/stylix) for consistent theming across all targets
+- **Theme**: Catppuccin Macchiato (configured in `modules/system/stylix.nix`)
+- **Fonts**: JetBrainsMono Nerd Font (mono), Inter (sans), Noto Serif, Noto Color Emoji
+
 ## Code Style
 - **Formatting**: 2-space indent (see .editorconfig)
 - **Language**: Nix

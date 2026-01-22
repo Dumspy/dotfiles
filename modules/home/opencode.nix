@@ -18,7 +18,6 @@ in {
       package = opencode.packages.${pkgs.stdenv.hostPlatform.system}.default;
 
       settings = {
-        theme = "catppuccin-macchiato";
         autoupdate = false;
 
         model = "zai-coding-plan/glm-4.7";

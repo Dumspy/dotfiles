@@ -6,6 +6,8 @@
 }: {
   system.stateVersion = "24.05";
 
+  home-manager.backupFileExtension = "bak";
+
   programs.nix-ld.enable = true;
 
   myModules.system.shell.default = "fish";
