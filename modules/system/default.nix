@@ -5,6 +5,7 @@
 }: {
   imports =
     [
+      ./shell.nix
       ./onepassword.nix
       ./tailscale.nix
       ./openssh.nix

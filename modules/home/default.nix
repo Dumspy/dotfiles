@@ -1,6 +1,8 @@
 {
   imports = [
+    ./shell.nix
     ./zsh.nix
+    ./fish.nix
     ./starship.nix
     ./fzf.nix
     ./direnv.nix

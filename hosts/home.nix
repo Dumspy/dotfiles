@@ -6,7 +6,7 @@
   home.stateVersion = "24.11";
 
   myModules.home = {
-    zsh.enable = true;
+    shell.default = "zsh";
     starship.enable = true;
     fzf.enable = true;
     git.enable = true;

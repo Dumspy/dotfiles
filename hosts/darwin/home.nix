@@ -14,6 +14,7 @@
   home.homeDirectory = config.var.homePrefix;
 
   myModules.home = {
+    shell.default = "fish";
     ghostty.enable = true;
     ssh = {
       enable = true;

@@ -1,6 +1,7 @@
 {
   config,
   pkgs,
+  lib,
   inputs,
   ...
 }: {
@@ -36,7 +37,6 @@
   # List packages installed in system profile. To search by name, run:
   # $ nix-env -qaP | grep wget
   environment.systemPackages = [
-    pkgs.zsh
     pkgs.wget
     pkgs.home-manager
     pkgs.nixd
@@ -63,12 +63,7 @@
     pkgs.iosevka
   ];
 
-  programs.zsh = {
-    enable = true;
-    shellInit = ''
-      setopt HIST_IGNORE_SPACE
-    '';
-  };
+  myModules.system.shell.default = lib.mkDefault "zsh";
 
   environment.localBinInPath = true;
 }
