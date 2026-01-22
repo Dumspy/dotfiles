@@ -7,7 +7,6 @@
   system.stateVersion = "24.05";
 
   programs.nix-ld.enable = true;
-  users.defaultUserShell = pkgs.fish;
 
   myModules.system.shell.default = "fish";
 
