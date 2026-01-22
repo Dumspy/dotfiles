@@ -53,8 +53,7 @@ in {
           };
           opensrc = {
             type = "local";
-            command = "${opensrc-mcp}/bin/opensrc-mcp";
-            args = [];
+            command = ["${opensrc-mcp}/bin/opensrc-mcp"];
           };
         };
 
