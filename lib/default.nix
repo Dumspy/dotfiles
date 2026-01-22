@@ -19,6 +19,7 @@
           {nixpkgs.hostPlatform = "aarch64-darwin";}
           (flakeRoot + /hosts/config.nix)
           (flakeRoot + /modules/system)
+          (flakeRoot + /modules/system/platform/darwin.nix)
           (flakeRoot + /hosts/system.nix)
           (flakeRoot + /hosts/${name}/system.nix)
           stylix.darwinModules.stylix
@@ -55,6 +56,7 @@
           {nixpkgs.hostPlatform = system;}
           (flakeRoot + /hosts/config.nix)
           (flakeRoot + /modules/system)
+          (flakeRoot + /modules/system/platform/nixos.nix)
           (flakeRoot + /hosts/system.nix)
           (flakeRoot + /hosts/${name}/system.nix)
           stylix.nixosModules.stylix

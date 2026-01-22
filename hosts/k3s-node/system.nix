@@ -69,7 +69,6 @@
       "wheel"
       "certs"
     ];
-    packages = with pkgs; [];
   };
 
   environment.systemPackages = [
