@@ -6,7 +6,6 @@
   ...
 }: let
   cfg = config.myModules.home.opencode;
-  opencode = inputs.opencode;
 in {
   options.myModules.home.opencode = {
     enable = lib.mkEnableOption "opencode AI coding assistant";
@@ -15,7 +14,7 @@ in {
   config = lib.mkIf cfg.enable {
     programs.opencode = {
       enable = true;
-      package = opencode.packages.${pkgs.stdenv.hostPlatform.system}.default;
+      package = inputs.opencode.packages.${pkgs.stdenv.hostPlatform.system}.default;
 
       settings = {
         autoupdate = false;

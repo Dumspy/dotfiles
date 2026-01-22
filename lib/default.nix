@@ -1,7 +1,6 @@
 {
   nixpkgs,
   nix-darwin,
-  nixos-wsl,
   home-manager,
   stylix,
   flakeRoot ? ./..,

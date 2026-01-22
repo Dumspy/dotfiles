@@ -11,12 +11,26 @@
   # Convert hex string to integer
   hexToInt = hex: let
     hexChars = {
-      "0" = 0; "1" = 1; "2" = 2; "3" = 3; "4" = 4;
-      "5" = 5; "6" = 6; "7" = 7; "8" = 8; "9" = 9;
-      "a" = 10; "b" = 11; "c" = 12; "d" = 13; "e" = 14; "f" = 15;
+      "0" = 0;
+      "1" = 1;
+      "2" = 2;
+      "3" = 3;
+      "4" = 4;
+      "5" = 5;
+      "6" = 6;
+      "7" = 7;
+      "8" = 8;
+      "9" = 9;
+      "a" = 10;
+      "b" = 11;
+      "c" = 12;
+      "d" = 13;
+      "e" = 14;
+      "f" = 15;
     };
     chars = lib.stringToCharacters (lib.toLower hex);
-  in lib.foldl (acc: c: acc * 16 + hexChars.${c}) 0 chars;
+  in
+    lib.foldl (acc: c: acc * 16 + hexChars.${c}) 0 chars;
 
   # Convert hex color to RGB ANSI escape sequence
   hexToAnsi = hex: let
@@ -28,11 +42,10 @@
   # Get color from stylix if available, otherwise use fallback
   prefixColor =
     if config.stylix.enable or false
-    then hexToAnsi config.lib.stylix.colors.base0E  # Mauve/purple from catppuccin
-    else "\\033[1;35m";  # Fallback to bold magenta
+    then hexToAnsi config.lib.stylix.colors.base0E # Mauve/purple from catppuccin
+    else "\\033[1;35m"; # Fallback to bold magenta
 
   tmux-sessionizer = pkgs.writeShellScriptBin "tmux-sessionizer" ''
-    #!/usr/bin/env bash
 
     # ============================================================================
     # Configuration (managed by Nix)

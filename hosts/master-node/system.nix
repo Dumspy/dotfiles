@@ -1,7 +1,6 @@
 {
   config,
   pkgs,
-  lib,
   ...
 }: {
   system.stateVersion = "24.11";
@@ -66,7 +65,6 @@
       "networkmanager"
       "wheel"
     ];
-    packages = with pkgs; [];
   };
 
   environment.systemPackages = [
