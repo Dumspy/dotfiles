@@ -8,6 +8,29 @@
 
   searchPathsStr = lib.concatStringsSep " " cfg.searchPaths;
 
+  # Convert hex string to integer
+  hexToInt = hex: let
+    hexChars = {
+      "0" = 0; "1" = 1; "2" = 2; "3" = 3; "4" = 4;
+      "5" = 5; "6" = 6; "7" = 7; "8" = 8; "9" = 9;
+      "a" = 10; "b" = 11; "c" = 12; "d" = 13; "e" = 14; "f" = 15;
+    };
+    chars = lib.stringToCharacters (lib.toLower hex);
+  in lib.foldl (acc: c: acc * 16 + hexChars.${c}) 0 chars;
+
+  # Convert hex color to RGB ANSI escape sequence
+  hexToAnsi = hex: let
+    r = hexToInt (builtins.substring 0 2 hex);
+    g = hexToInt (builtins.substring 2 2 hex);
+    b = hexToInt (builtins.substring 4 2 hex);
+  in "\\033[1;38;2;${toString r};${toString g};${toString b}m";
+
+  # Get color from stylix if available, otherwise use fallback
+  prefixColor =
+    if config.stylix.enable or false
+    then hexToAnsi config.lib.stylix.colors.base0E  # Mauve/purple from catppuccin
+    else "\\033[1;35m";  # Fallback to bold magenta
+
   tmux-sessionizer = pkgs.writeShellScriptBin "tmux-sessionizer" ''
     #!/usr/bin/env bash
 
@@ -200,14 +223,22 @@
         TS_SEARCH_PATHS+=("''${TS_EXTRA_SEARCH_PATHS[@]}")
     fi
 
+    # ANSI color codes (from Stylix theme)
+    TMUX_PREFIX_COLOR="${prefixColor}"
+    RESET_COLOR="\033[0m"
+
     # utility function to find directories
     find_dirs() {
         # list TMUX sessions
         if [[ -n "''${TMUX}" ]]; then
             current_session=$(tmux display-message -p '#S')
-            tmux list-sessions -F "[TMUX] #{session_name}" 2>/dev/null | grep -vFx "[TMUX] $current_session"
+            tmux list-sessions -F "#{session_name}" 2>/dev/null | grep -vFx "$current_session" | while read -r session; do
+                echo -e "''${TMUX_PREFIX_COLOR}[TMUX]''${RESET_COLOR} $session"
+            done
         else
-            tmux list-sessions -F "[TMUX] #{session_name}" 2>/dev/null
+            tmux list-sessions -F "#{session_name}" 2>/dev/null | while read -r session; do
+                echo -e "''${TMUX_PREFIX_COLOR}[TMUX]''${RESET_COLOR} $session"
+            done
         fi
 
         # note: TS_SEARCH_PATHS is an array of paths to search for git repositories
@@ -305,14 +336,14 @@
     elif [[ ! -z $user_selected ]]; then
         selected="$user_selected"
     else
-        selected=$(find_dirs | fzf)
+        selected=$(find_dirs | fzf --ansi)
     fi
 
     if [[ -z $selected ]]; then
         exit 0
     fi
 
-    if [[ "$selected" =~ ^\[TMUX\]\ (.+)$ ]]; then
+    if [[ "$selected" =~ ^\[TMUX\][[:space:]](.+)$ ]]; then
         selected="''${BASH_REMATCH[1]}"
     fi
 
