@@ -54,6 +54,7 @@
     pkgs.jq
     inputs.opencode.packages.${pkgs.stdenv.hostPlatform.system}.default
     inputs.opnix.packages.${pkgs.stdenv.hostPlatform.system}.default
+    pkgs.amp-cli
   ];
 
   # Fonts
