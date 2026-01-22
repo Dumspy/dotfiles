@@ -5,6 +5,7 @@
   ...
 }: let
   cfg = config.myModules.home.fish;
+  shellCfg = config.myModules.home.shell;
 in {
   options.myModules.home.fish = {
     enable = lib.mkEnableOption "fish shell with plugins and completions";
@@ -16,7 +17,7 @@ in {
       interactiveShellInit = ''
         set fish_greeting
       '';
-      
+
       plugins = [
         {
           name = "fzf-fish";
@@ -30,8 +31,17 @@ in {
         '';
       };
 
-      shellAliases = {};
-      shellAbbrs = {};
+      shellAliases = shellCfg.aliases;
+      shellAbbrs = {
+        ga = "git add";
+        gc = "git commit";
+        gco = "git checkout";
+        gcp = "git cherry-pick";
+        gdiff = "git diff";
+        gp = "git push";
+        gs = "git status";
+        gt = "git tag";
+      };
     };
   };
 }

@@ -5,6 +5,7 @@
   ...
 }: let
   cfg = config.myModules.home.zsh;
+  shellCfg = config.myModules.home.shell;
 in {
   options.myModules.home.zsh = {
     enable = lib.mkEnableOption "zsh shell with fzf-tab and completions";
@@ -15,6 +16,7 @@ in {
       enable = true;
       enableCompletion = true;
       autosuggestion.enable = true;
+      shellAliases = shellCfg.aliases;
 
       plugins = [
         {
