@@ -18,10 +18,11 @@ in {
       package = opencode.packages.${pkgs.stdenv.hostPlatform.system}.default;
 
       settings = {
-        theme = "catppuccin-macchiato";
         autoupdate = false;
 
-        plugin = ["opencode-antigravity-auth@latest"];
+        model = "zai-coding-plan/glm-4.7";
+
+        plugin = [];
 
         mcp = {
           grep_app = {
@@ -31,143 +32,46 @@ in {
           };
         };
 
-        provider = {
-          google = {
-            models = {
-              "antigravity-gemini-3-pro" = {
-                name = "Gemini 3 Pro (Antigravity)";
-                limit = {
-                  context = 1048576;
-                  output = 65535;
-                };
-                modalities = {
-                  input = ["text" "image" "pdf"];
-                  output = ["text"];
-                };
-                variants = {
-                  low = {thinkingLevel = "low";};
-                  high = {thinkingLevel = "high";};
-                };
-              };
-              "antigravity-gemini-3-flash" = {
-                name = "Gemini 3 Flash (Antigravity)";
-                limit = {
-                  context = 1048576;
-                  output = 65536;
-                };
-                modalities = {
-                  input = ["text" "image" "pdf"];
-                  output = ["text"];
-                };
-                variants = {
-                  minimal = {thinkingLevel = "minimal";};
-                  low = {thinkingLevel = "low";};
-                  medium = {thinkingLevel = "medium";};
-                  high = {thinkingLevel = "high";};
-                };
-              };
-              "antigravity-claude-sonnet-4-5" = {
-                name = "Claude Sonnet 4.5 (Antigravity)";
-                limit = {
-                  context = 200000;
-                  output = 64000;
-                };
-                modalities = {
-                  input = ["text" "image" "pdf"];
-                  output = ["text"];
-                };
-              };
-              "antigravity-claude-sonnet-4-5-thinking" = {
-                name = "Claude Sonnet 4.5 Thinking (Antigravity)";
-                limit = {
-                  context = 200000;
-                  output = 64000;
-                };
-                modalities = {
-                  input = ["text" "image" "pdf"];
-                  output = ["text"];
-                };
-                variants = {
-                  low = {thinkingConfig = {thinkingBudget = 8192;};};
-                  max = {thinkingConfig = {thinkingBudget = 32768;};};
-                };
-              };
-              "antigravity-claude-opus-4-5-thinking" = {
-                name = "Claude Opus 4.5 Thinking (Antigravity)";
-                limit = {
-                  context = 200000;
-                  output = 64000;
-                };
-                modalities = {
-                  input = ["text" "image" "pdf"];
-                  output = ["text"];
-                };
-                variants = {
-                  low = {thinkingConfig = {thinkingBudget = 8192;};};
-                  max = {thinkingConfig = {thinkingBudget = 32768;};};
-                };
-              };
-              "gemini-2.5-flash" = {
-                name = "Gemini 2.5 Flash (Gemini CLI)";
-                limit = {
-                  context = 1048576;
-                  output = 65536;
-                };
-                modalities = {
-                  input = ["text" "image" "pdf"];
-                  output = ["text"];
-                };
-              };
-              "gemini-2.5-pro" = {
-                name = "Gemini 2.5 Pro (Gemini CLI)";
-                limit = {
-                  context = 1048576;
-                  output = 65536;
-                };
-                modalities = {
-                  input = ["text" "image" "pdf"];
-                  output = ["text"];
-                };
-              };
-              "gemini-3-flash-preview" = {
-                name = "Gemini 3 Flash Preview (Gemini CLI)";
-                limit = {
-                  context = 1048576;
-                  output = 65536;
-                };
-                modalities = {
-                  input = ["text" "image" "pdf"];
-                  output = ["text"];
-                };
-              };
-              "gemini-3-pro-preview" = {
-                name = "Gemini 3 Pro Preview (Gemini CLI)";
-                limit = {
-                  context = 1048576;
-                  output = 65535;
-                };
-                modalities = {
-                  input = ["text" "image" "pdf"];
-                  output = ["text"];
-                };
-              };
-            };
-          };
-        };
+        provider = {};
 
         permission = {
           "read" = {
             "*" = "allow";
+            # Secrets & credentials
             ".direnv/*" = "deny";
+            ".env" = "deny";
             "*.env" = "deny";
             "*.env.*" = "deny";
             "*.envrc" = "deny";
             "secrets/*" = "deny";
+            # Private keys & auth
+            ".ssh/*" = "deny";
+            ".gnupg/*" = "deny";
+            ".config/1password/*" = "deny";
+            "*.key" = "deny";
+            "*.pem" = "deny";
+            "*.p12" = "deny";
+            "*.pfx" = "deny";
+            # Cloud/container credentials
+            ".aws/*" = "deny";
+            ".docker/*" = "deny";
+            ".kube/*" = "deny";
+            # Version control internals
+            ".git/*" = "deny";
+            ".gitmodules" = "deny";
+            # Build artifacts (large, noisy)
+            "node_modules/*" = "deny";
+            ".venv/*" = "deny";
+            "venv/*" = "deny";
+            "dist/*" = "deny";
+            "build/*" = "deny";
+            "target/*" = "deny";
           };
           webfetch = "ask";
           bash = {
             "*" = "ask";
             "ls*" = "allow";
+            "pwd" = "allow";
             "git status*" = "allow";
             "git diff*" = "allow";
             "git log*" = "allow";
@@ -185,11 +89,9 @@ in {
         };
       };
 
-      rules = "";
-
-      agents = {};
-
-      commands = {};
+      commands = {
+        "dependabot-solver" = ../../ai/commands/dependabot-solver.md;
+      };
     };
   };
 }

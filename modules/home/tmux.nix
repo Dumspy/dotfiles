@@ -7,7 +7,7 @@
   cfg = config.myModules.home.tmux;
 in {
   options.myModules.home.tmux = {
-    enable = lib.mkEnableOption "tmux with catppuccin and vim navigation";
+    enable = lib.mkEnableOption "tmux with vim navigation";
   };
 
   config = lib.mkIf cfg.enable {
@@ -47,13 +47,12 @@ in {
         # Reload config reminder - Nix rebuild required
         bind r display-message "Config is managed by Nix. Run './rebuild.sh' to reload changes."
 
-        # Status bar configuration (catppuccin customization)
+        # Status bar configuration
         set -g status-right-length 100
         set -g status-left-length 100
         set -g status-left ""
         set -g status-right "#{E:@catppuccin_status_application}"
         set -ag status-right "#{E:@catppuccin_status_session}"
-        set -ag status-right "#{E:@catppuccin_status_uptime}"
 
         # Open new split panes in the same directory as the current pane
         bind '"' split-window -c "#{pane_current_path}"

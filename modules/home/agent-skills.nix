@@ -24,7 +24,7 @@ in {
       enable = true;
 
       sources.local = {
-        path = ../../skills;
+        path = ../../ai/skills;
         subdir = ".";
       };
 
@@ -38,20 +38,36 @@ in {
         subdir = "plugins/expo-app-design/skills";
       };
 
+      sources.agent-browser = {
+        path = inputs.agent-browser;
+        subdir = "skills/agent-browser";
+      };
+
+      sources.anthropic-skills = {
+        path = inputs.anthropics-agent-skills;
+        subdir = "skills";
+      };
+
       skills.enable = [
         "dependabot-solver"
+
+        # Anthropic
+        "skill-creator"
 
         # Vercel
         "react-best-practices"
         "web-design-guidelines"
 
         # Expo
-        "api-routes"
-        "building-ui"
-        "data-fetching"
-        "dev-client"
-        "tailwind-setup"
+        "expo-api-routes"
+        "building-native-ui"
+        "native-data-fetching"
+        "expo-dev-client"
+        "expo-tailwind-setup"
         "use-dom"
+
+        # Browser
+        "agent-browser"
       ];
 
       targets = {

@@ -1,13 +1,12 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }: let
   cfg = config.myModules.home.neovim;
 in {
   options.myModules.home.neovim = {
-    enable = lib.mkEnableOption "neovim with catppuccin theme";
+    enable = lib.mkEnableOption "neovim editor";
   };
 
   config = lib.mkIf cfg.enable {
@@ -16,20 +15,6 @@ in {
       defaultEditor = true;
       viAlias = true;
       vimAlias = true;
-
-      plugins = with pkgs.vimPlugins; [
-        catppuccin-nvim
-      ];
-
-      extraConfig = ''
-        packadd! catppuccin-nvim
-        lua << EOF
-        require('catppuccin').setup({
-            flavour = "macchiato"
-        })
-        vim.cmd[[colorscheme catppuccin]]
-        EOF
-      '';
     };
   };
 }

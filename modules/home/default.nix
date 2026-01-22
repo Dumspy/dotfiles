@@ -1,6 +1,8 @@
 {
   imports = [
+    ./shell.nix
     ./zsh.nix
+    ./fish.nix
     ./starship.nix
     ./fzf.nix
     ./direnv.nix
@@ -11,6 +13,8 @@
     ./tmux-sessionizer.nix
     ./opencode.nix
     ./agent-skills.nix
+    ./agent-browser.nix
     ./ssh.nix
+    ./lazygit.nix
   ];
 }

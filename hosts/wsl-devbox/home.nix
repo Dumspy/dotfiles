@@ -12,4 +12,6 @@
   # paths it should manage.
   home.username = config.var.username;
   home.homeDirectory = config.var.homePrefix;
+
+  myModules.home.shell.default = "fish";
 }

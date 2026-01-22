@@ -6,8 +6,11 @@
 }: {
   system.stateVersion = "24.05";
 
+  home-manager.backupFileExtension = "bak";
+
   programs.nix-ld.enable = true;
-  users.defaultUserShell = pkgs.zsh;
+
+  myModules.system.shell.default = "fish";
 
   wsl.enable = true;
   wsl.defaultUser = "nixos";

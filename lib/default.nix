@@ -3,6 +3,7 @@
   nix-darwin,
   nixos-wsl,
   home-manager,
+  stylix,
   flakeRoot ? ./..,
   ...
 }: {
@@ -20,6 +21,7 @@
           (flakeRoot + /modules/system)
           (flakeRoot + /hosts/system.nix)
           (flakeRoot + /hosts/${name}/system.nix)
+          stylix.darwinModules.stylix
           home-manager.darwinModules.home-manager
           {
             home-manager = {
@@ -55,6 +57,7 @@
           (flakeRoot + /modules/system)
           (flakeRoot + /hosts/system.nix)
           (flakeRoot + /hosts/${name}/system.nix)
+          stylix.nixosModules.stylix
         ]
         ++ (
           if withHomeManager

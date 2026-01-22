@@ -43,13 +43,39 @@ jobs:
         run: |
           nix flake update
 
+      - name: Update pinned non-flake inputs
+        id: update-pinned
+        run: |
+          chmod +x .github/scripts/update-pinned-inputs.sh
+          touch updated_inputs.txt
+          touch updated_summary.txt
+          for input in vercel-agent-skills expo-agent-skills agent-browser anthropics-agent-skills; do
+            echo "Updating $input..."
+            result=$(.github/scripts/update-pinned-inputs.sh "$input" 2>&1)
+            if echo "$result" | grep -q "updated=true"; then
+              old_rev=$(echo "$result" | grep "old_version=" | cut -d'=' -f2)
+              new_rev=$(echo "$result" | grep "new_version=" | cut -d'=' -f2)
+              echo "- $input: $old_rev -> $new_rev" >> updated_inputs.txt
+              echo "  - $input" >> updated_summary.txt
+            fi
+          done
+
       - name: Check for changes
         id: check
         run: |
-          if git diff --quiet flake.lock; then
+          if git diff --quiet flake.nix flake.lock; then
             echo "has_changes=false" >> $GITHUB_OUTPUT
           else
             echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+          if [ -s updated_inputs.txt ]; then
+            echo "body<<EOF" >> $GITHUB_OUTPUT
+            echo "## Updated Inputs" >> $GITHUB_OUTPUT
+            cat updated_inputs.txt >> $GITHUB_OUTPUT
+            echo "" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          else
+            echo "body=Updated flake inputs" >> $GITHUB_OUTPUT
           fi
 
       - name: Validate changes
@@ -64,7 +90,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -b "$BRANCH"
-          git add flake.lock
+          git add flake.nix flake.lock
           git commit -m "chore: bump flake inputs"
           git push -u origin "$BRANCH"
 
@@ -75,5 +101,26 @@ jobs:
         run: |
           gh pr create \
             --title "chore: bump flake inputs" \
-            --body "" \
+            --body "${{ steps.check.outputs.body }}" \
             --label "flake-updates"
+
+      - name: Update summary
+        if: always()
+        run: |
+          echo "## Flake Update Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ steps.check.outputs.has_changes }}" = "true" ]; then
+            echo "✅ Updates found and PR created" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            if [ -s updated_summary.txt ]; then
+              echo "Updated inputs:" >> $GITHUB_STEP_SUMMARY
+              cat updated_summary.txt >> $GITHUB_STEP_SUMMARY
+            fi
+          else
+            echo "ℹ️ No changes detected - all inputs are up to date" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Cleanup temporary files
+        if: always()
+        run: |
+          rm -f updated_inputs.txt updated_summary.txt
