@@ -16,13 +16,19 @@ in {
       interactiveShellInit = ''
         set fish_greeting
       '';
-
+      
       plugins = [
         {
           name = "fzf-fish";
           src = pkgs.fishPlugins.fzf-fish.src;
         }
       ];
+
+      functions = {
+        fish_user_key_bindings = ''
+          bind \cf "commandline -C 0; tmux-sessionizer"
+        '';
+      };
 
       shellAliases = {};
       shellAbbrs = {};
