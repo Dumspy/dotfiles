@@ -21,6 +21,10 @@ in {
   };
 
   config = {
+    myModules.home = {
+      zsh.enable = lib.mkDefault true;
+      fish.enable = lib.mkDefault true;
+    };
     myModules.home.shell.aliases = lib.optionalAttrs isDarwin {
       finder = "open";
     };
