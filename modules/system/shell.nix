@@ -29,6 +29,9 @@ in {
       '';
     };
 
-    users.defaultUserShell = if cfg.default == "fish" then pkgs.fish else pkgs.zsh;
+    users.defaultUserShell =
+      if cfg.default == "fish"
+      then pkgs.fish
+      else pkgs.zsh;
   };
 }
