@@ -5,6 +5,7 @@
   ...
 }: let
   cfg = config.myModules.system.k3s;
+  homePrefix = config.var.homePrefix;
 in {
   options.myModules.system.k3s = {
     enable = lib.mkEnableOption "k3s Kubernetes distribution";
@@ -13,11 +14,6 @@ in {
       type = lib.types.str;
       default = "server";
       description = "Role of the k3s node (server or agent)";
-    };
-
-    homePrefix = lib.mkOption {
-      type = lib.types.str;
-      description = "Home directory prefix for kubeconfig setup";
     };
   };
 
@@ -49,14 +45,14 @@ in {
           echo "k3s.yaml file found, proceeding with setup."
 
           echo "Creating kubernetes config directory..."
-          mkdir -p ${cfg.homePrefix}/.kube
+          mkdir -p ${homePrefix}/.kube
 
           echo "Copying k3s.yaml to kubeconfig..."
-          cp /etc/rancher/k3s/k3s.yaml ${cfg.homePrefix}/.kube/config
+          cp /etc/rancher/k3s/k3s.yaml ${homePrefix}/.kube/config
 
           echo "Setting proper ownership and permissions..."
-          chown nixos:users ${cfg.homePrefix}/.kube/config
-          chmod 600 ${cfg.homePrefix}/.kube/config
+          chown nixos:users ${homePrefix}/.kube/config
+          chmod 600 ${homePrefix}/.kube/config
 
           echo "Kubeconfig setup completed successfully."
         '';

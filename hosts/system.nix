@@ -1,5 +1,4 @@
 {
-  config,
   pkgs,
   lib,
   inputs,
@@ -64,6 +63,4 @@
   ];
 
   myModules.system.shell.default = lib.mkDefault "zsh";
-
-  environment.localBinInPath = true;
 }

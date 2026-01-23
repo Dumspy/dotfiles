@@ -18,12 +18,10 @@
       "arc"
       "docker"
       "ghostty"
-      "notion"
       "spotify"
       "raycast"
       "zed"
       "visual-studio-code"
-      "visual-studio-code@insiders"
       "bruno"
       "dbeaver-community"
       "tailscale-app"
@@ -37,12 +35,23 @@
   };
 
   #Users
-  users.users = {
-    "${config.var.username}" = {
-      name = "${config.var.username}";
-      home = "${config.var.homePrefix}";
-    };
+  users.knownUsers = [config.var.username];
+  users.users."${config.var.username}" = {
+    uid = 501;
+    gid = 20;
+    home = "/Users/${config.var.username}";
+    shell =
+      if config.myModules.system.shell.default == "fish"
+      then pkgs.fish
+      else pkgs.zsh;
   };
+
+  # Register shells in /etc/shells (required for macOS to treat them as valid login shells)
+  # Note: nix-darwin doesn't automatically update /etc/shells, must include both
+  environment.shells = [
+    pkgs.zsh
+    pkgs.fish
+  ];
 
   environment.systemPackages = [
     pkgs.dotnetCorePackages.sdk_9_0-bin

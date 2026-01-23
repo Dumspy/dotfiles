@@ -2,23 +2,24 @@
   config,
   lib,
   ...
-}:
-with lib; {
+}: let
+  cfg = config.myModules.home.ssh;
+in {
   options.myModules.home.ssh = {
-    enable = mkEnableOption "SSH client configuration";
-    identityAgent = mkOption {
-      type = types.nullOr types.str;
+    enable = lib.mkEnableOption "SSH client configuration";
+    identityAgent = lib.mkOption {
+      type = lib.types.nullOr lib.types.str;
       default = null;
       description = "SSH identity agent socket path";
     };
   };
 
-  config = mkIf config.myModules.home.ssh.enable {
+  config = lib.mkIf cfg.enable {
     programs.ssh = {
       enable = true;
-      extraConfig = mkIf (config.myModules.home.ssh.identityAgent != null) ''
+      extraConfig = lib.mkIf (cfg.identityAgent != null) ''
         Host *
-          IdentityAgent "${config.myModules.home.ssh.identityAgent}"
+          IdentityAgent "${cfg.identityAgent}"
       '';
     };
   };

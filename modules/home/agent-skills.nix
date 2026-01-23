@@ -53,6 +53,7 @@ in {
 
         # Anthropic
         "skill-creator"
+        "frontend-design"
 
         # Vercel
         "react-best-practices"

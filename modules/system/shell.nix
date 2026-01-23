@@ -28,10 +28,5 @@ in {
         setopt HIST_IGNORE_SPACE
       '';
     };
-
-    users.defaultUserShell =
-      if cfg.default == "fish"
-      then pkgs.fish
-      else pkgs.zsh;
   };
 }
