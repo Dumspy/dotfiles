@@ -74,7 +74,10 @@ in {
       targets = {
         opencode = {
           dest = ".config/opencode/skill";
-          structure = if cfg.portable then "link" else "symlink-tree";
+          structure =
+            if cfg.portable
+            then "link"
+            else "symlink-tree";
         };
       };
     };
