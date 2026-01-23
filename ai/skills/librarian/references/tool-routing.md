@@ -11,8 +11,8 @@ graph TD
     T -->|Compare| C[COMPARE]
     
     U --> U1{Known library?}
-    U1 -->|Yes| U2[context7.resolve-library-id]
-    U2 --> U3[context7.query-docs]
+    U1 -->|Yes| U2[WebFetch official docs]
+    U2 --> U3[Read docs]
     U3 --> U4{Need source?}
     U4 -->|Yes| U5[opensrc.fetch → read]
     U1 -->|No| U6[grep_app → opensrc.fetch]
@@ -37,7 +37,7 @@ graph TD
 
 | Keywords | Query Type | Start With |
 |----------|------------|------------|
-| "how does", "why does", "explain", "purpose of" | UNDERSTAND | context7 |
+| "how does", "why does", "explain", "purpose of" | UNDERSTAND | WebFetch |
 | "find", "where is", "implementations of", "examples of" | FIND | grep_app |
 | "explore", "walk through", "architecture", "structure" | EXPLORE | opensrc |
 | "compare", "vs", "difference between" | COMPARE | opensrc |
@@ -45,13 +45,13 @@ graph TD
 ## UNDERSTAND Queries
 
 ```
-Known library? → context7.resolve-library-id → context7.query-docs
+Known library? → WebFetch official docs
                  └─ Need source? → opensrc.fetch → read
 
 Unknown?      → grep_app search → opensrc.fetch top result → read
 ```
 
-**When to transition context7 → opensrc:**
+**When to transition docs → opensrc:**
 - Need implementation details (not just API docs)
 - Question about internals/private methods
 - Tracing code flow through library
@@ -94,14 +94,14 @@ Broad search?  → grep_app → analyze → opensrc.fetch interesting repos
 | Tool | Best For | Not For |
 |------|----------|---------|
 | **grep_app** | Broad search, unknown scope, finding repos | Semantic queries |
-| **context7** | Library APIs, best practices, common patterns | Library internals |
+| **WebFetch** | Library APIs, best practices, usage docs | Library internals |
 | **opensrc** | Deep exploration, reading internals, tracing flow | Initial discovery |
 
 ## Anti-patterns
 
 | Don't | Do |
 |-------|-----|
-| grep_app for known library docs | context7 first |
+| grep_app for known library docs | WebFetch first |
 | opensrc.fetch before knowing target | grep_app to discover |
 | Multiple small reads | opensrc.readMany batch |
 | Describe without linking | Link every file ref |

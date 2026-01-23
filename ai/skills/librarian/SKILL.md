@@ -38,8 +38,8 @@ Deep codebase exploration across remote repositories.
 | Tool | Best For | Limitations |
 |------|----------|-------------|
 | **grep_app** | Find patterns across ALL public GitHub | Literal search only |
-| **context7** | Library docs, API examples, usage | Known libraries only |
 | **opensrc** | Fetch full source for deep exploration | Must fetch before read |
+| **WebFetch** | Official docs, API references, usage guides | External to source |
 
 ## Quick Decision Trees
 
@@ -47,7 +47,9 @@ Deep codebase exploration across remote repositories.
 
 ```
 Known library?
-├─ Yes → context7.resolve-library-id → context7.query-docs
+├─ Yes → Has official docs site?
+│        ├─ Yes → WebFetch (target official domain)
+│        └─ No  → opensrc.fetch → read README + source
 │        └─ Need internals? → opensrc.fetch → read source
 └─ No  → grep_app search → opensrc.fetch top result
 ```
@@ -97,11 +99,30 @@ const files = await opensrc.files(source.name, "**/*.ts");
 | GitHub | `"vercel/ai"` | `"github.com/vercel/ai"` |
 | GitLab | `"gitlab:org/repo"` | `"gitlab.com/org/repo"` |
 
+## WebFetch Best Practices
+
+**Target official sources first:**
+- Search: `"[library] official documentation site:[domain]"` (e.g., `zod site:zod.dev`)
+- Known domains: `docs.rs` (Rust), `pkg.go.dev` (Go), `docs.python.org`, `npmjs.com`
+- Prefer: GitHub README → official docs → blog posts
+
+**Skip WebFetch when:**
+- Library is obscure/undocumented → go straight to `opensrc.fetch`
+- Question is about internals → source code is authoritative
+- You already know the repo → `opensrc` directly
+
+**Fallback chain:**
+```
+WebFetch fails/irrelevant?
+├─ Try GitHub README: opensrc.fetch → read README.md
+└─ Search source: opensrc.grep for patterns
+```
+
 ## When NOT to Use opensrc
 
 | Scenario | Use Instead |
 |----------|-------------|
-| Simple library API questions | context7 |
+| Simple library API questions | WebFetch |
 | Finding examples across many repos | grep_app |
 | Very large monorepos (>10GB) | Clone locally |
 | Private repositories | Direct access |
