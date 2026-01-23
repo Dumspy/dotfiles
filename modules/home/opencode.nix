@@ -43,13 +43,10 @@ in {
 
         model = "zai-coding-plan/glm-4.7";
 
-        plugin = [];
-
         mcp = {
           grep_app = {
             type = "remote";
             url = "https://mcp.grep.app";
-            enabled = false;
           };
           opensrc = {
             type = "local";
@@ -116,6 +113,11 @@ in {
 
       commands = {
         "dependabot-solver" = ../../ai/commands/dependabot-solver.md;
+      };
+
+      agents = {
+        librarian = ../../ai/agents/librarian.md;
+        oracle = ../../ai/agents/oracle.md;
       };
     };
   };
