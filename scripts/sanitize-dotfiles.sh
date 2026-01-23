@@ -38,13 +38,9 @@ sanitize_file() {
     -e 's|source /nix/store/[^-]*-zsh-autosuggestions-[^/]*/share/zsh-autosuggestions/zsh-autosuggestions.zsh|# Autosuggestions: install via package manager or download|g' \
     "$tmp" 2>/dev/null || true
   
-  # Preserve the file if it has content after sanitization
-  if [[ -s "$tmp" ]]; then
-    cat "$tmp" > "$file"
-    rm -f "$tmp"
-  else
-    rm -f "$tmp"
-  fi
+  # Always overwrite: if empty after sanitization, truncate the file
+  cat "$tmp" > "$file"
+  rm -f "$tmp"
 }
 
 # Sanitize shell files
