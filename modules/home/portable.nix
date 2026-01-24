@@ -1,6 +1,7 @@
 {
   imports = [
     ./options.nix
+    ./shell.nix
     ./zsh.nix
     ./starship.nix
     ./fzf.nix
@@ -12,6 +13,8 @@
     ./tmux-sessionizer.nix
     ./opencode.nix
     ./agent-skills.nix
+    ./agent-browser.nix
+    ./lazygit.nix
     ./ssh.nix
   ];
 
@@ -28,6 +31,8 @@
     tmux-sessionizer.enable = true;
     opencode.enable = true;
     agent-skills.enable = true;
+    agent-browser.enable = true;
+    lazygit.enable = true;
     ssh.enable = true;
   };
 
