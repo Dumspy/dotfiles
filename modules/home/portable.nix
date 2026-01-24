@@ -1,5 +1,6 @@
 {
   imports = [
+    ./options.nix
     ./zsh.nix
     ./starship.nix
     ./fzf.nix
@@ -15,6 +16,7 @@
   ];
 
   myModules.home = {
+    portable = true;
     zsh.enable = true;
     starship.enable = true;
     fzf.enable = true;
@@ -25,10 +27,8 @@
     tmux.enable = true;
     tmux-sessionizer.enable = true;
     opencode.enable = true;
-    agent-skills = {
-      enable = true;
-      portable = true;
-    };
+    agent-skills.enable = true;
+    ssh.enable = true;
   };
 
   programs.home-manager.enable = true;

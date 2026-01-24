@@ -6,6 +6,7 @@
   ...
 }: let
   cfg = config.myModules.home.agent-skills;
+  portable = config.myModules.home.portable or false;
   agent-skills-lib = inputs.agent-skills-nix.lib.agent-skills {
     inherit inputs lib;
   };
@@ -16,7 +17,6 @@ in {
 
   options.myModules.home.agent-skills = {
     enable = lib.mkEnableOption "agent-skills for AI coding assistants";
-    portable = lib.mkEnableOption "use copy-tree structure for portable dotfiles export";
   };
 
   config = lib.mkIf cfg.enable {
@@ -75,7 +75,7 @@ in {
         opencode = {
           dest = ".config/opencode/skill";
           structure =
-            if cfg.portable
+            if portable
             then "link"
             else "symlink-tree";
         };
