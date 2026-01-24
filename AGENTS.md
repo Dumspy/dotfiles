@@ -8,7 +8,7 @@
 ## Architecture
 - **Type**: Declarative dotfiles/NixOS configuration management using Nix flakes
 - **Targets**: macOS (nix-darwin), NixOS (WSL, k3s-node, master-node)
-- **Key inputs**: nixpkgs, home-manager, nix-darwin, nixos-wsl, opnix (1Password secrets), opencode, agent-skills-nix
+ - **Key inputs**: nixpkgs, home-manager, nix-darwin, nixos-wsl, opnix (1Password secrets), opencode, agent-skills-nix, catppuccin
 - **Structure**:
   - `/modules/system` → system-level configs (nix-darwin/nixos)
   - `/modules/home` → home-manager configs
@@ -18,8 +18,8 @@
 - **SSH**: WSL uses npiperelay for host SSH agent forwarding
 
 ## Theming
-- **Framework**: Stylix (nix-community/stylix) for consistent theming across all targets
-- **Theme**: Catppuccin Macchiato (configured in `modules/system/stylix.nix`)
+- **Framework**: catppuccin/nix for consistent theming across all targets
+- **Theme**: Catppuccin Macchiato (configured in `hosts/home.nix`)
 - **Fonts**: JetBrainsMono Nerd Font (mono), Inter (sans), Noto Serif, Noto Color Emoji
 
 ## Code Style

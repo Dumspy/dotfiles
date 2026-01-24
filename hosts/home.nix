@@ -1,6 +1,12 @@
 {...}: {
   home.stateVersion = "24.11";
 
+  catppuccin = {
+    enable = true;
+    flavor = "macchiato";
+    accent = "mauve";
+  };
+
   myModules.home = {
     shell.default = "zsh";
     starship.enable = true;

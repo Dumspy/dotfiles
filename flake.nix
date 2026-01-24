@@ -61,9 +61,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    stylix = {
-      url = "github:nix-community/stylix";
-      inputs.nixpkgs.follows = "nixpkgs";
+    catppuccin = {
+      url = "github:catppuccin/nix";
     };
   };
 
@@ -82,10 +81,10 @@
     agent-browser,
     anthropics-agent-skills,
     llm-agents,
-    stylix,
+    catppuccin,
   }: let
     lib = (import ./lib) {
-      inherit nixpkgs nix-darwin nixos-wsl home-manager stylix;
+      inherit nixpkgs nix-darwin nixos-wsl home-manager catppuccin;
       flakeRoot = ./.;
     };
     inherit (lib) mkDarwin mkNixos;

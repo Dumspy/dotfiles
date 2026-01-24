@@ -39,11 +39,8 @@
     b = hexToInt (builtins.substring 4 2 hex);
   in "\\033[1;38;2;${toString r};${toString g};${toString b}m";
 
-  # Get color from stylix if available, otherwise use fallback
-  prefixColor =
-    if config.stylix.enable or false
-    then hexToAnsi config.lib.stylix.colors.base0E # Mauve/purple from catppuccin
-    else "\\033[1;35m"; # Fallback to bold magenta
+  # Catppuccin Macchiato mauve color (#c6a0f6)
+  prefixColor = hexToAnsi "c6a0f6";
 
   tmux-sessionizer = pkgs.writeShellScriptBin "tmux-sessionizer" ''
 

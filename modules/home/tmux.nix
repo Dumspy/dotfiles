@@ -11,6 +11,13 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
+    catppuccin.tmux.enable = config.catppuccin.enable;
+    catppuccin.tmux.extraConfig = ''
+      set -g @catppuccin_window_status_style "rounded"
+      set -g @catppuccin_status_left ""
+      set -g @catppuccin_status_right "#{E:@catppuccin_status_application} #{E:@catppuccin_status_session}"
+    '';
+
     programs.tmux = {
       enable = true;
 
@@ -22,13 +29,6 @@ in {
       plugins = with pkgs.tmuxPlugins; [
         sensible
         vim-tmux-navigator
-        {
-          plugin = catppuccin;
-          extraConfig = ''
-            set -g @catppuccin_flavor 'macchiato'
-            set -g @catppuccin_window_status_style "rounded"
-          '';
-        }
       ];
 
       extraConfig = ''
@@ -46,13 +46,6 @@ in {
 
         # Reload config reminder - Nix rebuild required
         bind r display-message "Config is managed by Nix. Run './rebuild.sh' to reload changes."
-
-        # Status bar configuration
-        set -g status-right-length 100
-        set -g status-left-length 100
-        set -g status-left ""
-        set -g status-right "#{E:@catppuccin_status_application}"
-        set -ag status-right "#{E:@catppuccin_status_session}"
 
         # Open new split panes in the same directory as the current pane
         bind '"' split-window -c "#{pane_current_path}"

@@ -2,7 +2,7 @@
   nixpkgs,
   nix-darwin,
   home-manager,
-  stylix,
+  catppuccin,
   flakeRoot ? ./..,
   ...
 }: {
@@ -21,7 +21,6 @@
           (flakeRoot + /modules/system/platform/darwin.nix)
           (flakeRoot + /hosts/system.nix)
           (flakeRoot + /hosts/${name}/system.nix)
-          stylix.darwinModules.stylix
           home-manager.darwinModules.home-manager
           {
             home-manager = {
@@ -33,6 +32,7 @@
                   (flakeRoot + /modules/home)
                   (flakeRoot + /hosts/home.nix)
                   (flakeRoot + /hosts/${name}/home.nix)
+                  catppuccin.homeModules.catppuccin
                 ];
               };
             };
@@ -58,7 +58,6 @@
           (flakeRoot + /modules/system/platform/nixos.nix)
           (flakeRoot + /hosts/system.nix)
           (flakeRoot + /hosts/${name}/system.nix)
-          stylix.nixosModules.stylix
         ]
         ++ (
           if withHomeManager
@@ -74,6 +73,7 @@
                     (flakeRoot + /modules/home)
                     (flakeRoot + /hosts/home.nix)
                     (flakeRoot + /hosts/${name}/home.nix)
+                    catppuccin.homeModules.catppuccin
                   ];
                 };
               };

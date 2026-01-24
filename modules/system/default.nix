@@ -9,7 +9,6 @@
       ./onepassword.nix
       ./tailscale.nix
       ./openssh.nix
-      ./stylix.nix
     ]
     ++ lib.optionals (!isDarwin) [
       ./1password-agent.nix
