@@ -14,8 +14,6 @@ in {
     catppuccin.tmux.enable = config.catppuccin.enable;
     catppuccin.tmux.extraConfig = ''
       set -g @catppuccin_window_status_style "rounded"
-      set -g @catppuccin_status_left ""
-      set -g @catppuccin_status_right "#{E:@catppuccin_status_application} #{E:@catppuccin_status_session}"
     '';
 
     programs.tmux = {
@@ -32,6 +30,15 @@ in {
       ];
 
       extraConfig = ''
+        # Catppuccin status bar (must be set after plugin loads)
+        set -g status-left ""
+        set -g status-right-length 100
+        set -g status-right "#{E:@catppuccin_status_application}#{E:@catppuccin_status_session}"
+
+        # Clipboard support for opencode in WSL
+        set -g set-clipboard on
+        set -g allow-passthrough all
+
         # Terminal colors and 256 color support
         set -ga terminal-overrides ",ghostty:Tc,*:RGB"
 
