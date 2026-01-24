@@ -48,6 +48,11 @@ in {
         subdir = "skills";
       };
 
+      sources.dex = {
+        path = inputs.dex-agent-skills;
+        subdir = "plugins/dex/skills";
+      };
+
       skills.enable = [
         "dependabot-solver"
 
@@ -69,6 +74,10 @@ in {
 
         # Browser
         "agent-browser"
+
+        # Dex
+        "dex"
+        "dex-plan"
       ];
 
       targets = {

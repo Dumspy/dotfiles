@@ -14,6 +14,7 @@
     ./opencode.nix
     ./agent-skills.nix
     ./agent-browser.nix
+    ./dex.nix
     ./ssh.nix
     ./lazygit.nix
   ];

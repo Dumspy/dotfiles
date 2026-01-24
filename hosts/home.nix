@@ -19,6 +19,7 @@
     opencode.enable = true;
     agent-skills.enable = true;
     agent-browser.enable = true;
+    dex.enable = true;
     lazygit.enable = true;
   };
 

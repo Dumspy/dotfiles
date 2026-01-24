@@ -56,6 +56,11 @@
       flake = false;
     };
 
+    dex-agent-skills = {
+      url = "github:dcramer/dex";
+      flake = false;
+    };
+
     llm-agents = {
       url = "github:numtide/llm-agents.nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -80,6 +85,7 @@
     expo-agent-skills,
     agent-browser,
     anthropics-agent-skills,
+    dex-agent-skills,
     llm-agents,
     catppuccin,
   }: let
