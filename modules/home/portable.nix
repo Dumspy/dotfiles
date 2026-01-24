@@ -3,6 +3,7 @@
     ./options.nix
     ./shell.nix
     ./zsh.nix
+    ./fish.nix
     ./starship.nix
     ./fzf.nix
     ./direnv.nix
