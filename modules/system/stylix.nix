@@ -22,6 +22,10 @@
         package = pkgs.nerd-fonts.jetbrains-mono;
         name = "JetBrainsMono Nerd Font";
       };
+      emoji = {
+        package = pkgs.noto-fonts-monochrome-emoji;
+        name = "Noto Color Emoji";
+      };
       sizes = {
         applications = 12;
         terminal = 13;
