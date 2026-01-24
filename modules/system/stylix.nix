@@ -11,26 +11,16 @@
     base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-macchiato.yaml";
 
     # Placeholder image (required by stylix)
-    image = lib.mkDefault (pkgs.runCommand "placeholder.png" {} ''
-      ${pkgs.imagemagick}/bin/magick -size 16x16 xc:#24273a $out
-    '');
+    image = lib.mkDefault (
+      pkgs.runCommand "placeholder.png" {} ''
+        ${pkgs.imagemagick}/bin/magick -size 16x16 xc:#24273a $out
+      ''
+    );
 
     fonts = {
       monospace = {
         package = pkgs.nerd-fonts.jetbrains-mono;
         name = "JetBrainsMono Nerd Font";
-      };
-      sansSerif = {
-        package = pkgs.inter;
-        name = "Inter";
-      };
-      serif = {
-        package = pkgs.noto-fonts;
-        name = "Noto Serif";
-      };
-      emoji = {
-        package = pkgs.noto-fonts-color-emoji;
-        name = "Noto Color Emoji";
       };
       sizes = {
         applications = 12;
