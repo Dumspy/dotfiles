@@ -157,5 +157,21 @@
           ];
         };
       };
+
+      # Portable home-manager configuration for cross-platform dotfiles export
+      homeConfigurations.portable = home-manager.lib.homeManagerConfiguration {
+        pkgs = import nixpkgs {system = "x86_64-linux";};
+        extraSpecialArgs = {inherit inputs;};
+        modules = [
+          {
+            home.username = "user";
+            home.homeDirectory = "/home/user";
+            home.stateVersion = "24.11";
+            imports = [
+              ./modules/home/portable.nix
+            ];
+          }
+        ];
+      };
     };
 }

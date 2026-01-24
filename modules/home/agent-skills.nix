@@ -6,6 +6,7 @@
   ...
 }: let
   cfg = config.myModules.home.agent-skills;
+  portable = config.myModules.home.portable or false;
   agent-skills-lib = inputs.agent-skills-nix.lib.agent-skills {
     inherit inputs lib;
   };
@@ -73,7 +74,10 @@ in {
       targets = {
         opencode = {
           dest = ".config/opencode/skill";
-          structure = "symlink-tree";
+          structure =
+            if portable
+            then "link"
+            else "symlink-tree";
         };
       };
     };

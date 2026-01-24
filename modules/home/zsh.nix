@@ -6,6 +6,7 @@
 }: let
   cfg = config.myModules.home.zsh;
   shellCfg = config.myModules.home.shell;
+  portable = config.myModules.home.portable or false;
 in {
   options.myModules.home.zsh = {
     enable = lib.mkEnableOption "zsh shell with fzf-tab and completions";
@@ -18,7 +19,7 @@ in {
       autosuggestion.enable = true;
       shellAliases = shellCfg.aliases;
 
-      plugins = [
+      plugins = lib.mkIf (!portable) [
         {
           name = "fzf-tab";
           src = pkgs.fetchFromGitHub {

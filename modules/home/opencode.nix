@@ -6,6 +6,7 @@
   ...
 }: let
   cfg = config.myModules.home.opencode;
+  portable = config.myModules.home.portable or false;
 
   opensrc-mcp = pkgs.buildNpmPackage {
     pname = "opensrc-mcp";
@@ -50,7 +51,10 @@ in {
           };
           opensrc = {
             type = "local";
-            command = ["${opensrc-mcp}/bin/opensrc-mcp"];
+            command =
+              if portable
+              then ["npx" "opensrc-mcp"]
+              else ["${opensrc-mcp}/bin/opensrc-mcp"];
           };
         };
 
