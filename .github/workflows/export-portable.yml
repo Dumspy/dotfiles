@@ -27,3 +27,4 @@ jobs:
           name: portable-dotfiles
           path: stow/
           retention-days: 30
+          include-hidden-files: true
