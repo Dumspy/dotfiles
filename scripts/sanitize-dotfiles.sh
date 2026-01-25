@@ -25,12 +25,11 @@ sanitize_file() {
     return
   fi
 
-  local tmp tmp_content
+  local tmp
   tmp=$(mktemp)
-  tmp_content=$(cat "$file" || true)
   
   # First, replace known nix store paths with portable equivalents
-  echo "$tmp_content" > "$tmp"
+  cat "$file" > "$tmp"
   sed -i \
     -e 's|HELPDIR="/nix/store/[^"]*-zsh-[^"]*/share/zsh/\$ZSH_VERSION/help"|# HELPDIR removed - install zsh system package|g' \
     -e 's|source /nix/store/[^-]*-zsh-autosuggestions-[^/]*/share/zsh-autosuggestions/zsh-autosuggestions.zsh|# Autosuggestions: install via package manager or download|g' \
@@ -41,9 +40,19 @@ sanitize_file() {
     -e 's|run-shell /nix/store/[^[:space:]]*tmuxplugin-vim-tmux-navigator[^[:space:]]*|# Vim-tmux-navigator: install via TPM or manually|g' \
     "$tmp" 2>/dev/null || true
   
-  # Then remove remaining lines with nix store paths or Nix-specific variables
-  grep -v -E '/nix/store|NIX_PROFILES' "$tmp" > "${tmp}.filtered" || true
+  # Remove lines with nix store paths, NIX_PROFILES references, or home-manager completions path
+  grep -v -E '/nix/store|NIX_PROFILES|\$\{.*NIX_PROFILES|home-manager/generated_completions' "$tmp" > "${tmp}.filtered" || true
   mv "${tmp}.filtered" "$tmp"
+  
+  # Remove orphaned fpath lines from NIX_PROFILES loop (zsh-specific)
+  sed -i '/fpath+=(\$profile\/share\/zsh/d' "$tmp" 2>/dev/null || true
+  
+  # Remove standalone 'done' that appears right after typeset line (orphaned from NIX_PROFILES loop)
+  # This is a specific pattern: "typeset ... done" with nothing in between
+  sed -i ':a;N;$!ba;s/\(typeset -U path cdpath fpath manpath\n\)done\n/\1/g' "$tmp" 2>/dev/null || true
+  
+  # Replace hardcoded /home/user with $HOME (do it per-file for safety)
+  sed -i 's|/home/user|\$HOME|g' "$tmp" 2>/dev/null || true
   
   # Always overwrite: if empty after sanitization, truncate the file
   cat "$tmp" > "$file"
@@ -72,21 +81,17 @@ if [[ -d "$OUTPUT_DIR"/.local ]]; then
 fi
 
 # Remove Nix-specific files/directories that don't make sense for portable
-rm -f "$OUTPUT_DIR"/.manpath
-rm -f "$OUTPUT_DIR"/.zshenv
+echo "Removing Nix-specific files and directories..."
+rm -rf "$OUTPUT_DIR"/.manpath
+rm -rf "$OUTPUT_DIR"/.zshenv
+rm -rf "$OUTPUT_DIR"/.cache
 rm -rf "$OUTPUT_DIR"/.local/state
 rm -rf "$OUTPUT_DIR"/.config/systemd
 rm -rf "$OUTPUT_DIR"/.config/environment.d
-rm -rf "$OUTPUT_DIR"/.config/direnv
-rm -rf "$OUTPUT_DIR"/.cache
 rm -rf "$OUTPUT_DIR"/.local/share/fish/home-manager
 rm -rf "$OUTPUT_DIR"/.local/share/nvim/site/pack/hm
 
-# Replace hardcoded /home/user with $HOME
-find "$OUTPUT_DIR" -type f | while read -r file; do
-  if grep -q '/home/user' "$file" 2>/dev/null; then
-    sed -i 's|/home/user|\$HOME|g' "$file"
-  fi
-done
+# Remove empty directories
+find "$OUTPUT_DIR" -type d -empty -delete 2>/dev/null || true
 
 echo "✓ Sanitization complete"
