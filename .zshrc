@@ -1,5 +1,4 @@
 typeset -U path cdpath fpath manpath
-for profile in ${(z)NIX_PROFILES}; do
   fpath+=($profile/share/zsh/site-functions $profile/share/zsh/$ZSH_VERSION/functions $profile/share/zsh/vendor-completions)
 done
 
@@ -13,7 +12,7 @@ ZSH_AUTOSUGGEST_STRATEGY=(history)
 HISTSIZE="10000"
 SAVEHIST="10000"
 
-HISTFILE="/home/user/.zsh_history"
+HISTFILE="$HOME/.zsh_history"
 mkdir -p "$(dirname "$HISTFILE")"
 
 setopt HIST_FCNTL_LOCK
