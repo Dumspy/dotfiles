@@ -36,11 +36,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    agent-skills-nix = {
-      url = "github:kyure-a/agent-skills-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     vercel-agent-skills = {
       url = "github:vercel-labs/agent-skills";
       flake = false;
@@ -66,6 +61,11 @@
       flake = false;
     };
 
+    sentry-skills = {
+      url = "github:getsentry/skills";
+      flake = false;
+    };
+
     llm-agents = {
       url = "github:numtide/llm-agents.nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -86,20 +86,20 @@
     flake-utils,
     git-hooks,
     home-manager,
-    agent-skills-nix,
     vercel-agent-skills,
     expo-agent-skills,
     agent-browser,
     anthropics-agent-skills,
     dex-agent-skills,
+    sentry-skills,
     llm-agents,
     catppuccin,
   }: let
-    lib = (import ./lib) {
+    myLib = (import ./lib) {
       inherit nixpkgs nix-darwin nixos-wsl home-manager catppuccin;
       flakeRoot = ./.;
     };
-    inherit (lib) mkDarwin mkNixos;
+    inherit (myLib) mkDarwin mkNixos;
   in
     (flake-utils.lib.eachDefaultSystem (
       system: let
