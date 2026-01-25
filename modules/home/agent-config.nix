@@ -6,7 +6,7 @@
   ...
 }: {
   imports = [
-    (import ../../lib/agent-config.nix {inherit lib pkgs config inputs;})
+    (import ../../lib/agent-config.nix {inherit lib pkgs config;})
   ];
 
   config.myModules.home.agent-config = {
@@ -34,15 +34,17 @@
         path = inputs.dex-agent-skills;
         skillsSubdir = "plugins/dex/skills";
       };
-      claude-plugins = {
-        path = inputs.claude-plugins-official;
-        skillsSubdir = "plugins";
-        agentsSubdir = "plugins/code-simplifier/agents";
-        agents = [
-          "code-simplifier"
-        ];
+      sentry = {
+        path = inputs.sentry-skills;
+        skillsSubdir = "plugins/sentry-skills/skills";
+        agentsSubdir = "plugins/sentry-skills/agents";
       };
     };
+
+    # Agents to enable (auto-discovered from sources)
+    agents = [
+      "code-simplifier" # from sentry
+    ];
 
     skills = [
       "dependabot-solver"
