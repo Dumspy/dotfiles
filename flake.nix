@@ -107,11 +107,11 @@
     llm-agents,
     catppuccin,
   }: let
-    lib = (import ./lib) {
+    myLib = (import ./lib) {
       inherit nixpkgs nix-darwin nixos-wsl home-manager catppuccin;
       flakeRoot = ./.;
     };
-    inherit (lib) mkDarwin mkNixos;
+    inherit (myLib) mkDarwin mkNixos;
   in
     (flake-utils.lib.eachDefaultSystem (
       system: let
