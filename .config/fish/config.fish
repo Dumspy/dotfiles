@@ -29,6 +29,7 @@ status is-interactive; and begin
     # Aliases
 
     # Interactive shell initialisation
+    fzf --fish | source
 
     set fish_greeting
     # Source local overrides (not managed by dotfiles)
@@ -37,6 +38,7 @@ status is-interactive; and begin
     end
 
     if test "$TERM" != dumb
+        starship init fish | source
 
     end
 
@@ -49,6 +51,5 @@ status is-interactive; and begin
         set -l post (string split " " (string trim $post_joined))
         set fish_complete_path $prev "$HOME/.local/share/fish/home-manager/generated_completions" $post
     end
-
 
 end

@@ -2,8 +2,10 @@ typeset -U path cdpath fpath manpath
   fpath+=($profile/share/zsh/site-functions $profile/share/zsh/$ZSH_VERSION/functions $profile/share/zsh/vendor-completions)
 done
 
+# HELPDIR removed - install zsh system package
 
 autoload -U compinit && compinit
+# Autosuggestions: install via package manager or download
 ZSH_AUTOSUGGEST_STRATEGY=(history)
 
 
@@ -37,8 +39,10 @@ done
 unset opt disabled_opts
 
 if [[ $options[zle] = on ]]; then
+  source <(fzf --zsh)
 fi
 
+# Catppuccin syntax highlighting: install manually if desired
 
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 zstyle ':completion:*' menu no
@@ -50,6 +54,7 @@ bindkey -s ^f "tmux-sessionizer\n"
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
 
 if [[ $TERM != "dumb" ]]; then
+  eval "$(starship init zsh)"
 fi
 
 lg() {
@@ -60,4 +65,3 @@ lg() {
       rm -f $LAZYGIT_NEW_DIR_FILE > /dev/null
     fi
 }
-

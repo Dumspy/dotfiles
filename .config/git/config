@@ -16,6 +16,7 @@
 	format = "ssh"
 
 [gpg "openpgp"]
+	program = "gpg"
 
 [push]
 	autoSetupRemote = true
