@@ -60,6 +60,9 @@ create_local_overrides() {
     cat >"$HOME/.zshrc.local" <<'EOF'
 # Local zsh configuration (not managed by dotfiles)
 # Add your machine-specific settings here
+
+# Add ~/.local/bin to PATH (for tmux-sessionizer and other scripts)
+export PATH="$HOME/.local/bin:$PATH"
 EOF
     info "Created ~/.zshrc.local"
   fi
@@ -121,7 +124,11 @@ apply_dotfiles() {
   info "Applying dotfiles with stow..."
   cd "$DOTFILES_DIR"
   backup_conflicts
-  stow --restow --target="$HOME" .
+  stow --restow --target="$HOME" \
+    --ignore='^README\.md$' \
+    --ignore='^bootstrap\.sh$' \
+    --ignore='^PORTABLE_.*' \
+    .
 }
 
 main() {

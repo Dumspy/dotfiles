@@ -29,8 +29,8 @@ sanitize_file() {
   tmp=$(mktemp)
   tmp_content=$(cat "$file" || true)
   
-  # Remove lines that reference /nix/store paths directly
-  echo "$tmp_content" | grep -v '/nix/store' > "$tmp" || true
+  # Remove lines that reference /nix/store paths or Nix-specific variables
+  echo "$tmp_content" | grep -v -E '/nix/store|NIX_PROFILES' > "$tmp" || true
   
   # Replace nix store references with comments
   sed -i \
@@ -44,7 +44,7 @@ sanitize_file() {
 }
 
 # Sanitize shell files
-for shellfile in "$OUTPUT_DIR"/.zshrc "$OUTPUT_DIR"/.bashrc; do
+for shellfile in "$OUTPUT_DIR"/.zshrc "$OUTPUT_DIR"/.bashrc "$OUTPUT_DIR"/.zshenv; do
   if [[ -f "$shellfile" ]]; then
     sanitize_file "$shellfile"
   fi
@@ -63,5 +63,15 @@ if [[ -d "$OUTPUT_DIR"/.local ]]; then
     sanitize_file "$file"
   done
 fi
+
+# Remove Nix-specific files that don't make sense for portable
+rm -f "$OUTPUT_DIR"/.manpath
+
+# Replace hardcoded /home/user with $HOME
+find "$OUTPUT_DIR" -type f | while read -r file; do
+  if grep -q '/home/user' "$file" 2>/dev/null; then
+    sed -i 's|/home/user|\$HOME|g' "$file"
+  fi
+done
 
 echo "✓ Sanitization complete"

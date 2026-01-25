@@ -5,6 +5,7 @@
   ...
 }: let
   cfg = config.myModules.home.tmux-sessionizer;
+  portable = config.myModules.home.portable or false;
 
   searchPathsStr = lib.concatStringsSep " " cfg.searchPaths;
 
@@ -381,6 +382,13 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    home.packages = [tmux-sessionizer];
+    # For Nix systems, add to packages (goes into profile)
+    home.packages = lib.mkIf (!portable) [tmux-sessionizer];
+
+    # For portable systems, write to ~/.local/bin
+    home.file.".local/bin/tmux-sessionizer" = lib.mkIf portable {
+      executable = true;
+      text = builtins.readFile "${tmux-sessionizer}/bin/tmux-sessionizer";
+    };
   };
 }
