@@ -93,6 +93,22 @@
         "type": "github"
       }
     },
+    "claude-plugins-official": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1768973887,
+        "narHash": "sha256-OxIrvISdHK/gULDc4alD4T4tivjfb5R6wBs/kUhVhiY=",
+        "owner": "anthropics",
+        "repo": "claude-plugins-official",
+        "rev": "e30768372b4150ca1bc0839d93283e8edc30d60d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "anthropics",
+        "repo": "claude-plugins-official",
+        "type": "github"
+      }
+    },
     "dex-agent-skills": {
       "flake": false,
       "locked": {
@@ -420,6 +436,7 @@
         "agent-skills-nix": "agent-skills-nix",
         "anthropics-agent-skills": "anthropics-agent-skills",
         "catppuccin": "catppuccin",
+        "claude-plugins-official": "claude-plugins-official",
         "dex-agent-skills": "dex-agent-skills",
         "expo-agent-skills": "expo-agent-skills",
         "flake-utils": "flake-utils",
@@ -431,7 +448,24 @@
         "nixpkgs": "nixpkgs_2",
         "opencode": "opencode",
         "opnix": "opnix",
+        "sentry-skills": "sentry-skills",
         "vercel-agent-skills": "vercel-agent-skills"
+      }
+    },
+    "sentry-skills": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1768940580,
+        "narHash": "sha256-11vpXi2P1vBrtLnrYFlAjGKw67LbyBOX2+X+9KBLNtU=",
+        "owner": "getsentry",
+        "repo": "skills",
+        "rev": "20886b3f82305f6769468a02f87780a139016730",
+        "type": "github"
+      },
+      "original": {
+        "owner": "getsentry",
+        "repo": "skills",
+        "type": "github"
       }
     },
     "systems": {

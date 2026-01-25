@@ -17,7 +17,7 @@
     tmux.enable = true;
     tmux-sessionizer.enable = true;
     opencode.enable = true;
-    agent-skills.enable = true;
+    agent-config.enable = true;
     agent-browser.enable = true;
     dex.enable = true;
     lazygit.enable = true;

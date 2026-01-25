@@ -101,6 +101,7 @@ in {
             "git status*" = "allow";
             "git diff*" = "allow";
             "git log*" = "allow";
+            "dex *" = "allow";
           };
         };
 

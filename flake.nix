@@ -66,6 +66,16 @@
       flake = false;
     };
 
+    claude-plugins-official = {
+      url = "github:anthropics/claude-plugins-official";
+      flake = false;
+    };
+
+    sentry-skills = {
+      url = "github:getsentry/skills";
+      flake = false;
+    };
+
     llm-agents = {
       url = "github:numtide/llm-agents.nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -92,6 +102,8 @@
     agent-browser,
     anthropics-agent-skills,
     dex-agent-skills,
+    claude-plugins-official,
+    sentry-skills,
     llm-agents,
     catppuccin,
   }: let

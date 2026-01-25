@@ -12,7 +12,7 @@
     ./tmux.nix
     ./tmux-sessionizer.nix
     ./opencode.nix
-    ./agent-skills.nix
+    ./agent-config.nix
     ./agent-browser.nix
     ./dex.nix
     ./ssh.nix
