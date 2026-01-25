@@ -62,8 +62,9 @@ jobs:
           fi
 
           # Clear existing files and copy generated ones
-          find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
+          find . -mindepth 1 -maxdepth 1 ! -name '.git' ! -name 'portable-output' -exec rm -rf {} +
           cp -r portable-output/. .
+          rm -rf portable-output
 
           git add -A
 
