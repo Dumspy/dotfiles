@@ -23,7 +23,7 @@
     zsh.enable = true;
     starship.enable = true;
     fzf.enable = true;
-    direnv.enable = true;
+    direnv.enable = false;
     git.enable = true;
     ghostty.enable = true;
     neovim.enable = true;
@@ -31,7 +31,7 @@
     tmux-sessionizer.enable = true;
     opencode.enable = true;
     lazygit.enable = true;
-    ssh.enable = true;
+    ssh.enable = false;
   };
 
   programs.home-manager.enable = true;

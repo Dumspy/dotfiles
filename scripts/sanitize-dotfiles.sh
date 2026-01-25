@@ -29,14 +29,21 @@ sanitize_file() {
   tmp=$(mktemp)
   tmp_content=$(cat "$file" || true)
   
-  # Remove lines that reference /nix/store paths or Nix-specific variables
-  echo "$tmp_content" | grep -v -E '/nix/store|NIX_PROFILES' > "$tmp" || true
-  
-  # Replace nix store references with comments
+  # First, replace known nix store paths with portable equivalents
+  echo "$tmp_content" > "$tmp"
   sed -i \
     -e 's|HELPDIR="/nix/store/[^"]*-zsh-[^"]*/share/zsh/\$ZSH_VERSION/help"|# HELPDIR removed - install zsh system package|g' \
     -e 's|source /nix/store/[^-]*-zsh-autosuggestions-[^/]*/share/zsh-autosuggestions/zsh-autosuggestions.zsh|# Autosuggestions: install via package manager or download|g' \
+    -e "s|source '/nix/store/[^']*-catppuccin-zsh-syntax-highlighting[^']*'|# Catppuccin syntax highlighting: install manually if desired|g" \
+    -e 's|/nix/store/[^/]*/bin/\([a-zA-Z0-9_-]*\)|\1|g' \
+    -e 's|run-shell /nix/store/[^[:space:]]*tmuxplugin-catppuccin[^[:space:]]*|# Catppuccin: install via TPM or manually|g' \
+    -e 's|run-shell /nix/store/[^[:space:]]*tmuxplugin-sensible[^[:space:]]*|# Sensible: install via TPM or manually|g' \
+    -e 's|run-shell /nix/store/[^[:space:]]*tmuxplugin-vim-tmux-navigator[^[:space:]]*|# Vim-tmux-navigator: install via TPM or manually|g' \
     "$tmp" 2>/dev/null || true
+  
+  # Then remove remaining lines with nix store paths or Nix-specific variables
+  grep -v -E '/nix/store|NIX_PROFILES' "$tmp" > "${tmp}.filtered" || true
+  mv "${tmp}.filtered" "$tmp"
   
   # Always overwrite: if empty after sanitization, truncate the file
   cat "$tmp" > "$file"
@@ -64,8 +71,16 @@ if [[ -d "$OUTPUT_DIR"/.local ]]; then
   done
 fi
 
-# Remove Nix-specific files that don't make sense for portable
+# Remove Nix-specific files/directories that don't make sense for portable
 rm -f "$OUTPUT_DIR"/.manpath
+rm -f "$OUTPUT_DIR"/.zshenv
+rm -rf "$OUTPUT_DIR"/.local/state
+rm -rf "$OUTPUT_DIR"/.config/systemd
+rm -rf "$OUTPUT_DIR"/.config/environment.d
+rm -rf "$OUTPUT_DIR"/.config/direnv
+rm -rf "$OUTPUT_DIR"/.cache
+rm -rf "$OUTPUT_DIR"/.local/share/fish/home-manager
+rm -rf "$OUTPUT_DIR"/.local/share/nvim/site/pack/hm
 
 # Replace hardcoded /home/user with $HOME
 find "$OUTPUT_DIR" -type f | while read -r file; do
