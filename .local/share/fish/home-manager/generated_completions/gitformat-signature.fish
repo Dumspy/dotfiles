@@ -1,0 +1,7 @@
+# gitformat-signature
+complete -c gitformat-signature -l ---BEGIN -d 'PGP SIGNATURE----- and'
+complete -c gitformat-signature -l ---END -d 'PGP SIGNATURE-----.  Or, if gpg is told to produce RFC1991 signatures,'
+complete -c gitformat-signature -s s -d 'oc o 2. 3'
+complete -c gitformat-signature -s v -d 'gpg: Signature made Wed Jun 15 10:56:46 2016 CEST using RSA key ID B7227189 g…'
+complete -c gitformat-signature -s S -d 'oc o 2. 3'
+complete -c gitformat-signature -l show-signature -d 'gpg: Signature made Wed Jun 15 10:58:57 2016 CEST using RSA key ID B7227189 g…'

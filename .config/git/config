@@ -1,0 +1,29 @@
+[aliases]
+	ddiff = "-c diff.external=difft diff"
+	dlog = "-c diff.external=difft log --ext-diff"
+	dshow = "-c diff.external=difft show --ext-diff"
+
+[commit]
+	gpgSign = true
+
+[core]
+	editor = "nvim"
+
+[github]
+	user = "dumspy"
+
+[gpg]
+	format = "ssh"
+
+[gpg "openpgp"]
+
+[push]
+	autoSetupRemote = true
+
+[user]
+	email = "felix.enok.berger@gmail.com"
+	name = "Felix Berger"
+	signingKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDHEA0GhkjkbuZGBnjtXSoQ9zpeXPCTTRYvfJX6RniI6"
+
+[include]
+	path = "~/.gitconfig.local"

@@ -1,0 +1,70 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "autoupdate": false,
+  "formatter": {
+    "alejandra": {
+      "command": [
+        "alejandra",
+        "$FILE"
+      ],
+      "extensions": [
+        ".nix"
+      ]
+    }
+  },
+  "mcp": {
+    "grep_app": {
+      "type": "remote",
+      "url": "https://mcp.grep.app"
+    },
+    "opensrc": {
+      "command": [
+        "npx",
+        "opensrc-mcp"
+      ],
+      "type": "local"
+    }
+  },
+  "model": "zai-coding-plan/glm-4.7",
+  "permission": {
+    "bash": {
+      "*": "ask",
+      "dex *": "allow",
+      "git diff*": "allow",
+      "git log*": "allow",
+      "git status*": "allow",
+      "ls*": "allow",
+      "pwd": "allow"
+    },
+    "read": {
+      "*": "allow",
+      "*.env": "deny",
+      "*.env.*": "deny",
+      "*.envrc": "deny",
+      "*.key": "deny",
+      "*.p12": "deny",
+      "*.pem": "deny",
+      "*.pfx": "deny",
+      ".aws/*": "deny",
+      ".config/1password/*": "deny",
+      ".direnv/*": "deny",
+      ".docker/*": "deny",
+      ".env": "deny",
+      ".git/*": "deny",
+      ".gitmodules": "deny",
+      ".gnupg/*": "deny",
+      ".kube/*": "deny",
+      ".ssh/*": "deny",
+      ".venv/*": "deny",
+      "build/*": "deny",
+      "dist/*": "deny",
+      "node_modules/*": "deny",
+      "secrets/*": "deny",
+      "target/*": "deny",
+      "venv/*": "deny"
+    },
+    "webfetch": "ask"
+  },
+  "provider": {},
+  "theme": "catppuccin-macchiato"
+}
