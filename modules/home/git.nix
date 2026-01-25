@@ -4,6 +4,7 @@
   ...
 }: let
   cfg = config.myModules.home.git;
+  portable = config.myModules.home.portable or false;
 in {
   options.myModules.home.git = {
     enable = lib.mkEnableOption "git with signing and aliases";
@@ -33,6 +34,10 @@ in {
 
       ignores = [
         ".DS_Store"
+      ];
+
+      includes = lib.mkIf portable [
+        {path = "~/.gitconfig.local";}
       ];
 
       settings = {

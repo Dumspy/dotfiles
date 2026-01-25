@@ -31,13 +31,19 @@ in {
         }
       ];
 
-      initContent = ''
-        zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
-        zstyle ':completion:*' menu no
-        zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
+      initContent = lib.mkMerge [
+        ''
+          zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
+          zstyle ':completion:*' menu no
+          zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
 
-        bindkey -s ^f "tmux-sessionizer\n"
-      '';
+          bindkey -s ^f "tmux-sessionizer\n"
+        ''
+        (lib.mkIf portable ''
+          # Source local overrides (not managed by dotfiles)
+          [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
+        '')
+      ];
     };
   };
 }

@@ -13,8 +13,7 @@
     ./tmux.nix
     ./tmux-sessionizer.nix
     ./opencode.nix
-    ./agent-skills.nix
-    ./agent-browser.nix
+    ./agent-config.nix
     ./lazygit.nix
     ./ssh.nix
   ];
@@ -31,8 +30,6 @@
     tmux.enable = true;
     tmux-sessionizer.enable = true;
     opencode.enable = true;
-    agent-skills.enable = true;
-    agent-browser.enable = true;
     lazygit.enable = true;
     ssh.enable = true;
   };

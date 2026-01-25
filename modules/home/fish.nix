@@ -6,6 +6,7 @@
 }: let
   cfg = config.myModules.home.fish;
   shellCfg = config.myModules.home.shell;
+  portable = config.myModules.home.portable or false;
 in {
   options.myModules.home.fish = {
     enable = lib.mkEnableOption "fish shell with plugins and completions";
@@ -14,9 +15,16 @@ in {
   config = lib.mkIf cfg.enable {
     programs.fish = {
       enable = true;
-      interactiveShellInit = ''
-        set fish_greeting
-      '';
+      interactiveShellInit =
+        ''
+          set fish_greeting
+        ''
+        + lib.optionalString portable ''
+          # Source local overrides (not managed by dotfiles)
+          if test -f ~/.config/fish/config.local.fish
+            source ~/.config/fish/config.local.fish
+          end
+        '';
 
       plugins = [
         {

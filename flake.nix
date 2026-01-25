@@ -182,10 +182,16 @@
         pkgs = import nixpkgs {system = "x86_64-linux";};
         extraSpecialArgs = {inherit inputs;};
         modules = [
+          catppuccin.homeModules.catppuccin
           {
             home.username = "user";
             home.homeDirectory = "/home/user";
             home.stateVersion = "24.11";
+            catppuccin = {
+              enable = true;
+              flavor = "macchiato";
+              accent = "mauve";
+            };
             imports = [
               ./modules/home/portable.nix
             ];

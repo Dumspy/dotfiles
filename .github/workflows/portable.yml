@@ -1,0 +1,78 @@
+name: Generate Portable Dotfiles
+
+on:
+  schedule:
+    - cron: "0 6 * * *" # Daily at 6 AM UTC
+  workflow_dispatch:
+
+concurrency: portable-branch
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v21
+
+      - name: Build portable configuration
+        run: |
+          GEN_PATH=$(nix build .#homeConfigurations.portable.activationPackage --no-link --print-out-paths)
+          mkdir -p portable-output
+          cp -rL "$GEN_PATH/home-files/." portable-output/
+
+      - name: Sanitize Nix store references
+        run: ./scripts/sanitize-dotfiles.sh portable-output
+
+      - name: Get metadata
+        id: meta
+        run: |
+          echo "sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+          echo "short_sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+          echo "timestamp=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> $GITHUB_OUTPUT
+
+      - name: Prepare portable branch content
+        run: |
+          # Create metadata files
+          echo "${{ steps.meta.outputs.sha }}" > portable-output/PORTABLE_SOURCE_SHA
+          echo "${{ steps.meta.outputs.timestamp }}" > portable-output/PORTABLE_GENERATED_AT
+
+          # Copy bootstrap script and README
+          cp scripts/portable-bootstrap.sh portable-output/bootstrap.sh
+          cp scripts/portable-README.md portable-output/README.md
+          chmod +x portable-output/bootstrap.sh
+
+      - name: Push to portable branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # Fetch and checkout portable branch, or create orphan if it doesn't exist
+          if git fetch origin portable 2>/dev/null; then
+            git checkout -B portable origin/portable
+          else
+            git checkout --orphan portable
+            git rm -rf . 2>/dev/null || true
+          fi
+
+          # Clear existing files and copy generated ones
+          find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
+          cp -r portable-output/. .
+
+          git add -A
+
+          # Only commit if there are staged changes
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Update from main@${{ steps.meta.outputs.short_sha }}" \
+              -m "Generated at: ${{ steps.meta.outputs.timestamp }}" \
+              -m "Source: https://github.com/${{ github.repository }}/commit/${{ steps.meta.outputs.sha }}"
+            git push origin portable
+          fi
