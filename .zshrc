@@ -38,3 +38,10 @@ if [ -f '/Users/felix.berger/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/fe
 
 # The next line enables shell command completion for gcloud.
 if [ -f '/Users/felix.berger/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/felix.berger/google-cloud-sdk/completion.zsh.inc'; fi
+
+# Disable postinstalls for yarn/npm
+export YARN_ENABLE_SCRIPTS=false
+export npm_config_ignore_scripts=true
+
+# opencode
+export PATH=/Users/felix.berger/.opencode/bin:$PATH

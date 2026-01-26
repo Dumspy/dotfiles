@@ -1,0 +1,50 @@
+// Zed keymap
+//
+// For information on binding keys, see the Zed
+// documentation: https://zed.dev/docs/key-bindings
+//
+// To see the default key bindings run `zed: open default keymap`
+// from the command palette.
+[
+  {
+    "context": "Workspace",
+    "bindings": {
+      // "shift shift": "file_finder::Toggle"
+    }
+  },
+  {
+    "context": "Editor && vim_mode == insert",
+    "bindings": {
+      // "j k": "vim::NormalBefore"
+    }
+  },
+  {
+    "bindings": {
+      "cmd-shift-c": null
+    }
+  },
+  {
+    "context": "CollabPanel",
+    "bindings": {
+      "alt-down": null
+    }
+  },
+  {
+    "context": "CollabPanel",
+    "bindings": {
+      "alt-up": null
+    }
+  },
+  {
+    "context": "(CollabPanel && editing) > Editor",
+    "bindings": {
+      "space": null
+    }
+  },
+  {
+    "context": "(CollabPanel && not_editing)",
+    "bindings": {
+      "ctrl-backspace": null
+    }
+  }
+]

@@ -7,10 +7,10 @@
 // custom settings, run the `open default settings` command
 // from the command palette or from `Zed` application menu.
 {
-  "collaboration_panel": {
-    "dock": "right"
+  "auto_update_extensions": {
+    "catppuccin-icons": false,
+    "ruby": false
   },
-  "auto_update_extensions": {},
   "edit_predictions": {
     "disabled_globs": [],
     "mode": "eager",
@@ -25,18 +25,19 @@
     "dock": "right"
   },
   "git_panel": {
-    "dock": "left"
+    "dock": "right"
   },
   "project_panel": {
     "dock": "right"
   },
   "agent": {
-    "play_sound_when_agent_done": true,
+    "always_allow_tool_actions": true,
     "default_model": {
       "provider": "copilot_chat",
-      "model": "claude-sonnet-4"
+      "model": "gpt-4.1"
     },
-    "default_profile": "write"
+    "default_profile": "write",
+    "version": "2"
   },
   "features": {
     "edit_prediction_provider": "copilot"
@@ -53,14 +54,7 @@
   "tab_size": 2,
   "languages": {
     "Ruby": {
-      "language_servers": [
-        "ruby-lsp",
-        "rubocop",
-        "!solargraph",
-        "!steep",
-        "!sorbet",
-        "..."
-      ]
+      "language_servers": ["ruby-lsp", "rubocop", "!solargraph", "..."]
     }
   },
   "lsp": {
