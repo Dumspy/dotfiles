@@ -24,7 +24,7 @@ check_prerequisites() {
     error "git is required but not installed."
     exit 1
   fi
-
+ 
   if ! command -v stow &>/dev/null; then
     error "stow is required but not installed."
     echo ""
@@ -34,6 +34,57 @@ check_prerequisites() {
     echo "  Fedora:        sudo dnf install stow"
     echo "  Arch:          sudo pacman -S stow"
     exit 1
+  fi
+  
+  # Check for recommended tools (warnings only)
+  if ! command -v tmux &>/dev/null; then
+    warn "tmux not found. Install with: brew install tmux"
+  fi
+  
+  if ! command -v nvim &>/dev/null; then
+    warn "nvim not found. Install with: brew install nvim"
+  fi
+}
+
+# Install zsh plugins via GitHub clone
+install_zsh_plugins() {
+  info "Installing zsh plugins..."
+  
+  local plugins_dir="$HOME/.local/share/zsh/plugins"
+  mkdir -p "$plugins_dir"
+  
+  # zsh-autosuggestions
+  if [[ ! -d "$plugins_dir/zsh-autosuggestions" ]]; then
+    info "Cloning zsh-autosuggestions..."
+    git clone https://github.com/zsh-users/zsh-autosuggestions.git "$plugins_dir/zsh-autosuggestions"
+  else
+    info "Updating zsh-autosuggestions..."
+    (cd "$plugins_dir/zsh-autosuggestions" && git pull)
+  fi
+  
+  # fzf-tab (optional - not installed by default)
+  # Uncomment below to install fzf-tab
+  # if [[ ! -d "$plugins_dir/fzf-tab" ]]; then
+  #   info "Cloning fzf-tab..."
+  #   git clone https://github.com/Aloxaf/fzf-tab.git "$plugins_dir/fzf-tab"
+  # fi
+  
+  info "✓ zsh plugins installed"
+}
+
+# Install TPM (tmux plugin manager)
+install_tpm() {
+  info "Installing TPM (tmux plugin manager)..."
+  
+  local tpm_dir="$HOME/.config/tmux/plugins"
+  mkdir -p "$tpm_dir"
+  
+  if [[ ! -d "$tpm_dir/tpm" ]]; then
+    git clone https://github.com/tmux-plugins/tpm.git "$tpm_dir/tpm"
+    info "✓ TPM installed"
+    warn "Press prefix+I in tmux to install plugins"
+  else
+    info "TPM already installed"
   fi
 }
 
@@ -134,16 +185,22 @@ apply_dotfiles() {
 main() {
   info "Portable Dotfiles Bootstrap"
   echo ""
-
+ 
   check_prerequisites
   sync_repo
+  install_zsh_plugins
+  install_tpm
   create_local_overrides
   apply_dotfiles
-
+ 
   echo ""
   info "Done! Dotfiles applied successfully."
   echo ""
   warn "Restart your shell or run: source ~/.zshrc"
+  echo ""
+  echo "Next steps:"
+  echo "  1. Install required tools (see README.md)"
+  echo "  2. Press prefix+I in tmux to install plugins"
   echo ""
   echo "Local overrides (your customizations go here):"
   echo "  ~/.zshrc.local"
