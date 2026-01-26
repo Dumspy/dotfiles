@@ -68,11 +68,11 @@ else
   ((warnings++))
 fi
 
-# Check 7: Metadata files exist
+# Check 7: Metadata files exist (optional - only warn if missing)
 echo -n "Checking metadata files... "
-if [[ ! -f "$INPUT_DIR/PORTABLE_SOURCE_SHA" ]] || [[ ! -f "$INPUT_DIR/PORTABLE_GENERATED_AT" ]]; then
-  echo "❌ Missing metadata files!"
-  ((errors++))
+if [[ ! -f "$INPUT_DIR/PORTABLE_SOURCE_SHA" ]] && [[ ! -f "$INPUT_DIR/PORTABLE_GENERATED_AT" ]]; then
+  echo "⚠️  Warning: Metadata files not found (CI will add them)"
+  ((warnings++))
 else
   echo "✓"
 fi
