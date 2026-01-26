@@ -25,7 +25,7 @@
   ];
 
   home.username = "__PORTABLE_USER__";
-  home.homeDirectory = "__PORTABLE_HOME__";
+  home.homeDirectory = "/__PORTABLE_HOME__";
   home.stateVersion = "24.11";
 
   catppuccin = {
@@ -46,6 +46,7 @@
     tmux.enable = true;
     tmux-sessionizer.enable = true;
     opencode.enable = true;
+    agent-config.enable = true;
     lazygit.enable = true;
     ssh.enable = false;
   };

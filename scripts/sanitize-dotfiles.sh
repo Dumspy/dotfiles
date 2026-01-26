@@ -48,7 +48,7 @@ sanitize_file() {
   sed -i ':a;N;$!ba;s/\(typeset -U path cdpath fpath manpath\n\)done\n/\1/g' "$tmp" 2>/dev/null || true
   
   # Replace portable placeholders with shell variables
-  sed -i 's|__PORTABLE_HOME__|\$HOME|g' "$tmp" 2>/dev/null || true
+  sed -i 's|/__PORTABLE_HOME__|\$HOME|g' "$tmp" 2>/dev/null || true
   sed -i 's|__PORTABLE_USER__|\$USER|g' "$tmp" 2>/dev/null || true
 
   # Update Nix-specific messages to portable equivalents
