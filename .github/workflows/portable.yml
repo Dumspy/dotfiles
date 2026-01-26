@@ -32,9 +32,6 @@ jobs:
       - name: Sanitize Nix store references
         run: ./scripts/sanitize-dotfiles.sh portable-output
 
-      - name: Validate portable output
-        run: ./scripts/validate-portable.sh portable-output
-
       - name: Get metadata
         id: meta
         run: |
@@ -52,6 +49,9 @@ jobs:
           cp scripts/portable-bootstrap.sh portable-output/bootstrap.sh
           cp scripts/portable-README.md portable-output/README.md
           chmod +x portable-output/bootstrap.sh
+
+      - name: Validate portable output
+        run: ./scripts/validate-portable.sh portable-output
 
       - name: Push to portable branch
         run: |
