@@ -24,8 +24,8 @@
     ./ssh.nix
   ];
 
-  home.username = "user";
-  home.homeDirectory = "/home/user";
+  home.username = "__PORTABLE_USER__";
+  home.homeDirectory = "__PORTABLE_HOME__";
   home.stateVersion = "24.11";
 
   catppuccin = {

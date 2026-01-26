@@ -47,9 +47,9 @@ sanitize_file() {
   # This is a specific pattern: "typeset ... done" with nothing in between
   sed -i ':a;N;$!ba;s/\(typeset -U path cdpath fpath manpath\n\)done\n/\1/g' "$tmp" 2>/dev/null || true
   
-  # Replace hardcoded user paths with $HOME (do it per-file for safety)
-  sed -i 's|/home/user|\$HOME|g' "$tmp" 2>/dev/null || true
-  sed -i 's|/Users/felix\.berger|\$HOME|g' "$tmp" 2>/dev/null || true
+  # Replace portable placeholders with shell variables
+  sed -i 's|__PORTABLE_HOME__|\$HOME|g' "$tmp" 2>/dev/null || true
+  sed -i 's|__PORTABLE_USER__|\$USER|g' "$tmp" 2>/dev/null || true
 
   # Update Nix-specific messages to portable equivalents
   sed -i 's|Config is managed by Nix\.|Config is managed by portable dotfiles.|g' "$tmp" 2>/dev/null || true
