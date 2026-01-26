@@ -32,12 +32,8 @@ sanitize_file() {
   cat "$file" > "$tmp"
   sed -i \
     -e 's|HELPDIR="/nix/store/[^"]*-zsh-[^"]*/share/zsh/\$ZSH_VERSION/help"|# HELPDIR removed - install zsh system package|g' \
-    -e 's|source /nix/store/[^-]*-zsh-autosuggestions-[^/]*/share/zsh-autosuggestions/zsh-autosuggestions.zsh|# Autosuggestions: install via package manager or download|g' \
     -e "s|source '/nix/store/[^']*-catppuccin-zsh-syntax-highlighting[^']*'|# Catppuccin syntax highlighting: install manually if desired|g" \
     -e 's|/nix/store/[^/]*/bin/\([a-zA-Z0-9_-]*\)|\1|g' \
-    -e 's|run-shell /nix/store/[^[:space:]]*tmuxplugin-catppuccin[^[:space:]]*|# Catppuccin: install via TPM or manually|g' \
-    -e 's|run-shell /nix/store/[^[:space:]]*tmuxplugin-sensible[^[:space:]]*|# Sensible: install via TPM or manually|g' \
-    -e 's|run-shell /nix/store/[^[:space:]]*tmuxplugin-vim-tmux-navigator[^[:space:]]*|# Vim-tmux-navigator: install via TPM or manually|g' \
     "$tmp" 2>/dev/null || true
   
   # Remove lines with nix store paths, NIX_PROFILES references, or home-manager completions path
@@ -51,8 +47,20 @@ sanitize_file() {
   # This is a specific pattern: "typeset ... done" with nothing in between
   sed -i ':a;N;$!ba;s/\(typeset -U path cdpath fpath manpath\n\)done\n/\1/g' "$tmp" 2>/dev/null || true
   
-  # Replace hardcoded /home/user with $HOME (do it per-file for safety)
+  # Replace hardcoded user paths with $HOME (do it per-file for safety)
   sed -i 's|/home/user|\$HOME|g' "$tmp" 2>/dev/null || true
+  sed -i 's|/Users/felix\.berger|\$HOME|g' "$tmp" 2>/dev/null || true
+
+  # Update Nix-specific messages to portable equivalents
+  sed -i 's|Config is managed by Nix\.|Config is managed by portable dotfiles.|g' "$tmp" 2>/dev/null || true
+  sed -i "s|Run '\./rebuild.sh' to reload|Source ~/.config/tmux/tmux.conf to reload|g" "$tmp" 2>/dev/null || true
+
+  # Add helpful macOS comment for HELPDIR if not present
+  if [[ "$file" == *".zshrc"* ]] && ! grep -q "HELPDIR" "$tmp"; then
+    echo "" >> "$tmp"
+    echo "# HELPDIR for macOS zsh (uncomment if needed)" >> "$tmp"
+    echo "# HELPDIR=/usr/share/zsh/\$ZSH_VERSION/help" >> "$tmp"
+  fi
   
   # Always overwrite: if empty after sanitization, truncate the file
   cat "$tmp" > "$file"

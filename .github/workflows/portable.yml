@@ -30,6 +30,9 @@ jobs:
       - name: Sanitize Nix store references
         run: ./scripts/sanitize-dotfiles.sh portable-output
 
+      - name: Validate portable output
+        run: ./scripts/validate-portable.sh portable-output
+
       - name: Get metadata
         id: meta
         run: |
