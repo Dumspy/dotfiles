@@ -49,7 +49,6 @@ status is-interactive; and begin
         set -l post_joined (string replace $prev_joined "" $joined)
         set -l prev (string split " " (string trim $prev_joined))
         set -l post (string split " " (string trim $post_joined))
-        set fish_complete_path $prev "$HOME/.local/share/fish/home-manager/generated_completions" $post
     end
 
 end

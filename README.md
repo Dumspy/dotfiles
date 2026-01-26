@@ -59,6 +59,24 @@ Or re-run the bootstrap script:
 ~/.dotfiles/bootstrap.sh
 ```
 
+## Manual Installation Required
+
+Some tools require manual installation since only configs are exported:
+
+| Tool | Install via |
+|------|-------------|
+| zsh | Package manager |
+| tmux | Package manager |
+| git | Package manager |
+| Neovim | Package manager or [neovim.io](https://neovim.io) |
+| Starship prompt | [starship.rs](https://starship.rs) |
+| fzf | Package manager or [github.com/junegunn/fzf](https://github.com/junegunn/fzf) |
+| lazygit | Package manager or [github.com/jesseduffield/lazygit](https://github.com/jesseduffield/lazygit) |
+| zsh-autosuggestions | Package manager or [github.com/zsh-users/zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions) |
+| tmux plugins | [TPM](https://github.com/tmux-plugins/tpm) - catppuccin, sensible, vim-tmux-navigator |
+| Ghostty | [ghostty.org](https://ghostty.org) (optional - terminal emulator) |
+| opencode | [github.com/anomalyco/opencode](https://github.com/anomalyco/opencode) (optional - AI coding tool) |
+
 ## Local Customizations
 
 Add machine-specific settings to these files (they won't be overwritten):

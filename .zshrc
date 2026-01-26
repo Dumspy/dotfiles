@@ -1,6 +1,4 @@
 typeset -U path cdpath fpath manpath
-  fpath+=($profile/share/zsh/site-functions $profile/share/zsh/$ZSH_VERSION/functions $profile/share/zsh/vendor-completions)
-done
 
 # HELPDIR removed - install zsh system package
 
