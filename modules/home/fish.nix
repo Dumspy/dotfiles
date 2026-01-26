@@ -26,7 +26,7 @@ in {
           end
         '';
 
-      plugins = [
+      plugins = lib.mkIf (!portable) [
         {
           name = "fzf-fish";
           src = pkgs.fishPlugins.fzf-fish.src;

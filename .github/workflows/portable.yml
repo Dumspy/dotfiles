@@ -25,7 +25,7 @@ jobs:
 
       - name: Build portable configuration
         run: |
-          GEN_PATH=$(nix build .#homeConfigurations.portable.activationPackage --no-link --print-out-paths)
+          GEN_PATH=$(nix build .#homeConfigurations.portable.activationPackage --no-link --offline --print-out-paths)
           mkdir -p portable-output
           cp -rL "$GEN_PATH/home-files/." portable-output/
 

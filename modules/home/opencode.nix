@@ -8,27 +8,31 @@
   cfg = config.myModules.home.opencode;
   portable = config.myModules.home.portable or false;
 
-  opensrc-mcp = pkgs.buildNpmPackage {
-    pname = "opensrc-mcp";
-    version = "0.3.0";
+  opensrc-mcp =
+    if !portable
+    then
+      pkgs.buildNpmPackage {
+        pname = "opensrc-mcp";
+        version = "0.3.0";
 
-    src = pkgs.fetchFromGitHub {
-      owner = "dmmulroy";
-      repo = "opensrc-mcp";
-      rev = "v0.3.0";
-      hash = "sha256-g9fAW8jCKPcNVujsn1bDxJtc2lJmr0Vv6ANcL/Uwr1s=";
-    };
+        src = pkgs.fetchFromGitHub {
+          owner = "dmmulroy";
+          repo = "opensrc-mcp";
+          rev = "v0.3.0";
+          hash = "sha256-g9fAW8jCKPcNVujsn1bDxJtc2lJmr0Vv6ANcL/Uwr1s=";
+        };
 
-    npmDepsHash = "sha256-nFds8MSZld/mV8bqeCRDvP2i1+FMnRxLapHJafeW/ew=";
+        npmDepsHash = "sha256-nFds8MSZld/mV8bqeCRDvP2i1+FMnRxLapHJafeW/ew=";
 
-    nodejs = pkgs.nodejs_22;
+        nodejs = pkgs.nodejs_22;
 
-    meta = {
-      description = "MCP server for fetching and querying dependency source code";
-      license = lib.licenses.mit;
-      mainProgram = "opensrc-mcp";
-    };
-  };
+        meta = {
+          description = "MCP server for fetching and querying dependency source code";
+          license = lib.licenses.mit;
+          mainProgram = "opensrc-mcp";
+        };
+      }
+    else null;
 in {
   options.myModules.home.opencode = {
     enable = lib.mkEnableOption "opencode AI coding assistant";
