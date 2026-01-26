@@ -31,7 +31,7 @@ jobs:
             echo "Closing PR #$pr"
             gh pr close "$pr" --delete-branch --comment "Superseded by new flake update run."
           done || true
-          
+
           echo "Cleaning up old automated/flake-updates-* branches..."
           git fetch --prune
           git branch -r | grep 'origin/automated/flake-updates-' | sed 's/origin\///' | while read -r branch; do
@@ -75,6 +75,13 @@ jobs:
             --title "chore: bump flake inputs" \
             --body "Automated flake.lock update via \`nix flake update\`." \
             --label "flake-updates"
+
+      - name: Trigger check workflow
+        if: steps.check.outputs.has_changes == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh workflow run check.yml
 
       - name: Update summary
         if: always()
