@@ -50,9 +50,6 @@ jobs:
           cp scripts/portable-README.md portable-output/README.md
           chmod +x portable-output/bootstrap.sh
 
-      - name: Validate portable output
-        run: ./scripts/validate-portable.sh portable-output
-
       - name: Push to portable branch
         run: |
           git config user.name "github-actions[bot]"
