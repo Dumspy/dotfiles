@@ -46,6 +46,10 @@ check_prerequisites() {
   fi
 }
 
+# Pinned plugin versions for reproducibility
+ZSH_AUTOSUGGESTIONS_VERSION="v0.7.1"
+TPM_COMMIT="99469c4a9b1ccf77fade25842dc7bafbc8ce9946"  # master as of 2026-01-26 (no tags available)
+
 # Install zsh plugins via GitHub clone
 install_zsh_plugins() {
   info "Installing zsh plugins..."
@@ -53,20 +57,22 @@ install_zsh_plugins() {
   local plugins_dir="$HOME/.local/share/zsh/plugins"
   mkdir -p "$plugins_dir"
   
-  # zsh-autosuggestions
+  # zsh-autosuggestions (pinned)
   if [[ ! -d "$plugins_dir/zsh-autosuggestions" ]]; then
-    info "Cloning zsh-autosuggestions..."
-    git clone https://github.com/zsh-users/zsh-autosuggestions.git "$plugins_dir/zsh-autosuggestions"
+    info "Cloning zsh-autosuggestions@$ZSH_AUTOSUGGESTIONS_VERSION..."
+    git clone --branch "$ZSH_AUTOSUGGESTIONS_VERSION" --depth 1 \
+      https://github.com/zsh-users/zsh-autosuggestions.git "$plugins_dir/zsh-autosuggestions"
   else
-    info "Updating zsh-autosuggestions..."
-    (cd "$plugins_dir/zsh-autosuggestions" && git pull)
+    info "zsh-autosuggestions already installed (pinned at $ZSH_AUTOSUGGESTIONS_VERSION)"
   fi
   
   # fzf-tab (optional - not installed by default)
   # Uncomment below to install fzf-tab
+  # FZF_TAB_VERSION="v1.1.2"
   # if [[ ! -d "$plugins_dir/fzf-tab" ]]; then
-  #   info "Cloning fzf-tab..."
-  #   git clone https://github.com/Aloxaf/fzf-tab.git "$plugins_dir/fzf-tab"
+  #   info "Cloning fzf-tab@$FZF_TAB_VERSION..."
+  #   git clone --branch "$FZF_TAB_VERSION" --depth 1 \
+  #     https://github.com/Aloxaf/fzf-tab.git "$plugins_dir/fzf-tab"
   # fi
   
   info "✓ zsh plugins installed"
@@ -80,11 +86,13 @@ install_tpm() {
   mkdir -p "$tpm_dir"
   
   if [[ ! -d "$tpm_dir/tpm" ]]; then
+    info "Cloning tpm@${TPM_COMMIT:0:7}..."
     git clone https://github.com/tmux-plugins/tpm.git "$tpm_dir/tpm"
+    (cd "$tpm_dir/tpm" && git checkout "$TPM_COMMIT" --quiet)
     info "✓ TPM installed"
     warn "Press prefix+I in tmux to install plugins"
   else
-    info "TPM already installed"
+    info "TPM already installed (pinned at ${TPM_COMMIT:0:7})"
   fi
 }
 
@@ -145,7 +153,7 @@ EOF
 # Backup conflicting files
 backup_conflicts() {
   local backup_dir="$HOME/.dotfiles-backup/$(date +%Y%m%d-%H%M%S)"
-  local has_conflicts=false
+  local conflicts=()
 
   # Check for conflicts (files that exist and aren't symlinks to our dotfiles)
   while IFS= read -r -d '' file; do
@@ -158,16 +166,34 @@ backup_conflicts() {
 
     local target="$HOME/${file#./}"
     if [[ -e "$target" && ! -L "$target" ]]; then
-      has_conflicts=true
-      mkdir -p "$backup_dir/$(dirname "${file#./}")"
-      mv "$target" "$backup_dir/${file#./}"
-      warn "Backed up: $target -> $backup_dir/${file#./}"
+      conflicts+=("$target")
     fi
   done < <(find . -type f -print0)
 
-  if $has_conflicts; then
-    info "Existing files backed up to: $backup_dir"
+  if [[ ${#conflicts[@]} -eq 0 ]]; then
+    return
   fi
+
+  # Show conflicts and ask for confirmation
+  warn "The following files will be backed up:"
+  for f in "${conflicts[@]}"; do
+    echo "  $f"
+  done
+  echo ""
+  read -rp "Proceed with backup? [y/N] " confirm
+  if [[ ! "$confirm" =~ ^[Yy]$ ]]; then
+    error "Aborted by user"
+    exit 1
+  fi
+
+  # Perform backup
+  for target in "${conflicts[@]}"; do
+    local rel="${target#$HOME/}"
+    mkdir -p "$backup_dir/$(dirname "$rel")"
+    mv "$target" "$backup_dir/$rel"
+    warn "Backed up: $target"
+  done
+  info "Files backed up to: $backup_dir"
 }
 
 # Apply dotfiles with stow
