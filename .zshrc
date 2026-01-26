@@ -3,10 +3,6 @@ typeset -U path cdpath fpath manpath
 # HELPDIR removed - install zsh system package
 
 autoload -U compinit && compinit
-# Autosuggestions: install via package manager or download
-ZSH_AUTOSUGGEST_STRATEGY=(history)
-
-
 # History options should be set in .zshrc and after oh-my-zsh sourcing.
 # See https://github.com/nix-community/home-manager/issues/177.
 HISTSIZE="10000"
@@ -42,10 +38,31 @@ fi
 
 # Catppuccin syntax highlighting: install manually if desired
 
+# ============================================= #
+# Zsh Plugins (Portable Mode)                 #
+# --------------------------------------------- #
+# Bootstrap script installs these via GitHub clone:
+# - zsh-autosuggestions
+# - fzf-tab (optional - uncomment to enable)
+# Nix equivalents: programs.zsh.plugins, programs.zsh.autosuggestion
+# ============================================= #
+
+# zsh-autosuggestions (installed by bootstrap)
+ZSH_AUTOSUGGESTIONS_DIR="$HOME/.local/share/zsh/plugins/zsh-autosuggestions"
+if [[ -f "$ZSH_AUTOSUGGESTIONS_DIR/zsh-autosuggestions.zsh" ]]; then
+  source "$ZSH_AUTOSUGGESTIONS_DIR/zsh-autosuggestions.zsh"
+fi
+
+# fzf-tab (optional - not installed by default)
+# Uncomment following lines to enable:
+# FZF_TAB_DIR="$HOME/.local/share/zsh/plugins/fzf-tab"
+# if [[ -f "$FZF_TAB_DIR/fzf-tab.zsh" ]]; then
+#   source "$FZF_TAB_DIR/fzf-tab.zsh"
+# fi
+
+# Common settings
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 zstyle ':completion:*' menu no
-zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
-
 bindkey -s ^f "tmux-sessionizer\n"
 
 # Source local overrides (not managed by dotfiles)
