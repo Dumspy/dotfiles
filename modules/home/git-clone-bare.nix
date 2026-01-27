@@ -1,0 +1,122 @@
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
+  cfg = config.myModules.home.git-clone-bare;
+  portable = config.myModules.home.portable or false;
+
+  git-clone-bare = pkgs.writeShellScriptBin "git-clone-bare" ''
+    #!/usr/bin/env bash
+    # Clone a git repository using the bare worktree pattern
+    # Usage: git-clone-bare <repo> [directory]
+    #
+    # <repo> can be:
+    #   - Full URL: https://github.com/user/repo
+    #   - GitHub shorthand: user/repo (uses gh cli)
+    #   - Just repo name: repo (uses gh cli, clones from your repos)
+    #
+    # Creates:
+    #   <directory>/
+    #   ├── .bare/           # bare clone
+    #   └── main/            # default branch worktree
+
+    set -euo pipefail
+
+    if [[ $# -lt 1 ]]; then
+      echo "Usage: git-clone-bare <repo> [directory]"
+      echo ""
+      echo "<repo> can be:"
+      echo "  - Full URL: https://github.com/user/repo"
+      echo "  - GitHub shorthand: user/repo"
+      echo "  - Just repo name: repo (clones from your repos)"
+      echo ""
+      echo "Creates:"
+      echo "  <directory>/"
+      echo "  ├── .bare/     # bare repository"
+      echo "  └── main/      # default branch worktree"
+      exit 1
+    fi
+
+    repo="$1"
+
+    # Determine repo name and clone method
+    if [[ "$repo" == http* ]] || [[ "$repo" == git@* ]]; then
+      # Full URL - use git directly
+      repo_url="$repo"
+      repo_name=$(basename "$repo_url" .git)
+      use_gh=false
+    elif [[ "$repo" == */* ]]; then
+      # owner/repo format - use gh
+      repo_name=$(basename "$repo")
+      use_gh=true
+    else
+      # Just repo name - use gh
+      repo_name="$repo"
+      use_gh=true
+    fi
+
+    target_dir="''${2:-$repo_name}"
+
+    if [[ -d "$target_dir" ]]; then
+      echo "Error: Directory already exists: $target_dir"
+      exit 1
+    fi
+
+    echo "Cloning $repo into $target_dir (bare worktree pattern)..."
+
+    # Create directory structure
+    mkdir -p "$target_dir"
+    cd "$target_dir"
+
+    # Clone as bare into .bare
+    if [[ "$use_gh" == true ]]; then
+      if ! command -v gh &>/dev/null; then
+        echo "Error: gh CLI not found. Install it or use a full URL."
+        exit 1
+      fi
+      gh repo clone "$repo" .bare -- --bare
+    else
+      git clone --bare "$repo_url" .bare
+    fi
+
+    # Set up git to work from .bare
+    echo "gitdir: ./.bare" > .git
+
+    # Configure bare repo for fetch
+    git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
+
+    # Fetch all branches
+    git fetch origin
+
+    # Get the default branch
+    default_branch=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@' || echo "main")
+
+    # Create worktree for default branch
+    git worktree add "$default_branch" "$default_branch" 2>/dev/null || \
+      git worktree add "$default_branch" "origin/$default_branch"
+
+    echo ""
+    echo "Done! Repository cloned with bare worktree pattern:"
+    echo "  $target_dir/"
+    echo "  ├── .bare/           # bare repository"
+    echo "  └── $default_branch/            # default branch worktree"
+    echo ""
+    echo "To add more worktrees:"
+    echo "  cd $target_dir/$default_branch && tmux-worktree --new"
+  '';
+in {
+  options.myModules.home.git-clone-bare = {
+    enable = lib.mkEnableOption "git-clone-bare for bare worktree cloning";
+  };
+
+  config = lib.mkIf cfg.enable {
+    home.packages = lib.mkIf (!portable) [git-clone-bare];
+
+    home.file.".local/bin/git-clone-bare" = lib.mkIf portable {
+      executable = true;
+      text = builtins.readFile "${git-clone-bare}/bin/git-clone-bare";
+    };
+  };
+}

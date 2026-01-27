@@ -17,6 +17,11 @@ in {
       catppuccin.tmux.extraConfig = ''
         set -g @catppuccin_flavor 'macchiato'
         set -g @catppuccin_window_status_style "rounded"
+
+        # Window text: show window name, append worktree name if set and different
+        # Format: " window_name" or " window_name (worktree)" if worktree differs
+        set -g @catppuccin_window_text " #W#{?@worktree_name,#{?#{==:#W,#{@worktree_name}},, (#{@worktree_name})},}"
+        set -g @catppuccin_window_current_text " #W#{?@worktree_name,#{?#{==:#W,#{@worktree_name}},, (#{@worktree_name})},}"
       '';
 
       programs.tmux = {
@@ -70,6 +75,16 @@ in {
         bind % split-window -h -c "#{pane_current_path}"
         bind-key -r f run-shell "tmux neww tmux-sessionizer"
 
+        # Worktree management (unbind default window chooser)
+        unbind w
+        bind-key w run-shell "tmux neww -c '#{pane_current_path}' tmux-worktree"
+        bind-key W run-shell "tmux neww -c '#{pane_current_path}' tmux-worktree --new"
+        bind-key q run-shell "tmux neww -c '#{pane_current_path}' tmux-worktree --delete"
+
+        # New window: if in worktree, set worktree options; otherwise default behavior
+        unbind c
+        bind-key c run-shell 'tmux-new-window "#{pane_current_path}"'
+
         # TPM loader (MUST be at end of config)
         run '~/.config/tmux/plugins/tpm/tpm'
       '';
@@ -103,6 +118,16 @@ in {
         bind '"' split-window -c "#{pane_current_path}"
         bind % split-window -h -c "#{pane_current_path}"
         bind-key -r f run-shell "tmux neww tmux-sessionizer"
+
+        # Worktree management (unbind default window chooser)
+        unbind w
+        bind-key w run-shell "tmux neww -c '#{pane_current_path}' tmux-worktree"
+        bind-key W run-shell "tmux neww -c '#{pane_current_path}' tmux-worktree --new"
+        bind-key q run-shell "tmux neww -c '#{pane_current_path}' tmux-worktree --delete"
+
+        # New window: if in worktree, set worktree options; otherwise default behavior
+        unbind c
+        bind-key c run-shell 'tmux-new-window "#{pane_current_path}"'
       '';
     })
   ]);

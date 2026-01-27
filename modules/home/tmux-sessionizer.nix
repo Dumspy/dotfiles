@@ -40,8 +40,61 @@
     b = hexToInt (builtins.substring 4 2 hex);
   in "\\033[1;38;2;${toString r};${toString g};${toString b}m";
 
-  # Catppuccin Macchiato mauve color (#c6a0f6)
+  # Catppuccin Macchiato colors
   prefixColor = hexToAnsi "c6a0f6";
+  greenColor = hexToAnsi "a6da95";
+  redColor = hexToAnsi "ed8796";
+  subtextColor = hexToAnsi "a5adcb";
+
+  # Git status script for tmux status bar
+  tmux-git-status = pkgs.writeShellScriptBin "tmux-git-status" ''
+    #!/usr/bin/env bash
+    # Usage: tmux-git-status [pane_current_path]
+    # Outputs: worktree_name [branch] +add -del
+
+    pane_path="''${1:-$(pwd)}"
+
+    cd "$pane_path" 2>/dev/null || exit 0
+
+    if ! git rev-parse --is-inside-work-tree &>/dev/null; then
+      basename "$pane_path"
+      exit 0
+    fi
+
+    # Get worktree name
+    wt_root=$(git rev-parse --show-toplevel 2>/dev/null)
+    if [[ -f "$wt_root/.git" ]]; then
+      # Linked worktree
+      gitdir=$(sed -n 's/^gitdir: //p' "$wt_root/.git" | head -n1)
+      wt_name=$(basename "$gitdir")
+    else
+      wt_name="main"
+    fi
+
+    # Get branch
+    branch=$(git symbolic-ref --short -q HEAD 2>/dev/null || git rev-parse --short HEAD 2>/dev/null || echo "?")
+
+    # Get diff stats
+    diff_stats=$(git diff --numstat 2>/dev/null | awk '{add+=$1; del+=$2} END {printf "%d %d", add+0, del+0}')
+    staged_stats=$(git diff --cached --numstat 2>/dev/null | awk '{add+=$1; del+=$2} END {printf "%d %d", add+0, del+0}')
+
+    read -r unstaged_add unstaged_del <<< "$diff_stats"
+    read -r staged_add staged_del <<< "$staged_stats"
+
+    total_add=$((unstaged_add + staged_add))
+    total_del=$((unstaged_del + staged_del))
+
+    output="$wt_name"
+
+    if [[ $total_add -gt 0 || $total_del -gt 0 ]]; then
+      output="$output "
+      [[ $total_add -gt 0 ]] && output="$output#[fg=green]+$total_add#[fg=default]"
+      [[ $total_add -gt 0 && $total_del -gt 0 ]] && output="$output "
+      [[ $total_del -gt 0 ]] && output="$output#[fg=red]-$total_del#[fg=default]"
+    fi
+
+    echo "$output"
+  '';
 
   tmux-sessionizer = pkgs.writeShellScriptBin "tmux-sessionizer" ''
 
@@ -264,16 +317,61 @@
                 path="$entry"
             fi
 
-            # Find directories that contain .git (i.e., git repositories)
+            # Find directories that contain .git (directory only) or .bare (bare worktree pattern)
+            # We exclude .git FILES because those are worktrees inside a bare repo project
+            # The bare repo project itself (with .bare/) is what we want to show
             if [[ -d "$path" ]]; then
-                # If the path itself is a git repo, include it
-                if [[ -d "$path/.git" ]]; then
+                # If the path itself is a git repo or bare repo project, include it
+                if [[ -d "$path/.git" ]] || [[ -d "$path/.bare" ]]; then
                     echo "$path"
                 fi
-                # Also search for git repos inside
-                find "$path" -mindepth 1 -maxdepth "''${depth:-''${TS_MAX_DEPTH:-1}}" -type d -execdir test -d {}/.git \; -print 2>/dev/null
+                # Search for git repos (.git directory) and bare repo projects (.bare directory)
+                # Exclude .git files (worktrees) - we only want the project roots
+                find "$path" -mindepth 1 -maxdepth "''${depth:-''${TS_MAX_DEPTH:-1}}" -type d \( -exec test -d "{}/.git" \; -o -exec test -d "{}/.bare" \; \) -print 2>/dev/null
             fi
         done
+    }
+
+    # Get canonical repo name from any path (works for worktrees and bare repos)
+    get_repo_session_name() {
+        local dir="$1"
+
+        # Check for bare repo pattern first (directory with .bare/)
+        if [[ -d "$dir/.bare" ]]; then
+            basename "$dir" | tr '. ' '__'
+            return 0
+        fi
+
+        if ! git -C "$dir" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+            basename "$dir" | tr '. ' '__'
+            return 0
+        fi
+
+        # Get the common git dir (shared across all worktrees)
+        local common
+        common=$(git -C "$dir" rev-parse --git-common-dir 2>/dev/null)
+
+        # Resolve relative path to absolute
+        if [[ "$common" != /* ]]; then
+            common=$(cd "$dir" && realpath -m "$common" 2>/dev/null || echo "$dir/$common")
+        fi
+
+        # For bare repo pattern: .bare is the common dir, use parent as project name
+        if [[ "$(basename "$common")" == ".bare" ]]; then
+            basename "$(dirname "$common")" | tr '. ' '__'
+            return 0
+        fi
+
+        # Get repo root from common dir
+        local repo_root
+        if [[ "$common" == */.git ]]; then
+            repo_root=$(dirname "$common")
+        else
+            repo_root="$common"
+        fi
+
+        # Create session name: repo_basename (sanitized)
+        basename "$repo_root" | tr '. ' '__'
     }
 
     handle_session_cmd() {
@@ -354,11 +452,14 @@
         exit 0
     fi
 
+    # Handle existing tmux session selection
     if [[ "$selected" =~ ^\[TMUX\][[:space:]](.+)$ ]]; then
-        selected="''${BASH_REMATCH[1]}"
+        switch_to "''${BASH_REMATCH[1]}"
+        exit 0
     fi
 
-    selected_name=$(basename "$selected" | tr . _)
+    # Get canonical session name (uses repo root for worktrees)
+    selected_name=$(get_repo_session_name "$selected")
 
     if ! is_tmux_running; then
         tmux new-session -ds "$selected_name" -c "$selected"
@@ -383,12 +484,17 @@ in {
 
   config = lib.mkIf cfg.enable {
     # For Nix systems, add to packages (goes into profile)
-    home.packages = lib.mkIf (!portable) [tmux-sessionizer];
+    home.packages = lib.mkIf (!portable) [tmux-sessionizer tmux-git-status];
 
     # For portable systems, write to ~/.local/bin
     home.file.".local/bin/tmux-sessionizer" = lib.mkIf portable {
       executable = true;
       text = builtins.readFile "${tmux-sessionizer}/bin/tmux-sessionizer";
+    };
+
+    home.file.".local/bin/tmux-git-status" = lib.mkIf portable {
+      executable = true;
+      text = builtins.readFile "${tmux-git-status}/bin/tmux-git-status";
     };
   };
 }
