@@ -43,7 +43,7 @@
 
     # Agents to enable (auto-discovered from sources)
     agents = [
-      "code-simplifier" # from sentry
+      # "code-simplifier" # from sentry
     ];
 
     skills = [

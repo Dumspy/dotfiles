@@ -309,7 +309,7 @@ in {
     skillsTarget = lib.mkOption {
       type = targetType;
       default = {
-        dest = ".config/opencode/skill";
+        dest = ".config/opencode/skills";
         structure =
           if portable
           then "link"
