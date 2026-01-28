@@ -11,32 +11,22 @@ SAVEHIST="10000"
 HISTFILE="$HOME/.zsh_history"
 mkdir -p "$(dirname "$HISTFILE")"
 
-setopt HIST_FCNTL_LOCK
-
-# Enabled history options
-enabled_opts=(
-  HIST_IGNORE_DUPS HIST_IGNORE_SPACE SHARE_HISTORY
-)
-for opt in "${enabled_opts[@]}"; do
-  setopt "$opt"
-done
-unset opt enabled_opts
-
-# Disabled history options
-disabled_opts=(
-  APPEND_HISTORY EXTENDED_HISTORY HIST_EXPIRE_DUPS_FIRST HIST_FIND_NO_DUPS
-  HIST_IGNORE_ALL_DUPS HIST_SAVE_NO_DUPS
-)
-for opt in "${disabled_opts[@]}"; do
-  unsetopt "$opt"
-done
-unset opt disabled_opts
-
 if [[ $options[zle] = on ]]; then
   source <(fzf --zsh)
 fi
 
 # Catppuccin syntax highlighting: install manually if desired
+
+# Set shell options
+set_opts=(
+  HIST_FCNTL_LOCK HIST_IGNORE_DUPS HIST_IGNORE_SPACE SHARE_HISTORY
+  NO_APPEND_HISTORY NO_EXTENDED_HISTORY NO_HIST_EXPIRE_DUPS_FIRST
+  NO_HIST_FIND_NO_DUPS NO_HIST_IGNORE_ALL_DUPS NO_HIST_SAVE_NO_DUPS
+)
+for opt in "${set_opts[@]}"; do
+  setopt "$opt"
+done
+unset opt set_opts
 
 # ============================================= #
 # Zsh Plugins (Portable Mode)                 #

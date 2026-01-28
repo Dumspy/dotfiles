@@ -1,0 +1,48 @@
+#!bash
+#!/usr/bin/env bash
+# Usage: tmux-git-status [pane_current_path]
+# Outputs: worktree_name [branch] +add -del
+
+pane_path="${1:-$(pwd)}"
+
+cd "$pane_path" 2>/dev/null || exit 0
+
+if ! git rev-parse --is-inside-work-tree &>/dev/null; then
+  basename "$pane_path"
+  exit 0
+fi
+
+# Get worktree name
+wt_root=$(git rev-parse --show-toplevel 2>/dev/null)
+if [[ -f "$wt_root/.git" ]]; then
+  # Linked worktree
+  gitdir=$(sed -n 's/^gitdir: //p' "$wt_root/.git" | head -n1)
+  wt_name=$(basename "$gitdir")
+else
+  wt_name="main"
+fi
+
+# Get branch
+branch=$(git symbolic-ref --short -q HEAD 2>/dev/null || git rev-parse --short HEAD 2>/dev/null || echo "?")
+
+# Get diff stats
+diff_stats=$(git diff --numstat 2>/dev/null | awk '{add+=$1; del+=$2} END {printf "%d %d", add+0, del+0}')
+staged_stats=$(git diff --cached --numstat 2>/dev/null | awk '{add+=$1; del+=$2} END {printf "%d %d", add+0, del+0}')
+
+read -r unstaged_add unstaged_del <<< "$diff_stats"
+read -r staged_add staged_del <<< "$staged_stats"
+
+total_add=$((unstaged_add + staged_add))
+total_del=$((unstaged_del + staged_del))
+
+output="$wt_name"
+
+if [[ $total_add -gt 0 || $total_del -gt 0 ]]; then
+  output="$output "
+  [[ $total_add -gt 0 ]] && output="$output#[fg=green]+$total_add#[fg=default]"
+  [[ $total_add -gt 0 && $total_del -gt 0 ]] && output="$output "
+  [[ $total_del -gt 0 ]] && output="$output#[fg=red]-$total_del#[fg=default]"
+fi
+
+echo "$output"
+

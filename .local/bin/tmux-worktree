@@ -1,0 +1,447 @@
+#!bash
+# ============================================================================
+# tmux-worktree: Switch between git worktrees as tmux windows
+# ============================================================================
+# Usage: tmux-worktree [options]
+#   -h, --help     Show help
+#   -n, --new      Create a new worktree (prompts for branch/path)
+# ============================================================================
+
+set -euo pipefail
+
+# Logging
+LOG_FILE="${XDG_STATE_HOME:-$HOME/.local/state}/tmux-worktree/debug.log"
+mkdir -p "$(dirname "$LOG_FILE")"
+
+log() {
+  echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*" >> "$LOG_FILE"
+}
+
+log "=== tmux-worktree started ==="
+log "Args: $*"
+log "PWD: $(pwd)"
+log "TMUX: ${TMUX:-not set}"
+
+show_help() {
+  echo "Usage: tmux-worktree [options]"
+  echo ""
+  echo "Options:"
+  echo "  -h, --help     Show this help message"
+  echo "  -n, --new      Create a new worktree"
+  echo "  -d, --delete   Delete a worktree (closes tmux window if open)"
+  echo ""
+  echo "Without options: Pick an existing worktree to open as a tmux window"
+}
+
+# Get the git common dir (shared across all worktrees) - returns absolute path
+get_common_dir() {
+  local common
+  common=$(git rev-parse --git-common-dir 2>/dev/null)
+
+  # Make it absolute if relative
+  if [[ "$common" != /* ]]; then
+    common="$(pwd)/$common"
+  fi
+
+  # Normalize the path
+  realpath "$common" 2>/dev/null || echo "$common"
+}
+
+# Get repo root from common dir
+get_repo_root() {
+  local common="$1"
+  if [[ "$common" == */.git ]] || [[ "$common" == */.bare ]]; then
+    dirname "$common"
+  else
+    echo "$common"
+  fi
+}
+
+# Get worktree name from path
+get_worktree_name() {
+  local wt_path="$1"
+  if [[ -f "$wt_path/.git" ]]; then
+    # Linked worktree: parse .git file for worktrees/<name>
+    local gitdir
+    gitdir=$(sed -n 's/^gitdir: //p' "$wt_path/.git" | head -n1)
+    basename "$gitdir"
+  else
+    # Main worktree
+    echo "main"
+  fi
+}
+
+# Get git diff stats for a worktree
+get_diff_stats() {
+  local wt_path="$1"
+  local stats
+  stats=$(git -C "$wt_path" diff --numstat 2>/dev/null | awk '{add+=$1; del+=$2} END {printf "%d %d", add+0, del+0}')
+  local staged
+  staged=$(git -C "$wt_path" diff --cached --numstat 2>/dev/null | awk '{add+=$1; del+=$2} END {printf "%d %d", add+0, del+0}')
+
+  local unstaged_add unstaged_del staged_add staged_del
+  read -r unstaged_add unstaged_del <<< "$stats"
+  read -r staged_add staged_del <<< "$staged"
+
+  local total_add=$((unstaged_add + staged_add))
+  local total_del=$((unstaged_del + staged_del))
+
+  if [[ $total_add -gt 0 || $total_del -gt 0 ]]; then
+    local output=""
+    [[ $total_add -gt 0 ]] && output="+$total_add"
+    [[ $total_add -gt 0 && $total_del -gt 0 ]] && output="$output "
+    [[ $total_del -gt 0 ]] && output="$output-$total_del"
+    echo "$output"
+  fi
+}
+
+# Find existing window for worktree
+find_window_for_worktree() {
+  local session="$1"
+  local wt_path="$2"
+  tmux list-windows -t "$session" -F '#{window_id} #{@worktree_path}' 2>/dev/null | \
+    awk -v p="$wt_path" '$2==p {print $1; exit}'
+}
+
+# Create new worktree window (allows multiple windows per worktree)
+open_worktree() {
+  local wt_path="$1"
+  local wt_name="$2"
+  local session
+
+  session=$(tmux display-message -p '#S')
+
+  # Always create new window with worktree metadata
+  local win_id
+  win_id=$(tmux new-window -t "$session" -c "$wt_path" -P -F '#{window_id}')
+  tmux set-window-option -t "$win_id" @worktree_path "$wt_path"
+  tmux set-window-option -t "$win_id" @worktree_name "$wt_name"
+}
+
+# List worktrees with fzf
+pick_worktree() {
+  if ! git rev-parse --is-inside-work-tree &>/dev/null; then
+    echo "Error: Not inside a git repository"
+    read -p "Press enter to close..."
+    exit 1
+  fi
+
+  local lines=()
+  while IFS= read -r line; do
+    # Skip empty lines and bare repository entries (marked with "(bare)")
+    [[ -z "$line" ]] && continue
+    [[ "$line" == *"(bare)"* ]] && continue
+
+    # Parse git worktree list output: path hash [branch]
+    local wt_path wt_branch
+    wt_path=$(echo "$line" | awk '{print $1}')
+    [[ -z "$wt_path" ]] && continue
+
+    wt_branch=$(echo "$line" | sed -n 's/.*\[\(.*\)\].*/\1/p')
+    [[ -z "$wt_branch" ]] && wt_branch="(detached)"
+
+    local wt_name
+    wt_name=$(get_worktree_name "$wt_path")
+
+    local diff_stats
+    diff_stats=$(get_diff_stats "$wt_path")
+
+    # Format: path<TAB>display (simple, no colors)
+    local display="$wt_name ($wt_branch)"
+    [[ -n "$diff_stats" ]] && display="$display $diff_stats"
+
+    lines+=("$wt_path"$'\t'"$display")
+  done < <(git worktree list 2>/dev/null)
+
+  if [[ ${#lines[@]} -eq 0 ]]; then
+    echo "No worktrees found"
+    read -p "Press enter to close..."
+    exit 1
+  fi
+
+  local selected
+  selected=$(printf '%s\n' "${lines[@]}" | fzf --delimiter=$'\t' --with-nth=2 \
+    --prompt="Worktree: " \
+    --header="Select worktree to open as window" \
+    --preview='ls -la {1}' \
+    --preview-window=right,40%)
+
+  if [[ -n "$selected" ]]; then
+    local wt_path wt_name
+    wt_path=$(echo "$selected" | cut -f1)
+    wt_name=$(get_worktree_name "$wt_path")
+    open_worktree "$wt_path" "$wt_name"
+  fi
+}
+
+# Get the project root for bare repo pattern
+# Returns the directory containing .bare/ or the repo root for regular repos
+get_project_root() {
+  local common="$1"
+
+  # For bare repo pattern: common dir is .bare, project root is its parent
+  # e.g., /home/user/project/.bare -> /home/user/project
+  if [[ "$(basename "$common")" == ".bare" ]]; then
+    dirname "$common"
+  elif [[ "$common" == */.git ]]; then
+    # Regular repo with .git directory
+    dirname "$common"
+  else
+    # Fallback
+    echo "$common"
+  fi
+}
+
+# Create new worktree
+create_worktree() {
+  log "create_worktree called"
+  log "Current directory: $(pwd)"
+  log "git rev-parse --is-inside-work-tree: $(git rev-parse --is-inside-work-tree 2>&1 || echo 'failed')"
+  log "git rev-parse --git-dir: $(git rev-parse --git-dir 2>&1 || echo 'failed')"
+
+  if ! git rev-parse --is-inside-work-tree &>/dev/null && ! git rev-parse --git-dir &>/dev/null; then
+    log "ERROR: Not inside a git repository"
+    echo "Error: Not inside a git repository"
+    echo "Current directory: $(pwd)"
+    read -p "Press enter to close..."
+    exit 1
+  fi
+
+  # Pick a branch or enter new branch name
+  local branches
+  branches=$(git branch -a --format='%(refname:short)' 2>/dev/null)
+  log "Available branches: $(echo "$branches" | tr '\n' ' ')"
+
+  local fzf_output selected_branch query
+  fzf_output=$(echo "$branches" | fzf \
+    --prompt="Branch (or type new name): " \
+    --header="Select existing branch or type new branch name" \
+    --print-query) || true
+
+  log "fzf_output: $fzf_output"
+
+  # fzf with --print-query outputs:
+  # Line 1: query (what user typed)
+  # Line 2: selected item (if any)
+  query=$(echo "$fzf_output" | head -n1)
+  selected_branch=$(echo "$fzf_output" | sed -n '2p')
+
+  log "query: $query"
+  log "selected_branch (from line 2): $selected_branch"
+
+  # If nothing selected, use the query as the branch name
+  if [[ -z "$selected_branch" ]]; then
+    selected_branch="$query"
+    log "Using query as branch name: $selected_branch"
+  fi
+
+  if [[ -z "$selected_branch" ]]; then
+    log "Cancelled - no branch selected"
+    echo "Cancelled"
+    exit 0
+  fi
+
+  # Determine worktree path based on repo structure
+  local common_dir project_root
+  common_dir=$(get_common_dir)
+  log "common_dir: $common_dir"
+
+  if [[ -z "$common_dir" ]]; then
+    log "ERROR: Could not determine git common dir"
+    echo "Error: Could not determine git common dir"
+    read -p "Press enter to close..."
+    exit 1
+  fi
+
+  project_root=$(get_project_root "$common_dir")
+  log "project_root: $project_root"
+
+  if [[ -z "$project_root" ]]; then
+    log "ERROR: Could not determine project root"
+    echo "Error: Could not determine project root"
+    read -p "Press enter to close..."
+    exit 1
+  fi
+
+  # Worktree name: replace / with - for branch names like feature/foo
+  local wt_name
+  wt_name=$(echo "$selected_branch" | tr '/' '-')
+  local wt_path="$project_root/$wt_name"
+
+  log "selected_branch: $selected_branch"
+  log "wt_name: $wt_name"
+  log "wt_path: $wt_path"
+
+  echo "Branch: $selected_branch"
+  echo "Worktree name: $wt_name"
+  echo "Project root: $project_root"
+  echo "Worktree path: $wt_path"
+
+  # Check if path already exists
+  if [[ -d "$wt_path" ]]; then
+    log "Directory already exists: $wt_path"
+    echo "Directory already exists: $wt_path"
+    echo "Opening existing worktree..."
+    sleep 1
+    open_worktree "$wt_path" "$wt_name"
+    exit 0
+  fi
+
+  # Check if branch exists
+  echo ""
+  echo "Creating worktree..."
+  local git_result=0
+  if git show-ref --verify --quiet "refs/heads/$selected_branch" 2>/dev/null; then
+    log "Using existing local branch: $selected_branch"
+    echo "Using existing local branch: $selected_branch"
+    log "Running: git worktree add \"$wt_path\" \"$selected_branch\""
+    git worktree add "$wt_path" "$selected_branch" 2>&1 | tee -a "$LOG_FILE" || git_result=$?
+  elif git show-ref --verify --quiet "refs/remotes/origin/$selected_branch" 2>/dev/null; then
+    log "Using remote branch: origin/$selected_branch"
+    echo "Using remote branch: origin/$selected_branch"
+    log "Running: git worktree add \"$wt_path\" \"$selected_branch\""
+    git worktree add "$wt_path" "$selected_branch" 2>&1 | tee -a "$LOG_FILE" || git_result=$?
+  else
+    log "Creating new branch: $selected_branch"
+    echo "Creating new branch: $selected_branch"
+    log "Running: git worktree add -b \"$selected_branch\" \"$wt_path\""
+    git worktree add -b "$selected_branch" "$wt_path" 2>&1 | tee -a "$LOG_FILE" || git_result=$?
+  fi
+
+  log "git worktree add exit code: $git_result"
+
+  if [[ $git_result -eq 0 ]]; then
+    log "Worktree created successfully"
+    echo "Worktree created successfully!"
+    sleep 1
+    open_worktree "$wt_path" "$wt_name"
+  else
+    log "Failed to create worktree"
+    echo "Failed to create worktree (exit code: $git_result)"
+    echo ""
+    echo "Check log file: $LOG_FILE"
+    read -p "Press enter to close..."
+  fi
+}
+
+# Delete worktree
+delete_worktree() {
+  if ! git rev-parse --is-inside-work-tree &>/dev/null; then
+    echo "Error: Not inside a git repository"
+    read -p "Press enter to close..."
+    exit 1
+  fi
+
+  local current_wt
+  current_wt=$(git rev-parse --show-toplevel 2>/dev/null)
+
+  local lines=()
+  while IFS= read -r line; do
+    [[ -z "$line" ]] && continue
+    [[ "$line" == *"(bare)"* ]] && continue
+
+    local wt_path wt_branch
+    wt_path=$(echo "$line" | awk '{print $1}')
+    [[ -z "$wt_path" ]] && continue
+
+    # Skip current worktree
+    [[ "$wt_path" == "$current_wt" ]] && continue
+
+    wt_branch=$(echo "$line" | sed -n 's/.*\[\(.*\)\].*/\1/p')
+    [[ -z "$wt_branch" ]] && wt_branch="(detached)"
+
+    local wt_name
+    wt_name=$(get_worktree_name "$wt_path")
+
+    local diff_stats
+    diff_stats=$(get_diff_stats "$wt_path")
+
+    local display="$wt_name ($wt_branch)"
+    [[ -n "$diff_stats" ]] && display="$display $diff_stats"
+
+    lines+=("$wt_path"$'\t'"$display")
+  done < <(git worktree list 2>/dev/null)
+
+  if [[ ${#lines[@]} -eq 0 ]]; then
+    echo "No other worktrees to delete"
+    read -p "Press enter to close..."
+    exit 1
+  fi
+
+  local selected
+  selected=$(printf '%s\n' "${lines[@]}" | fzf --delimiter=$'\t' --with-nth=2 \
+    --prompt="Delete worktree: " \
+    --header="Select worktree to delete (current worktree excluded)" \
+    --preview='ls -la {1}' \
+    --preview-window=right,40%)
+
+  if [[ -z "$selected" ]]; then
+    echo "Cancelled"
+    exit 0
+  fi
+
+  local wt_path wt_name
+  wt_path=$(echo "$selected" | cut -f1)
+  wt_name=$(get_worktree_name "$wt_path")
+
+  # Check for uncommitted changes
+  local has_changes=false
+  if [[ -n $(git -C "$wt_path" status --porcelain 2>/dev/null) ]]; then
+    has_changes=true
+    echo "Warning: Worktree '$wt_name' has uncommitted changes!"
+    echo ""
+    git -C "$wt_path" status --short
+    echo ""
+    read -p "Force delete? [y/N] " confirm
+    if [[ "$confirm" != [yY] ]]; then
+      echo "Cancelled"
+      exit 0
+    fi
+  fi
+
+  # Close tmux window if open
+  if [[ -n "${TMUX:-}" ]]; then
+    local session
+    session=$(tmux display-message -p '#S')
+    local existing_win
+    existing_win=$(find_window_for_worktree "$session" "$wt_path")
+    if [[ -n "$existing_win" ]]; then
+      echo "Closing tmux window for worktree..."
+      tmux kill-window -t "$existing_win"
+    fi
+  fi
+
+  # Remove worktree
+  echo "Removing worktree '$wt_name'..."
+  if [[ "$has_changes" == true ]]; then
+    git worktree remove --force "$wt_path" 2>&1
+  else
+    git worktree remove "$wt_path" 2>&1
+  fi
+
+  if [[ $? -eq 0 ]]; then
+    echo "Worktree removed successfully!"
+    sleep 1
+  else
+    echo "Failed to remove worktree"
+    read -p "Press enter to close..."
+  fi
+}
+
+# Main
+case "${1:-}" in
+  -h|--help)
+    show_help
+    exit 0
+    ;;
+  -n|--new)
+    create_worktree
+    ;;
+  -d|--delete)
+    delete_worktree
+    ;;
+  *)
+    pick_worktree
+    ;;
+esac
+

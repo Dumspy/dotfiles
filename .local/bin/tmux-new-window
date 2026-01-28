@@ -1,0 +1,32 @@
+#!bash
+#!/usr/bin/env bash
+# Creates a new tmux window in the current directory
+# If in a linked git worktree, sets @worktree_name and @worktree_path options
+# Automatic-rename stays ON so process names (amp, opencode) show in window title
+
+pane_path="${1:-$(pwd)}"
+cd "$pane_path" 2>/dev/null || pane_path="$HOME"
+
+# Check if we're in a linked git worktree (not main repo)
+if git rev-parse --is-inside-work-tree &>/dev/null; then
+  wt_root=$(git rev-parse --show-toplevel 2>/dev/null)
+
+  if [[ -f "$wt_root/.git" ]]; then
+    # Linked worktree: parse .git file for worktree name
+    gitdir=$(sed -n 's/^gitdir: //p' "$wt_root/.git" | head -n1)
+    wt_name=$(basename "$gitdir")
+
+    # Create window with worktree metadata (automatic-rename stays on)
+    session=$(tmux display-message -p '#S')
+    win_id=$(tmux new-window -t "$session" -c "$pane_path" -P -F '#{window_id}')
+    tmux set-window-option -t "$win_id" @worktree_path "$wt_root"
+    tmux set-window-option -t "$win_id" @worktree_name "$wt_name"
+  else
+    # Main worktree or regular repo: create normal window
+    tmux new-window -c "$pane_path"
+  fi
+else
+  # Not in a git repo, create normal window
+  tmux new-window -c "$pane_path"
+fi
+
