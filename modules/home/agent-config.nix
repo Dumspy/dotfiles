@@ -37,13 +37,14 @@
       sentry = {
         path = inputs.sentry-skills;
         skillsSubdir = "plugins/sentry-skills/skills";
-        agentsSubdir = "plugins/sentry-skills/agents";
       };
     };
 
     # Agents to enable (auto-discovered from sources)
     agents = [
-      # "code-simplifier" # from sentry
+      "code-simplifier"
+      "librarian"
+      "oracle"
     ];
 
     skills = [

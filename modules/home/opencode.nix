@@ -123,11 +123,6 @@ in {
       commands = {
         "dependabot-solver" = ../../ai/commands/dependabot-solver.md;
       };
-
-      agents = {
-        librarian = ../../ai/agents/librarian.md;
-        oracle = ../../ai/agents/oracle.md;
-      };
     };
   };
 }
