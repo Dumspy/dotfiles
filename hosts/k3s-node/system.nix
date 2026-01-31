@@ -12,7 +12,6 @@
   myModules.system = {
     k3s.enable = true;
     tailscale.enable = true;
-    monitoring.exporters.enable = true;
     openssh = {
       enable = true;
       authorizedKeys = [config.var.publicKey];

@@ -12,11 +12,6 @@
   myModules.system = {
     traefik.enable = true;
     tailscale.enable = true;
-    monitoring = {
-      prometheus.enable = true;
-      grafana.enable = true;
-      exporters.enable = true;
-    };
     openssh = {
       enable = true;
       authorizedKeys = [config.var.publicKey];
