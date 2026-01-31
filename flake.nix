@@ -73,6 +73,12 @@
 
     catppuccin = {
       url = "github:catppuccin/nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    lazyvim = {
+      url = "github:pfassina/lazyvim-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
@@ -94,6 +100,7 @@
     sentry-skills,
     llm-agents,
     catppuccin,
+    lazyvim,
   }: let
     myLib = (import ./lib) {
       inherit nixpkgs nix-darwin nixos-wsl home-manager catppuccin;

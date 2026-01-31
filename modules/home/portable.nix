@@ -15,7 +15,7 @@
     ./direnv.nix
     ./git.nix
     ./ghostty.nix
-    ./neovim.nix
+    ./lazyvim.nix
     ./tmux.nix
     ./tmux-sessionizer.nix
     ./tmux-worktree.nix
@@ -44,7 +44,7 @@
     direnv.enable = false;
     git.enable = true;
     ghostty.enable = true;
-    neovim.enable = true;
+    lazyvim.enable = true;
     tmux.enable = true;
     tmux-sessionizer.enable = true;
     tmux-worktree.enable = true;

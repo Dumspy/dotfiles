@@ -13,7 +13,7 @@
     fzf.enable = true;
     git.enable = true;
     direnv.enable = true;
-    neovim.enable = true;
+    lazyvim.enable = true;
     tmux.enable = true;
     tmux-sessionizer.enable = true;
     tmux-worktree.enable = true;
