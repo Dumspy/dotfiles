@@ -76,13 +76,6 @@ jobs:
             --body "Automated flake.lock update via \`nix flake update\`." \
             --label "flake-updates"
 
-      - name: Trigger check workflow
-        if: steps.check.outputs.has_changes == 'true'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh workflow run check.yml
-
       - name: Update summary
         if: always()
         run: |
