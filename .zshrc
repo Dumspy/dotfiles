@@ -62,7 +62,7 @@ if [[ $TERM != "dumb" ]]; then
   eval "$(starship init zsh)"
 fi
 
-lg() {
+function lg() {
     export LAZYGIT_NEW_DIR_FILE=~/.lazygit/newdir
     command lazygit "$@"
     if [ -f $LAZYGIT_NEW_DIR_FILE ]; then

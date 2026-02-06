@@ -5,13 +5,13 @@ Full command reference for dex. For basic usage, see SKILL.md.
 ## Create a Task
 
 ```bash
-dex create -d "Short description" --context "Full implementation context"
+dex create "Task name" --description "Full implementation details"
 ```
 
 Options:
 
-- `-d, --description` (required): One-line summary
-- `--context` (required): Full implementation details
+- `<name>` or `-n, --name`: One-line summary (required)
+- `-d, --description`: Full implementation details (optional but recommended)
 - `-p, --priority <n>`: Lower = higher priority (default: 1)
 - `-b, --blocked-by <ids>`: Comma-separated task IDs that must complete first
 - `--parent <id>`: Parent task ID (creates subtask)
@@ -24,7 +24,7 @@ dex list --all                # Include completed
 dex list --completed          # Only completed
 dex list --ready              # Only tasks ready to work on (no blockers)
 dex list --blocked            # Only blocked tasks
-dex list --query "login"      # Search in description/context
+dex list --query "login"      # Search in name/description
 ```
 
 Blocked tasks show an indicator: `[B: xyz123]` (blocked by task xyz123) or `[B: 2]` (blocked by 2 tasks).
@@ -38,8 +38,16 @@ dex show <id>
 ## Complete a Task
 
 ```bash
-dex complete <id> --result "What was accomplished"
+dex complete <id> --result "What was accomplished" --commit <sha>
+dex complete <id> --result "No code changes needed" --no-commit
 ```
+
+**For GitHub/Shortcut-linked tasks**, you must specify either:
+
+- `--commit <sha>` - Links the commit; issue closes when commit is merged to remote
+- `--no-commit` - Completes without a commit; issue stays open (close manually)
+
+Tasks without remote links (no GitHub/Shortcut metadata) don't require either flag.
 
 ### Linking Commits
 
@@ -49,14 +57,14 @@ When completing a task that involved creating a commit, link it:
 dex complete abc123 --result "Implemented feature X" --commit a1b2c3d
 ```
 
-This captures commit SHA, message, and branch automatically.
+This captures commit SHA, message, and branch automatically. The linked GitHub/Shortcut issue will be closed **only when the commit is pushed to the remote**.
 
 **GitHub Issue References**: If the task is linked to a GitHub issue (visible in `dex show` output), include issue references in your commit message. Use `Fixes #N` for root tasks (closes the issue) or `Refs #N` for subtasks (links without closing).
 
 ## Edit a Task
 
 ```bash
-dex edit <id> -d "Updated description" --context "Updated context"
+dex edit <id> -n "Updated name" --description "Updated description"
 dex edit <id> --add-blocker xyz123      # Add blocking dependency
 dex edit <id> --remove-blocker xyz123   # Remove blocking dependency
 ```
@@ -75,7 +83,7 @@ Use blocking dependencies to enforce task ordering:
 
 ```bash
 # Create a task that depends on another
-dex create -d "Deploy to production" --context "..." --blocked-by abc123
+dex create "Deploy to production" --description "..." --blocked-by abc123
 
 # Add a blocker to an existing task
 dex edit xyz789 --add-blocker abc123
@@ -121,14 +129,12 @@ Override with `--storage-path` or `DEX_STORAGE_PATH` env var.
 {
   "id": "abc123",
   "parent_id": null,
-  "description": "One-line summary",
-  "context": "Full implementation details...",
+  "name": "One-line summary",
+  "description": "Full implementation details...",
   "priority": 1,
   "completed": false,
   "result": null,
-  "blockedBy": ["xyz789"],
-  "blocks": ["def456"],
-  "children": [],
+  "blocked_by": ["xyz789"],
   "created_at": "2026-01-01T00:00:00.000Z",
   "updated_at": "2026-01-01T00:00:00.000Z",
   "completed_at": null
