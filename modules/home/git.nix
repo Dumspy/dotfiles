@@ -51,6 +51,7 @@ in {
         gpg.format = "ssh";
         commit.gpgSign = true;
         core.editor = "nvim";
+        init.defaultBranch = "development";
 
         aliases = {
           dlog = "-c diff.external=difft log --ext-diff";
