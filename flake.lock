@@ -3,11 +3,11 @@
     "agent-browser": {
       "flake": false,
       "locked": {
-        "lastModified": 1770273509,
-        "narHash": "sha256-DoR7/s64+d3lmNGgCYUnClWrizvY7lHIi8Uorsgm16o=",
+        "lastModified": 1770405786,
+        "narHash": "sha256-5pZv5oxI67gm+DSDSsbnLD1oqYgJdY5M18Fh4SuKffw=",
         "owner": "vercel-labs",
         "repo": "agent-browser",
-        "rev": "76c30690f5539dcb515663b0dec99c0a7c24e0ff",
+        "rev": "4d8097a56fe9990eb2e5cecb6d167eb6897eda06",
         "type": "github"
       },
       "original": {
@@ -19,11 +19,11 @@
     "anthropics-agent-skills": {
       "flake": false,
       "locked": {
-        "lastModified": 1770171633,
-        "narHash": "sha256-8tANLG91vLbC30IFpEakPBN9bUjJJldpvX28w9e9y80=",
+        "lastModified": 1770412772,
+        "narHash": "sha256-9FGubcwHcGBJcKl02aJ+YsTMiwDOdgU/FHALjARG51c=",
         "owner": "anthropics",
         "repo": "skills",
-        "rev": "a5bcdd7e58cdff48566bf876f0a72a2008dcefbc",
+        "rev": "1ed29a03dc852d30fa6ef2ca53a67dc2c2c2c563",
         "type": "github"
       },
       "original": {
@@ -61,11 +61,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1769946009,
-        "narHash": "sha256-cjPsPx3qlP7RW78lcGJoTP/B6yqY6BJJjwT7QUg8ByY=",
+        "lastModified": 1770388745,
+        "narHash": "sha256-tmAONUMNHnlkozNcMR1kZJ/68OGea5wS56vl6vaUS5U=",
         "owner": "catppuccin",
         "repo": "nix",
-        "rev": "ff59ad5085b7d71705ea1f019c02b08dfe40d9c8",
+        "rev": "5e9efb97caeffea3bf248023b6d8b68e63b839b9",
         "type": "github"
       },
       "original": {
@@ -285,11 +285,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1770321468,
-        "narHash": "sha256-gXW/dK4BsULL/aRL5dxuJo4i/UnSVJTEADhR7spi9hs=",
+        "lastModified": 1770435437,
+        "narHash": "sha256-QGFHw3wc08DgAt2GllBgrOnCcgXTMwOsokdfMDHVprI=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "63c4582b13128ed5b351ed61be2d8ecce94eef2d",
+        "rev": "36fb71277896585b319e56e8a98c265f24813e30",
         "type": "github"
       },
       "original": {
@@ -363,11 +363,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1770321414,
-        "narHash": "sha256-+UPLq9S65Y5UU+HDv/9KE1cxrPnqtCR1n5jj9VtTuyc=",
+        "lastModified": 1770462200,
+        "narHash": "sha256-64SI47w4kK39pxHPczVQIkgqVbELzdcvENMpLn1Jav0=",
         "owner": "anomalyco",
         "repo": "opencode",
-        "rev": "afce869d3be930067e31fbbaabc9f5c48c5eac4b",
+        "rev": "fedf9feba8c82c874e250d2fcc108b008fcf5212",
         "type": "github"
       },
       "original": {
@@ -421,11 +421,11 @@
     "sentry-skills": {
       "flake": false,
       "locked": {
-        "lastModified": 1770256401,
-        "narHash": "sha256-tsaC3Bn5JIBmoairGaMGWN78ZVAbtr7tQ1ecZtV67Gs=",
+        "lastModified": 1770404940,
+        "narHash": "sha256-icYP/QlH/dCK21odLAb1C/ZdK9rAt033MIlFjjSKX8s=",
         "owner": "getsentry",
         "repo": "skills",
-        "rev": "934d1e8b245e1517a789d34bc23de2b123488dde",
+        "rev": "c8881564e75eff4faaecc82d1c3f13356851b6e7",
         "type": "github"
       },
       "original": {
