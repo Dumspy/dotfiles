@@ -18,6 +18,9 @@
 [gpg "openpgp"]
 	program = "gpg"
 
+[init]
+	defaultBranch = "development"
+
 [push]
 	autoSetupRemote = true
 
