@@ -10,6 +10,17 @@
     ../../modules/system/oci-keepalive.nix
   ];
 
+  # Boot options
+  boot.loader.grub = {
+    enable = true;
+    device = "nodev";
+    efiSupport = true;
+    efiInstallAsRemovable = true;
+  };
+  boot.loader.efi.efiSysMountPoint = "/boot/efi";
+
+  zramSwap.enable = true;
+
   # Modules
   myModules.system = {
     tailscale.enable = true;
@@ -23,10 +34,15 @@
       enable = true;
       authorizedKeys = [config.var.publicKey];
     };
+    shell.default = "zsh";
   };
+
+  # Workaround for https://github.com/NixOS/nix/issues/8502
+  services.logrotate.checkConfig = false;
 
   # Networking
   networking.hostName = "oci-node-1";
+  networking.domain = "nixossn.nixosvcn.oraclevcn.com";
   networking.useDHCP = lib.mkDefault true;
 
   # Time zone
@@ -51,12 +67,13 @@
     isNormalUser = true;
     description = "nixos";
     extraGroups = ["networkmanager" "wheel"];
+    hashedPassword = "$y$j9T$8R.g9In3C6CZP1FVcRKoM.$5OcjxY6bfsihBD1mlRsirXvzIx0DZkBeQO74V5XCq96";
   };
 
   # Packages
   environment.systemPackages = with pkgs; [git htop curl];
 
-  # Firewall (Tailscale)
-  networking.firewall.allowedTCPPorts = [41641];
+  # Firewall
+  networking.firewall.allowedTCPPorts = [22 41641];
   networking.firewall.allowedUDPPorts = [41641];
 }
