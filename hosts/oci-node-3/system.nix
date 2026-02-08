@@ -17,7 +17,7 @@
     efiSupport = true;
     efiInstallAsRemovable = true;
   };
-  boot.loader.efi.canTouchEfiVariables = true;
+
   zramSwap.enable = true;
 
   # Modules
