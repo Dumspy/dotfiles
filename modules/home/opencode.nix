@@ -2,7 +2,7 @@
   config,
   lib,
   pkgs,
-  inputs,
+  opencode,
   ...
 }: let
   cfg = config.myModules.home.opencode;
@@ -41,7 +41,7 @@ in {
   config = lib.mkIf cfg.enable {
     programs.opencode = {
       enable = true;
-      package = inputs.opencode.packages.${pkgs.stdenv.hostPlatform.system}.default;
+      package = opencode.packages.${pkgs.stdenv.hostPlatform.system}.default;
 
       settings = {
         autoupdate = false;

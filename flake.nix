@@ -102,8 +102,33 @@
     catppuccin,
     lazyvim,
   }: let
+    coreInputs = {
+      inherit nixpkgs flake-utils git-hooks opnix;
+    };
+    workstationInputs =
+      coreInputs
+      // {
+        inherit
+          home-manager
+          catppuccin
+          opencode
+          vercel-agent-skills
+          expo-agent-skills
+          agent-browser
+          anthropics-agent-skills
+          dex-agent-skills
+          sentry-skills
+          llm-agents
+          lazyvim
+          ;
+      };
+    wslInputs =
+      workstationInputs
+      // {
+        inherit nixos-wsl;
+      };
     myLib = (import ./lib) {
-      inherit nixpkgs nix-darwin nixos-wsl home-manager catppuccin;
+      inherit nixpkgs nix-darwin nixos-wsl;
       flakeRoot = ./.;
     };
     inherit (myLib) mkDarwin mkNixos;
@@ -131,10 +156,7 @@
       darwinConfigurations = {
         darwin = mkDarwin {
           name = "darwin";
-          specialArgs = {
-            username = "felix.berger";
-            inherit inputs;
-          };
+          specialArgs = {username = "felix.berger";} // workstationInputs;
           extraModules = [
             opnix.darwinModules.default
           ];
@@ -146,10 +168,7 @@
         wsl-devbox = mkNixos {
           name = "wsl-devbox";
           system = "x86_64-linux";
-          specialArgs = {
-            username = "nixos";
-            inherit inputs;
-          };
+          specialArgs = {username = "nixos";} // wslInputs;
           withHomeManager = true;
           extraModules = [
             opnix.nixosModules.default
@@ -160,10 +179,7 @@
         k3s-node = mkNixos {
           name = "k3s-node";
           system = "x86_64-linux";
-          specialArgs = {
-            username = "nixos";
-            inherit inputs;
-          };
+          specialArgs = {username = "nixos";} // coreInputs;
           withHomeManager = false;
           extraModules = [
             opnix.nixosModules.default
@@ -173,10 +189,7 @@
         master-node = mkNixos {
           name = "master-node";
           system = "x86_64-linux";
-          specialArgs = {
-            username = "nixos";
-            inherit inputs;
-          };
+          specialArgs = {username = "nixos";} // coreInputs;
           withHomeManager = false;
           extraModules = [
             opnix.nixosModules.default
@@ -187,7 +200,7 @@
       # Portable home-manager configuration for cross-platform dotfiles export
       homeConfigurations.portable = home-manager.lib.homeManagerConfiguration {
         pkgs = import nixpkgs {system = "x86_64-linux";};
-        extraSpecialArgs = {inherit inputs;};
+        extraSpecialArgs = workstationInputs;
         modules = [
           catppuccin.homeModules.catppuccin
           ./modules/home/portable.nix

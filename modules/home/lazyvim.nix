@@ -1,12 +1,12 @@
 {
   config,
   lib,
-  inputs,
+  lazyvim,
   ...
 }: let
   cfg = config.myModules.home.lazyvim;
 in {
-  imports = [inputs.lazyvim.homeManagerModules.default];
+  imports = [lazyvim.homeManagerModules.default];
 
   options.myModules.home.lazyvim = {
     enable = lib.mkEnableOption "LazyVim editor";

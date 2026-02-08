@@ -1,7 +1,6 @@
 {
   pkgs,
   lib,
-  inputs,
   ...
 }: {
   myModules.system.onepassword.enable = true;
@@ -37,7 +36,6 @@
   # $ nix-env -qaP | grep wget
   environment.systemPackages = [
     pkgs.wget
-    pkgs.home-manager
     pkgs.nixd
     pkgs.nil
     pkgs.git
@@ -51,9 +49,6 @@
     pkgs.kubernetes-helm
     pkgs.argocd
     pkgs.jq
-    inputs.opencode.packages.${pkgs.stdenv.hostPlatform.system}.default
-    inputs.opnix.packages.${pkgs.stdenv.hostPlatform.system}.default
-    pkgs.amp-cli
   ];
 
   # Fonts

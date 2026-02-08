@@ -2,7 +2,12 @@
   config,
   lib,
   pkgs,
-  inputs,
+  vercel-agent-skills,
+  expo-agent-skills,
+  agent-browser,
+  anthropics-agent-skills,
+  dex-agent-skills,
+  sentry-skills,
   ...
 }: {
   imports = [
@@ -15,27 +20,27 @@
 
     sources = {
       vercel = {
-        path = inputs.vercel-agent-skills;
+        path = vercel-agent-skills;
         skillsSubdir = "skills";
       };
       expo = {
-        path = inputs.expo-agent-skills;
+        path = expo-agent-skills;
         skillsSubdir = "plugins/expo-app-design/skills";
       };
       agent-browser = {
-        path = inputs.agent-browser;
+        path = agent-browser;
         skillsSubdir = "skills/agent-browser";
       };
       anthropic-skills = {
-        path = inputs.anthropics-agent-skills;
+        path = anthropics-agent-skills;
         skillsSubdir = "skills";
       };
       dex = {
-        path = inputs.dex-agent-skills;
+        path = dex-agent-skills;
         skillsSubdir = "plugins/dex/skills";
       };
       sentry = {
-        path = inputs.sentry-skills;
+        path = sentry-skills;
         skillsSubdir = "plugins/sentry-skills/skills";
       };
     };

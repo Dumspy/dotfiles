@@ -1,6 +1,7 @@
 {
   config,
   pkgs,
+  opencode,
   ...
 }: {
   system.stateVersion = "24.05";
@@ -33,6 +34,8 @@
     pkgs.gcc
     pkgs.gnumake
     pkgs.wslu # add wslu package
+    opencode.packages.${pkgs.stdenv.hostPlatform.system}.default
+    pkgs.amp-cli
   ];
 
   # Set default browser for WSL

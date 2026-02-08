@@ -1,8 +1,6 @@
 {
   nixpkgs,
   nix-darwin,
-  home-manager,
-  catppuccin,
   flakeRoot ? ./..,
   ...
 }: {
@@ -21,7 +19,7 @@
           (flakeRoot + /modules/system/platform/darwin.nix)
           (flakeRoot + /hosts/system.nix)
           (flakeRoot + /hosts/${name}/system.nix)
-          home-manager.darwinModules.home-manager
+          specialArgs.home-manager.darwinModules.home-manager
           {
             home-manager = {
               useGlobalPkgs = true;
@@ -32,7 +30,7 @@
                   (flakeRoot + /modules/home)
                   (flakeRoot + /hosts/home.nix)
                   (flakeRoot + /hosts/${name}/home.nix)
-                  catppuccin.homeModules.catppuccin
+                  specialArgs.catppuccin.homeModules.catppuccin
                 ];
               };
             };
@@ -62,7 +60,7 @@
         ++ (
           if withHomeManager
           then [
-            home-manager.nixosModules.home-manager
+            specialArgs.home-manager.nixosModules.home-manager
             {
               home-manager = {
                 useGlobalPkgs = true;
@@ -73,7 +71,7 @@
                     (flakeRoot + /modules/home)
                     (flakeRoot + /hosts/home.nix)
                     (flakeRoot + /hosts/${name}/home.nix)
-                    catppuccin.homeModules.catppuccin
+                    specialArgs.catppuccin.homeModules.catppuccin
                   ];
                 };
               };
