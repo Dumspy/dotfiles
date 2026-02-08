@@ -56,7 +56,7 @@
   # Packages
   environment.systemPackages = with pkgs; [git htop curl];
 
-  # Firewall (Tailscale)
-  networking.firewall.allowedTCPPorts = [41641];
+  # Firewall
+  networking.firewall.allowedTCPPorts = [22 41641];
   networking.firewall.allowedUDPPorts = [41641];
 }
