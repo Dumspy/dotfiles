@@ -16,8 +16,8 @@
     device = "nodev";
     efiSupport = true;
     efiInstallAsRemovable = true;
-    efiSysMountPoint = "/boot/efi";
   };
+  boot.loader.efi.efiSysMountPoint = "/boot/efi";
 
   zramSwap.enable = true;
 
