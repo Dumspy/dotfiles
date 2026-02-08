@@ -33,6 +33,7 @@
       sentry = {
         path = inputs.sentry-skills;
         skillsSubdir = "plugins/sentry-skills/skills";
+        exclude = ["skill-creator"];
       };
     };
 

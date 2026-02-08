@@ -88,20 +88,22 @@
     mergeSources = acc: sourceName: let
       sourceSpec = sources.${sourceName};
       maxDepth = sourceSpec.maxDepth or 1;
+      excludeList = sourceSpec.exclude or [];
       discovered = discoverSkills sourceName sourceSpec.path sourceSpec.skillsSubdir maxDepth;
+      discoveredFiltered =
+        lib.filterAttrs (name: _: !(lib.elem name excludeList)) discovered;
       withSource =
         lib.mapAttrs (skillName: skill: {
           inherit sourceName skillName;
           path = skill.absPath;
         })
-        discovered;
+        discoveredFiltered;
       # Check for duplicates
       duplicates = lib.filter (name: builtins.hasAttr name acc) (lib.attrNames withSource);
-      _ =
-        lib.assertMsg (duplicates == [])
-        "agent-config: duplicate skill(s) ${lib.concatStringsSep ", " duplicates} from source '${sourceName}' (already defined in '${(acc.${builtins.head duplicates} or {}).sourceName or "unknown"}')";
     in
-      acc // withSource;
+      assert lib.assertMsg (duplicates == [])
+      "agent-config: duplicate skill(s) ${lib.concatStringsSep ", " duplicates} from source '${sourceName}' (already defined in '${(acc.${builtins.head duplicates} or {}).sourceName or "unknown"}')";
+        acc // withSource;
   in
     lib.foldl' mergeSources localCatalog (lib.attrNames sources);
 
@@ -166,8 +168,12 @@
     # Discover from each source
     perSource =
       lib.mapAttrsToList (
-        sourceName: sourceSpec:
-          discoverAgentsFromPath sourceName "${sourceSpec.path}/${sourceSpec.agentsSubdir}"
+        sourceName: sourceSpec: let
+          excludeList = sourceSpec.exclude or [];
+          discovered = discoverAgentsFromPath sourceName "${sourceSpec.path}/${sourceSpec.agentsSubdir}";
+          discoveredFiltered = lib.filterAttrs (name: _: !(lib.elem name excludeList)) discovered;
+        in
+          discoveredFiltered
       )
       sources;
 
@@ -176,11 +182,10 @@
       lib.foldl' (
         acc: agents: let
           duplicates = lib.filter (name: builtins.hasAttr name acc) (lib.attrNames agents);
-          _ =
-            lib.assertMsg (duplicates == [])
-            "agent-config: duplicate agent(s) ${lib.concatStringsSep ", " duplicates}";
         in
-          acc // agents
+          assert lib.assertMsg (duplicates == [])
+          "agent-config: duplicate agent(s) ${lib.concatStringsSep ", " duplicates}";
+            acc // agents
       )
       localDiscovered
       perSource;
@@ -234,6 +239,11 @@
         type = lib.types.str;
         default = "agents";
         description = "Subdirectory for agents (.md files)";
+      };
+      exclude = lib.mkOption {
+        type = lib.types.listOf lib.types.str;
+        default = [];
+        description = "List of skill/agent names to exclude from this source";
       };
     };
   };
