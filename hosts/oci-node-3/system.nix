@@ -10,6 +10,11 @@
     ../../modules/system/oci-keepalive.nix
   ];
 
+  # Boot options
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
+  zramSwap.enable = true;
+
   # Modules
   myModules.system = {
     tailscale.enable = true;
@@ -25,8 +30,12 @@
     };
   };
 
+  # Workaround for https://github.com/NixOS/nix/issues/8502
+  services.logrotate.checkConfig = false;
+
   # Networking
   networking.hostName = "oci-node-3";
+  networking.domain = "nixossn.nixosvcn.oraclevcn.com";
   networking.useDHCP = lib.mkDefault true;
 
   # Time zone
