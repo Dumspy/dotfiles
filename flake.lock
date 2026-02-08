@@ -90,22 +90,6 @@
         "type": "github"
       }
     },
-    "expo-agent-skills": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1770072172,
-        "narHash": "sha256-ZYa4rSudhqTRqnHUo24GWeGiwkceNtDYy8uCvFRTHyc=",
-        "owner": "expo",
-        "repo": "skills",
-        "rev": "7dcb2fbd0d86f162977d865369ac6b34d5306ad6",
-        "type": "github"
-      },
-      "original": {
-        "owner": "expo",
-        "repo": "skills",
-        "type": "github"
-      }
-    },
     "flake-compat": {
       "flake": false,
       "locked": {
@@ -403,7 +387,6 @@
         "anthropics-agent-skills": "anthropics-agent-skills",
         "catppuccin": "catppuccin",
         "dex-agent-skills": "dex-agent-skills",
-        "expo-agent-skills": "expo-agent-skills",
         "flake-utils": "flake-utils",
         "git-hooks": "git-hooks",
         "home-manager": "home-manager",
