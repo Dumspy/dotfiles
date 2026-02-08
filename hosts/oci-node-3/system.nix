@@ -34,6 +34,7 @@
       enable = true;
       authorizedKeys = [config.var.publicKey];
     };
+    shell.default = "zsh";
   };
 
   # Workaround for https://github.com/NixOS/nix/issues/8502
