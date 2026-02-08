@@ -66,6 +66,7 @@
     isNormalUser = true;
     description = "nixos";
     extraGroups = ["networkmanager" "wheel"];
+    hashedPassword = "$y$j9T$8R.g9In3C6CZP1FVcRKoM.$5OcjxY6bfsihBD1mlRsirXvzIx0DZkBeQO74V5XCq96";
   };
 
   # Packages
