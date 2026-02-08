@@ -52,8 +52,10 @@ in {
         SLEEP_TIME=$((RANDOM % 480 + 120))
         sleep $SLEEP_TIME
       '';
-      Restart = "always";
-      RestartSec = "30s";
+      serviceConfig = {
+        Restart = "always";
+        RestartSec = "30s";
+      };
     };
   };
 }
