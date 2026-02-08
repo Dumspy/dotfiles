@@ -25,6 +25,7 @@
       anthropic-skills = {
         path = inputs.anthropics-agent-skills;
         skillsSubdir = "skills";
+        exclude = ["doc-coauthoring" "skill-creator"];
       };
       dex = {
         path = inputs.dex-agent-skills;
@@ -33,7 +34,6 @@
       sentry = {
         path = inputs.sentry-skills;
         skillsSubdir = "plugins/sentry-skills/skills";
-        exclude = ["skill-creator"];
       };
     };
 
