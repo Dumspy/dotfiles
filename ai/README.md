@@ -1,5 +1,7 @@
 Credits:
 - https://github.com/dmmulroy/.dotfiles
-  - Librian
-  - Oracle
-- https://github.com/getsentry/skills/blob/main/plugins/sentry-skills/agents/code-simplifier.md
+  - agents/librian
+  - agents/oracle
+- https://github.com/getsentry/skills
+  - agents/code-simplifier.md
+  - skills/code-review/SKILL.md
