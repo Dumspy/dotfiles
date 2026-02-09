@@ -81,6 +81,7 @@
   services.tinyproxy = {
     enable = true;
     settings = {
+      Listen = "0.0.0.0";
       Port = 8888;
       Allow = ["10.0.1.0/24"];
     };
