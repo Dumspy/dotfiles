@@ -23,7 +23,10 @@
 
   # Modules
   myModules.system = {
-    tailscale.enable = true;
+    tailscale = {
+      enable = true;
+      exitNode = true;
+    };
     oci-keepalive = {
       enable = true;
       activeHours = "06-22";
