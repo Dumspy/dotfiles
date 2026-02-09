@@ -74,6 +74,15 @@
   environment.systemPackages = with pkgs; [git htop curl];
 
   # Firewall
-  networking.firewall.allowedTCPPorts = [22 41641];
+  networking.firewall.allowedTCPPorts = [22 41641 8888];
   networking.firewall.allowedUDPPorts = [41641];
+
+  # Tinyproxy
+  services.tinyproxy = {
+    enable = true;
+    settings = {
+      Port = 8888;
+      Allow = ["10.0.1.0/24"];
+    };
+  };
 }
