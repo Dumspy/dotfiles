@@ -49,7 +49,12 @@
     withHomeManager ? true,
   }:
     nixpkgs.lib.nixosSystem {
-      specialArgs = specialArgs // {isDarwin = false;};
+      specialArgs =
+        specialArgs
+        // {
+          isDarwin = false;
+          modulesPath = "${nixpkgs}/nixos/modules";
+        };
       modules =
         [
           {nixpkgs.hostPlatform = system;}
