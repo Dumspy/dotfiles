@@ -183,18 +183,18 @@
           ];
         };
 
-        # oci-node-1 = mkNixos {
-        #   name = "oci-node-1";
-        #   system = "aarch64-linux";
-        #   specialArgs = {
-        #     username = "nixos";
-        #     inherit inputs;
-        #   };
-        #   withHomeManager = false;
-        #   extraModules = [
-        #     opnix.nixosModules.default
-        #   ];
-        # };
+        oci-node-1 = mkNixos {
+          name = "oci-node-1";
+          system = "aarch64-linux";
+          specialArgs = {
+            username = "nixos";
+            inherit inputs;
+          };
+          withHomeManager = false;
+          extraModules = [
+            opnix.nixosModules.default
+          ];
+        };
 
         # oci-node-2 = mkNixos {
         #   name = "oci-node-2";
