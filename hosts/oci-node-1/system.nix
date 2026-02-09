@@ -45,6 +45,10 @@
   networking.domain = "nixossn.nixosvcn.oraclevcn.com";
   networking.useDHCP = lib.mkDefault true;
 
+  # Proxy configuration using oci-node-3
+  networking.proxy.default = "http://10.0.1.215:8888";
+  networking.proxy.noProxy = "localhost,127.0.0.1";
+
   # Time zone
   time.timeZone = "Europe/Copenhagen";
 
