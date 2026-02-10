@@ -1,5 +1,7 @@
 # AGENTS.md
 
+**IMPORTANT**: Work is NOT always done for the current system
+
 ## Build & Commands
 - **ALWAYS Rebuild with**: `./rebuild.sh` (auto-detects system or prompts)
 - **Format**: `alejandra` (Nix formatter, available in devShell)

@@ -25,6 +25,11 @@ in {
 
     networking.firewall.allowedTCPPorts = [6443];
 
+    systemd.services.k3s.serviceConfig = {
+      Restart = "on-failure";
+      RestartSec = "5s";
+    };
+
     systemd.services.setup-kubeconfig = {
       description = "Setup kubeconfig for user nixos";
       wantedBy = ["multi-user.target"];
