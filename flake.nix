@@ -286,6 +286,20 @@
         };
       };
 
-      checks = builtins.mapAttrs (system: deployLib: deployLib.deployChecks self.deploy) deploy-rs.lib;
+      checks = {
+        x86_64-linux = deploy-rs.lib.x86_64-linux.deployChecks {
+          nodes = {
+            k3s-node = self.deploy.nodes.k3s-node;
+            master-node = self.deploy.nodes.master-node;
+          };
+        };
+        aarch64-linux = deploy-rs.lib.aarch64-linux.deployChecks {
+          nodes = {
+            oci-node-1 = self.deploy.nodes.oci-node-1;
+            oci-node-2 = self.deploy.nodes.oci-node-2;
+            oci-node-3 = self.deploy.nodes.oci-node-3;
+          };
+        };
+      };
     };
 }
