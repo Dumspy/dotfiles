@@ -80,6 +80,11 @@
       url = "github:pfassina/lazyvim-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    deploy-rs = {
+      url = "github:serokell/deploy-rs";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs @ {
@@ -101,6 +106,7 @@
     llm-agents,
     catppuccin,
     lazyvim,
+    deploy-rs,
   }: let
     myLib = (import ./lib) {
       inherit nixpkgs nix-darwin nixos-wsl home-manager catppuccin;
@@ -231,6 +237,69 @@
           catppuccin.homeModules.catppuccin
           ./modules/home/portable.nix
         ];
+      };
+
+      deploy.nodes = {
+        oci-node-1 = {
+          hostname = "100.99.30.112";
+          sshUser = "deploy";
+          user = "root";
+          profiles.system.path = deploy-rs.lib.aarch64-linux.activate.nixos self.nixosConfigurations.oci-node-1;
+          magicRollback = true;
+          remoteBuild = true;
+        };
+
+        oci-node-2 = {
+          hostname = "100.120.122.114";
+          sshUser = "deploy";
+          user = "root";
+          profiles.system.path = deploy-rs.lib.aarch64-linux.activate.nixos self.nixosConfigurations.oci-node-2;
+          magicRollback = true;
+          remoteBuild = true;
+        };
+
+        oci-node-3 = {
+          hostname = "100.64.54.67";
+          sshUser = "deploy";
+          user = "root";
+          profiles.system.path = deploy-rs.lib.aarch64-linux.activate.nixos self.nixosConfigurations.oci-node-3;
+          magicRollback = true;
+          remoteBuild = true;
+        };
+
+        k3s-node = {
+          hostname = "100.109.48.72";
+          sshUser = "deploy";
+          user = "root";
+          profiles.system.path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.k3s-node;
+          magicRollback = true;
+          remoteBuild = true;
+        };
+
+        master-node = {
+          hostname = "100.83.126.36";
+          sshUser = "deploy";
+          user = "root";
+          profiles.system.path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.master-node;
+          magicRollback = true;
+          remoteBuild = true;
+        };
+      };
+
+      checks = {
+        x86_64-linux = deploy-rs.lib.x86_64-linux.deployChecks {
+          nodes = {
+            k3s-node = self.deploy.nodes.k3s-node;
+            master-node = self.deploy.nodes.master-node;
+          };
+        };
+        aarch64-linux = deploy-rs.lib.aarch64-linux.deployChecks {
+          nodes = {
+            oci-node-1 = self.deploy.nodes.oci-node-1;
+            oci-node-2 = self.deploy.nodes.oci-node-2;
+            oci-node-3 = self.deploy.nodes.oci-node-3;
+          };
+        };
       };
     };
 }

@@ -1,6 +1,7 @@
 {
   config,
   pkgs,
+  inputs,
   ...
 }: {
   nix.enable = true;
@@ -55,6 +56,7 @@
 
   environment.systemPackages = [
     pkgs.dotnetCorePackages.sdk_9_0-bin
+    inputs.opencode.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
 
   # Set Git commit hash for darwin-version.

@@ -12,7 +12,7 @@ on:
     types:
       - completed
     branches:
-      - 'automated/flake-updates-*'
+      - "automated/flake-updates-*"
 
 jobs:
   test:
@@ -32,7 +32,7 @@ jobs:
           nix_path: nixpkgs=channel:nixos-unstable
 
       - name: Verify flake configuration
-        run: nix develop -c nix flake check .
+        run: nix develop -c nix flake check . --all-systems
 
       - name: Lint Nix code with Alejandra
         run: nix develop -c alejandra --check .
