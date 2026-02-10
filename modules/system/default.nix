@@ -14,5 +14,6 @@
       ./1password-agent.nix
       ./k3s.nix
       ./traefik.nix
+      ./deploy.nix
     ];
 }

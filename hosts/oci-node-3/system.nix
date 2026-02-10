@@ -38,6 +38,7 @@
       authorizedKeys = [config.var.publicKey];
     };
     shell.default = "zsh";
+    deploy.enable = true;
   };
 
   # Workaround for https://github.com/NixOS/nix/issues/8502
