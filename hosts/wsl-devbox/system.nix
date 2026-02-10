@@ -1,6 +1,7 @@
 {
   config,
   pkgs,
+  inputs,
   ...
 }: {
   system.stateVersion = "24.05";
@@ -33,6 +34,7 @@
     pkgs.gcc
     pkgs.gnumake
     pkgs.wslu # add wslu package
+    inputs.opencode.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
 
   # Set default browser for WSL
