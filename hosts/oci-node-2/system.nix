@@ -55,7 +55,6 @@
       reference = "op://OCI-Secrets/cluster-token/credential";
       owner = "root";
       group = "root";
-      services = ["k3s"];
     };
   };
 

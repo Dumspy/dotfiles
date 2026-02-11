@@ -67,6 +67,9 @@ in {
     ];
     networking.firewall.allowedUDPPorts = [8472];
 
+    systemd.services.k3s.after = lib.mkIf (cfg.role == "agent") ["opnix-secrets.service"];
+    systemd.services.k3s.wants = lib.mkIf (cfg.role == "agent") ["opnix-secrets.service"];
+
     systemd.services.setup-kubeconfig = {
       description = "Setup kubeconfig for user nixos";
       wantedBy = ["multi-user.target"];
