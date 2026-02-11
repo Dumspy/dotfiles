@@ -15,20 +15,57 @@ in {
       default = "server";
       description = "Role of the k3s node (server or agent)";
     };
+
+    serverAddr = lib.mkOption {
+      type = lib.types.nullOr lib.types.str;
+      default = null;
+      description = "Server URL for agents (e.g., https://10.0.1.215:6443)";
+    };
+
+    tokenFile = lib.mkOption {
+      type = lib.types.nullOr lib.types.str;
+      default = null;
+      description = "Path to k3s cluster token file";
+    };
+
+    nodeIp = lib.mkOption {
+      type = lib.types.nullOr lib.types.str;
+      default = null;
+      description = "Node IP address for k3s";
+    };
+
+    flannelIface = lib.mkOption {
+      type = lib.types.str;
+      default = "enp0s6";
+      description = "Network interface for Flannel CNI";
+    };
+
+    extraFlags = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [];
+      description = "Additional k3s CLI flags";
+    };
   };
 
   config = lib.mkIf cfg.enable {
     services.k3s = {
       enable = true;
       role = cfg.role;
+      serverAddr = lib.mkIf (cfg.role == "agent" && cfg.serverAddr != null) cfg.serverAddr;
+      tokenFile = lib.mkIf (cfg.role == "agent" && cfg.tokenFile != null) cfg.tokenFile;
+      extraFlags = lib.lists.flatten [
+        (lib.optional (cfg.nodeIp != null) "--node-ip=${cfg.nodeIp}")
+        (lib.optional (cfg.nodeIp != null) "--node-external-ip=${cfg.nodeIp}")
+        (lib.optional (cfg.flannelIface != "") "--flannel-iface=${cfg.flannelIface}")
+        cfg.extraFlags
+      ];
     };
 
-    networking.firewall.allowedTCPPorts = [6443];
-
-    systemd.services.k3s.serviceConfig = {
-      Restart = "on-failure";
-      RestartSec = "5s";
-    };
+    networking.firewall.allowedTCPPorts = lib.lists.flatten [
+      (lib.optional (cfg.role == "server") 6443)
+      (lib.optional true 8472)
+    ];
+    networking.firewall.allowedUDPPorts = [8472];
 
     systemd.services.setup-kubeconfig = {
       description = "Setup kubeconfig for user nixos";

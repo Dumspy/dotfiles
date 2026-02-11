@@ -23,6 +23,7 @@
 
   # Modules
   myModules.system = {
+    onepassword.enable = true;
     tailscale.enable = true;
     oci-keepalive = {
       enable = true;
@@ -36,10 +37,27 @@
     };
     shell.default = "zsh";
     deploy.enable = true;
+    k3s = {
+      enable = true;
+      role = "agent";
+      serverAddr = "https://10.0.1.215:6443";
+      nodeIp = "10.0.1.68";
+      flannelIface = "enp0s6";
+      extraFlags = ["--node-external-ip=10.0.1.68"];
+    };
   };
 
   # Workaround for https://github.com/NixOS/nix/issues/8502
   services.logrotate.checkConfig = false;
+
+  services.onepassword-secrets.secrets = {
+    k3sToken = {
+      reference = "op://OCI-Secrets/cluster-token/credential";
+      owner = "root";
+      group = "root";
+      services = ["k3s"];
+    };
+  };
 
   systemd.services.tailscaled.serviceConfig = {
     Environment = [
@@ -84,9 +102,15 @@
   };
 
   # Packages
-  environment.systemPackages = with pkgs; [git htop curl];
+  environment.systemPackages = with pkgs; [git htop curl k9s gcc gnumake];
+
+  environment.variables = {
+    KUBECONFIG = "$HOME/.kube/config";
+  };
+
+  services.k3s.tokenFile = config.services.onepassword-secrets.secretPaths.k3sToken;
 
   # Firewall
-  networking.firewall.allowedTCPPorts = [22 41641];
-  networking.firewall.allowedUDPPorts = [41641];
+  networking.firewall.allowedTCPPorts = [22 41641 8472];
+  networking.firewall.allowedUDPPorts = [41641 8472];
 }
