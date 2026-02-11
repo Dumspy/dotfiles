@@ -39,6 +39,18 @@
     };
     shell.default = "zsh";
     deploy.enable = true;
+    k3s = {
+      enable = true;
+      role = "server";
+      nodeIp = "10.0.1.215";
+      flannelIface = "enp0s6";
+      extraFlags = [
+        "--tls-san=10.0.1.215"
+        "--tls-san=100.64.54.67"
+        "--disable=traefik"
+        "--write-kubeconfig-mode 0644"
+      ];
+    };
   };
 
   # Workaround for https://github.com/NixOS/nix/issues/8502
@@ -75,11 +87,15 @@
   };
 
   # Packages
-  environment.systemPackages = with pkgs; [git htop curl];
+  environment.systemPackages = with pkgs; [git htop curl k9s gcc gnumake];
+
+  environment.variables = {
+    KUBECONFIG = "$HOME/.kube/config";
+  };
 
   # Firewall
-  networking.firewall.allowedTCPPorts = [22 41641 8888];
-  networking.firewall.allowedUDPPorts = [41641];
+  networking.firewall.allowedTCPPorts = [22 41641 8888 6443 8472];
+  networking.firewall.allowedUDPPorts = [41641 8472];
 
   # Tinyproxy
   services.tinyproxy = {

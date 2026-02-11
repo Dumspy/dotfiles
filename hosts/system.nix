@@ -4,8 +4,6 @@
   inputs,
   ...
 }: {
-  myModules.system.onepassword.enable = true;
-
   nixpkgs.config.allowUnfree = true;
 
   #GC

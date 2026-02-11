@@ -11,6 +11,8 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
+    myModules.system.onepassword.enable = true;
+
     services.onepassword-secrets.secrets = {
       cloudflareEnv = {
         reference = "op://NixSecrets/orthjfp4m5gvfp5vcnbhmjdxcy/env_version";
