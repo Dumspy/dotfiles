@@ -67,7 +67,7 @@
     ];
   };
 
-  systemd.services.onepassword-secrets.serviceConfig = {
+  systemd.services.opnix-secrets.serviceConfig = {
     Environment = [
       "HTTP_PROXY=http://10.0.1.215:8888"
       "HTTPS_PROXY=http://10.0.1.215:8888"
