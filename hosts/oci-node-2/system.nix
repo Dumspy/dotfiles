@@ -67,6 +67,14 @@
     ];
   };
 
+  systemd.services.onepassword-secrets.serviceConfig = {
+    Environment = [
+      "HTTP_PROXY=http://10.0.1.215:8888"
+      "HTTPS_PROXY=http://10.0.1.215:8888"
+      "NO_PROXY=localhost,127.0.0.1"
+    ];
+  };
+
   # Networking
   networking.hostName = "oci-node-2";
   networking.domain = "nixossn.nixosvcn.oraclevcn.com";
