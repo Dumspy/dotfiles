@@ -8,6 +8,7 @@
     ./direnv.nix
     ./git.nix
     ./ghostty.nix
+    ./kubectl.nix
     ./lazyvim.nix
     ./tmux.nix
     ./tmux-sessionizer.nix

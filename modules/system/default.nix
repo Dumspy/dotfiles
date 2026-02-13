@@ -1,6 +1,7 @@
 {
   lib,
   isDarwin,
+  isWsl,
   ...
 }: {
   imports =
@@ -9,6 +10,9 @@
       ./onepassword.nix
       ./tailscale.nix
       ./openssh.nix
+    ]
+    ++ lib.optionals (isDarwin || isWsl) [
+      ./kubeconfig.nix
     ]
     ++ lib.optionals (!isDarwin) [
       ./1password-agent.nix

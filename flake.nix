@@ -156,6 +156,7 @@
             username = "nixos";
             inherit inputs;
           };
+          isWsl = true;
           withHomeManager = true;
           extraModules = [
             opnix.nixosModules.default

@@ -47,12 +47,14 @@
     specialArgs,
     extraModules ? [],
     withHomeManager ? true,
+    isWsl ? false,
   }:
     nixpkgs.lib.nixosSystem {
       specialArgs =
         specialArgs
         // {
           isDarwin = false;
+          inherit isWsl;
           modulesPath = "${nixpkgs}/nixos/modules";
         };
       modules =

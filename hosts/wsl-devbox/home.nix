@@ -10,4 +10,5 @@
   home.homeDirectory = config.var.homePrefix;
 
   myModules.home.shell.default = "fish";
+  myModules.home.kubectl.enable = true;
 }
