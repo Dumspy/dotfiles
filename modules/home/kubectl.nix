@@ -19,6 +19,9 @@ in {
       ${aliasCode}
     '';
 
-    programs.fish.shellAbbrs = lib.mapAttrs' (_: clusterCfg: lib.nameValuePair clusterCfg.alias "--context=${clusterCfg.contextName}") kubeconfigClusters;
+    programs.fish.interactiveShellInit = lib.mkIf (!portable) ''
+      # Kubectl context environment variables
+      ${lib.concatStringsSep "\n" (lib.mapAttrsToList (_: clusterCfg: "set -gx ${clusterCfg.alias} '--context=${clusterCfg.contextName}'") kubeconfigClusters)}
+    '';
   };
 }

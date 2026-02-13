@@ -10,7 +10,10 @@
   ];
 
   myModules.system = {
-    k3s.enable = true;
+    k3s = {
+      enable = true;
+      extraFlags = ["--tls-san=100.109.48.72"];
+    };
     tailscale.enable = true;
     openssh = {
       enable = true;
