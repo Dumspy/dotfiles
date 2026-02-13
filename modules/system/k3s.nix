@@ -36,7 +36,7 @@ in {
 
     flannelIface = lib.mkOption {
       type = lib.types.str;
-      default = "enp0s6";
+      default = "";
       description = "Network interface for Flannel CNI";
     };
 

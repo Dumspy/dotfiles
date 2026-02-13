@@ -50,7 +50,6 @@
     pkgs.argocd
     pkgs.jq
     inputs.opnix.packages.${pkgs.stdenv.hostPlatform.system}.default
-    pkgs.amp-cli
   ];
 
   # Fonts
