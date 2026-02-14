@@ -106,4 +106,8 @@
       Allow = ["10.0.1.0/24"];
     };
   };
+
+  # Prevent tinyproxy from restarting during rebuilds
+  # to maintain network connectivity for oci-node-1 and oci-node-2
+  systemd.services.tinyproxy.restartIfChanged = false;
 }
