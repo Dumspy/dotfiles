@@ -59,22 +59,6 @@
     };
   };
 
-  systemd.services.tailscaled.serviceConfig = {
-    Environment = [
-      "HTTP_PROXY=http://10.0.1.215:8888"
-      "HTTPS_PROXY=http://10.0.1.215:8888"
-      "NO_PROXY=localhost,127.0.0.1"
-    ];
-  };
-
-  systemd.services.opnix-secrets.serviceConfig = {
-    Environment = [
-      "HTTP_PROXY=http://10.0.1.215:8888"
-      "HTTPS_PROXY=http://10.0.1.215:8888"
-      "NO_PROXY=localhost,127.0.0.1"
-    ];
-  };
-
   # Networking
   networking.hostName = "oci-node-2";
   networking.domain = "nixossn.nixosvcn.oraclevcn.com";
@@ -83,6 +67,12 @@
   # Proxy configuration using oci-node-3
   networking.proxy.default = "http://10.0.1.215:8888";
   networking.proxy.noProxy = "localhost,127.0.0.1,10.0.1.0/24";
+
+  systemd.globalEnvironment = {
+    HTTP_PROXY = "http://10.0.1.215:8888";
+    HTTPS_PROXY = "http://10.0.1.215:8888";
+    NO_PROXY = "localhost,127.0.0.1,10.0.1.0/24";
+  };
 
   # Time zone
   time.timeZone = "Europe/Copenhagen";
@@ -117,12 +107,6 @@
   };
 
   services.k3s.tokenFile = config.services.onepassword-secrets.secretPaths.k3sToken;
-
-  systemd.services.k3s.serviceConfig = {
-    Environment = [
-      "NO_PROXY=localhost,127.0.0.1,10.0.1.0/24"
-    ];
-  };
 
   # Firewall
   networking.firewall.allowedTCPPorts = [22 41641 8472];
