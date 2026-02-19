@@ -4,6 +4,7 @@
   ...
 }: let
   cfg = config.myModules.home.starship;
+  portable = config.myModules.home.portable or false;
 in {
   options.myModules.home.starship = {
     enable = lib.mkEnableOption "starship prompt with nerd font symbols ";
@@ -12,7 +13,7 @@ in {
   config = lib.mkIf cfg.enable {
     programs.starship = {
       enable = true;
-      enableZshIntegration = config.myModules.home.zsh.enable;
+      enableZshIntegration = config.myModules.home.zsh.enable && !portable;
       enableFishIntegration = config.myModules.home.fish.enable;
       settings = {
         aws = {
