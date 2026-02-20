@@ -73,6 +73,8 @@
     else {};
 
   # Build catalog of all available skills from sources
+  # Returns an attrset of { skillName = { sourceName, skillName, path }; }
+  # If a skill exists in multiple sources, the last source wins
   buildCatalog = sources: localSkills: let
     # Discover from local skills first (use "local" as source name)
     localDiscovered = discoverSkills "local" localSkills "." 1;
@@ -88,22 +90,78 @@
     mergeSources = acc: sourceName: let
       sourceSpec = sources.${sourceName};
       maxDepth = sourceSpec.maxDepth or 1;
+      excludeList = sourceSpec.exclude or [];
       discovered = discoverSkills sourceName sourceSpec.path sourceSpec.skillsSubdir maxDepth;
+      discoveredFiltered =
+        lib.filterAttrs (name: _: !(lib.elem name excludeList)) discovered;
       withSource =
         lib.mapAttrs (skillName: skill: {
           inherit sourceName skillName;
           path = skill.absPath;
         })
-        discovered;
-      # Check for duplicates
-      duplicates = lib.filter (name: builtins.hasAttr name acc) (lib.attrNames withSource);
-      _ =
-        lib.assertMsg (duplicates == [])
-        "agent-config: duplicate skill(s) ${lib.concatStringsSep ", " duplicates} from source '${sourceName}' (already defined in '${(acc.${builtins.head duplicates} or {}).sourceName or "unknown"}')";
+        discoveredFiltered;
     in
       acc // withSource;
   in
     lib.foldl' mergeSources localCatalog (lib.attrNames sources);
+
+  # Build a raw catalog that tracks all sources for each skill
+  # Returns an attrset of { skillName = [ { sourceName, path } ... ]; }
+  buildRawCatalog = sources: localSkills: let
+    # Discover from local skills first
+    localDiscovered = discoverSkills "local" localSkills "." 1;
+    localEntries =
+      lib.mapAttrs (skillName: skill: [
+        {
+          sourceName = "local";
+          path = skill.absPath;
+        }
+      ])
+      localDiscovered;
+
+    # Merge in skills from each source, accumulating all sources per skill
+    mergeSources = acc: sourceName: let
+      sourceSpec = sources.${sourceName};
+      maxDepth = sourceSpec.maxDepth or 1;
+      excludeList = sourceSpec.exclude or [];
+      discovered = discoverSkills sourceName sourceSpec.path sourceSpec.skillsSubdir maxDepth;
+      discoveredFiltered =
+        lib.filterAttrs (name: _: !(lib.elem name excludeList)) discovered;
+    in
+      lib.foldl' (
+        acc: skillName: let
+          skill = discoveredFiltered.${skillName};
+          existing = acc.${skillName} or [];
+        in
+          acc
+          // {
+            ${skillName} =
+              existing
+              ++ [
+                {
+                  inherit sourceName;
+                  path = skill.absPath;
+                }
+              ];
+          }
+      )
+      acc
+      (lib.attrNames discoveredFiltered);
+  in
+    lib.foldl' mergeSources localEntries (lib.attrNames sources);
+
+  # Check for duplicate enabled skills from different sources
+  # Returns enabledSkills after validation
+  checkEnabledSkillDuplicates = rawCatalog: enabledSkills: let
+    # Find skills that are enabled AND exist in multiple sources
+    duplicates = lib.filter (
+      skillName:
+        lib.elem skillName enabledSkills
+        && (lib.length rawCatalog.${skillName}) > 1
+    ) (lib.attrNames rawCatalog);
+  in
+    assert lib.assertMsg (duplicates == [])
+    "agent-config: duplicate enabled skill(s) ${lib.concatStringsSep ", " duplicates} - defined in multiple sources"; enabledSkills;
 
   # Build a derivation containing selected skills
   # Returns { drv, names } where names is the list of skill names in the bundle
@@ -166,8 +224,12 @@
     # Discover from each source
     perSource =
       lib.mapAttrsToList (
-        sourceName: sourceSpec:
-          discoverAgentsFromPath sourceName "${sourceSpec.path}/${sourceSpec.agentsSubdir}"
+        sourceName: sourceSpec: let
+          excludeList = sourceSpec.exclude or [];
+          discovered = discoverAgentsFromPath sourceName "${sourceSpec.path}/${sourceSpec.agentsSubdir}";
+          discoveredFiltered = lib.filterAttrs (name: _: !(lib.elem name excludeList)) discovered;
+        in
+          discoveredFiltered
       )
       sources;
 
@@ -176,11 +238,10 @@
       lib.foldl' (
         acc: agents: let
           duplicates = lib.filter (name: builtins.hasAttr name acc) (lib.attrNames agents);
-          _ =
-            lib.assertMsg (duplicates == [])
-            "agent-config: duplicate agent(s) ${lib.concatStringsSep ", " duplicates}";
         in
-          acc // agents
+          assert lib.assertMsg (duplicates == [])
+          "agent-config: duplicate agent(s) ${lib.concatStringsSep ", " duplicates}";
+            acc // agents
       )
       localDiscovered
       perSource;
@@ -234,6 +295,11 @@
         type = lib.types.str;
         default = "agents";
         description = "Subdirectory for agents (.md files)";
+      };
+      exclude = lib.mkOption {
+        type = lib.types.listOf lib.types.str;
+        default = [];
+        description = "List of skill/agent names to exclude from this source";
       };
     };
   };
@@ -334,6 +400,7 @@ in {
   config = lib.mkIf cfg.enable (let
     # Build catalogs
     skillsCatalog = buildCatalog cfg.sources cfg.localSkills;
+    skillsCatalogRaw = buildRawCatalog cfg.sources cfg.localSkills;
     agentsCatalog = discoverAgents cfg.sources cfg.localAgents;
 
     # Helper to compute enabled items based on enableAll + explicit list
@@ -361,12 +428,15 @@ in {
     in
       lib.unique (allEnabled ++ explicit);
 
-    enabledSkillNames = computeEnabled {
+    enabledSkillNamesPre = computeEnabled {
       catalog = skillsCatalog;
       enableAll = cfg.enableAllSkills;
       explicit = cfg.skills;
       itemType = "Skills";
     };
+
+    # Check for duplicates among enabled skills only
+    enabledSkillNames = checkEnabledSkillDuplicates skillsCatalogRaw enabledSkillNamesPre;
 
     enabledAgentNames = computeEnabled {
       catalog = agentsCatalog;

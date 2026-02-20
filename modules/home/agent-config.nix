@@ -18,10 +18,6 @@
         path = inputs.vercel-agent-skills;
         skillsSubdir = "skills";
       };
-      expo = {
-        path = inputs.expo-agent-skills;
-        skillsSubdir = "plugins/expo-app-design/skills";
-      };
       agent-browser = {
         path = inputs.agent-browser;
         skillsSubdir = "skills/agent-browser";
@@ -29,6 +25,7 @@
       anthropic-skills = {
         path = inputs.anthropics-agent-skills;
         skillsSubdir = "skills";
+        exclude = ["doc-coauthoring" "skill-creator"];
       };
       dex = {
         path = inputs.dex-agent-skills;
@@ -59,14 +56,6 @@
       "react-best-practices"
       "web-design-guidelines"
 
-      # Expo
-      "expo-api-routes"
-      "building-native-ui"
-      "native-data-fetching"
-      "expo-dev-client"
-      "expo-tailwind-setup"
-      "use-dom"
-
       # Browser
       "agent-browser"
 
@@ -76,6 +65,14 @@
 
       # Sentry
       "doc-coauthoring"
+      "agents-md" # meh
+      "find-bugs" # create own version
+      "code-review" # meh very similar to find bugs, but python/ts focused + sentry
+      "code-simplifier" # same as subagents, ts examples only
+      "commit" # forced branch naming create own version forces co-authroing by ai references sentry commit standard
+      "create-pr" # create own, with script for getting template
+      "iterate-pr" # python crap, good base create own version
+      "security-review" # cool
     ];
   };
 }

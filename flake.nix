@@ -41,11 +41,6 @@
       flake = false;
     };
 
-    expo-agent-skills = {
-      url = "github:expo/skills";
-      flake = false;
-    };
-
     agent-browser = {
       url = "github:vercel-labs/agent-browser";
       flake = false;
@@ -98,7 +93,6 @@
     git-hooks,
     home-manager,
     vercel-agent-skills,
-    expo-agent-skills,
     agent-browser,
     anthropics-agent-skills,
     dex-agent-skills,
