@@ -27,6 +27,7 @@
       "dbeaver-community"
       "tailscale-app"
       "steipete/tap/codexbar"
+      "helium-browser"
     ];
     onActivation = {
       autoUpdate = true;
