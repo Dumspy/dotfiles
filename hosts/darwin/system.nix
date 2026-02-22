@@ -26,7 +26,6 @@
       "bruno"
       "dbeaver-community"
       "tailscale-app"
-      "steipete/tap/codexbar"
       "helium-browser"
     ];
     onActivation = {
@@ -56,8 +55,8 @@
   ];
 
   environment.systemPackages = [
-    pkgs.dotnetCorePackages.sdk_9_0-bin
     inputs.opencode.packages.${pkgs.stdenv.hostPlatform.system}.default
+    inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.codex
   ];
 
   # Set Git commit hash for darwin-version.
