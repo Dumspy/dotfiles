@@ -18,6 +18,7 @@ in {
     environment.systemPackages =
       [
         pkgs.zsh
+        pkgs.ripgrep
       ]
       ++ lib.optional (cfg.default == "fish") pkgs.fish;
 

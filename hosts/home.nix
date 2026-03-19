@@ -16,13 +16,12 @@
     lazyvim.enable = true;
     tmux.enable = true;
     tmux-sessionizer.enable = true;
-    tmux-worktree.enable = true;
     opencode.enable = true;
     agent-config.enable = true;
     agent-browser.enable = true;
     dex.enable = false;
     lazygit.enable = true;
-    git-clone-bare.enable = true;
+    ripgrep.enable = true;
   };
 
   programs.home-manager.enable = true;

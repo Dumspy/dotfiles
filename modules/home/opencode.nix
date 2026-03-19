@@ -46,8 +46,6 @@ in {
       settings = {
         autoupdate = false;
 
-        model = "zai-coding-plan/glm-4.7";
-
         mcp = {
           grep_app = {
             type = "remote";

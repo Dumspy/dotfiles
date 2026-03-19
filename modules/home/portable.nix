@@ -18,8 +18,6 @@
     ./lazyvim.nix
     ./tmux.nix
     ./tmux-sessionizer.nix
-    ./tmux-worktree.nix
-    ./git-clone-bare.nix
     ./opencode.nix
     ./agent-config.nix
     ./lazygit.nix
@@ -47,8 +45,6 @@
     lazyvim.enable = true;
     tmux.enable = true;
     tmux-sessionizer.enable = true;
-    tmux-worktree.enable = true;
-    git-clone-bare.enable = true;
     opencode.enable = true;
     agent-config.enable = true;
     lazygit.enable = true;

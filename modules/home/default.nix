@@ -12,13 +12,12 @@
     ./lazyvim.nix
     ./tmux.nix
     ./tmux-sessionizer.nix
-    ./tmux-worktree.nix
-    ./git-clone-bare.nix
     ./opencode.nix
     ./agent-config.nix
     ./agent-browser.nix
     ./dex.nix
     ./ssh.nix
     ./lazygit.nix
+    ./ripgrep.nix
   ];
 }
