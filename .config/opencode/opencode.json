@@ -25,7 +25,6 @@
       "type": "local"
     }
   },
-  "model": "zai-coding-plan/glm-4.7",
   "permission": {
     "bash": {
       "*": "ask",
