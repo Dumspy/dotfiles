@@ -13,6 +13,7 @@
     ./tmux.nix
     ./tmux-sessionizer.nix
     ./opencode.nix
+    ./plannotator.nix
     ./agent-config.nix
     ./agent-browser.nix
     ./dex.nix

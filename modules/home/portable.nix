@@ -19,6 +19,7 @@
     ./tmux.nix
     ./tmux-sessionizer.nix
     ./opencode.nix
+    ./plannotator.nix
     ./agent-config.nix
     ./lazygit.nix
     ./ssh.nix
@@ -46,6 +47,7 @@
     tmux.enable = true;
     tmux-sessionizer.enable = true;
     opencode.enable = true;
+    plannotator.enable = true;
     agent-config.enable = true;
     lazygit.enable = true;
     ssh.enable = false;

@@ -17,6 +17,7 @@
     tmux.enable = true;
     tmux-sessionizer.enable = true;
     opencode.enable = true;
+    plannotator.enable = true;
     agent-config.enable = true;
     agent-browser.enable = true;
     dex.enable = false;

@@ -125,6 +125,9 @@
         };
       in {
         checks = {inherit pre-commit-check;};
+        packages = {
+          plannotator-opencode-plugin = pkgs.callPackage ./packages/plannotator-opencode-plugin.nix {};
+        };
         formatter = pkgs.alejandra;
         devShells.default = pkgs.mkShell {
           inherit (pre-commit-check) shellHook;
