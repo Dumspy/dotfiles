@@ -43,7 +43,10 @@
       serverAddr = "https://10.0.1.215:6443";
       nodeIp = "10.0.1.141";
       flannelIface = "enp0s6";
-      extraFlags = ["--node-external-ip=10.0.1.141"];
+      extraFlags = [
+        "--node-external-ip=10.0.1.141"
+        "--node-label=role=database"
+      ];
     };
   };
 
