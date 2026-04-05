@@ -1,3 +1,5 @@
+vim.g.node_host_prog='neovim-node-host';vim.g.loaded_perl_provider=0;vim.g.loaded_ruby_provider=0;vim.g.python3_host_prog='nvim-python3'
+
 -- LazyVim Nix Configuration
 -- Based on LazyVim/starter (commit: 803bc181d7c0d6d5eeba9274d9be49b287294d99)
 -- Patched for Nix compatibility by lazyvim-nix flake

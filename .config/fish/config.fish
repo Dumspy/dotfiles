@@ -8,7 +8,7 @@ set -g __fish_home_manager_config_sourced 1
 
 # Source handler functions
 
-fish_config theme choose "Catppuccin Macchiato"
+fish_config theme choose catppuccin-macchiato
 
 status is-login; and begin
 
