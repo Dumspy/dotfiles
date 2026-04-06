@@ -8,93 +8,7 @@
   portable = config.myModules.home.portable or false;
 
   searchPathsStr = lib.concatStringsSep " " cfg.searchPaths;
-
-  # Convert hex string to integer
-  hexToInt = hex: let
-    hexChars = {
-      "0" = 0;
-      "1" = 1;
-      "2" = 2;
-      "3" = 3;
-      "4" = 4;
-      "5" = 5;
-      "6" = 6;
-      "7" = 7;
-      "8" = 8;
-      "9" = 9;
-      "a" = 10;
-      "b" = 11;
-      "c" = 12;
-      "d" = 13;
-      "e" = 14;
-      "f" = 15;
-    };
-    chars = lib.stringToCharacters (lib.toLower hex);
-  in
-    lib.foldl (acc: c: acc * 16 + hexChars.${c}) 0 chars;
-
-  # Convert hex color to RGB ANSI escape sequence
-  hexToAnsi = hex: let
-    r = hexToInt (builtins.substring 0 2 hex);
-    g = hexToInt (builtins.substring 2 2 hex);
-    b = hexToInt (builtins.substring 4 2 hex);
-  in "\\033[1;38;2;${toString r};${toString g};${toString b}m";
-
-  # Catppuccin Macchiato colors
-  prefixColor = hexToAnsi "c6a0f6";
-  greenColor = hexToAnsi "a6da95";
-  redColor = hexToAnsi "ed8796";
-  subtextColor = hexToAnsi "a5adcb";
-
-  # Git status script for tmux status bar
-  tmux-git-status = pkgs.writeShellScriptBin "tmux-git-status" ''
-    #!/usr/bin/env bash
-    # Usage: tmux-git-status [pane_current_path]
-    # Outputs: worktree_name [branch] +add -del
-
-    pane_path="''${1:-$(pwd)}"
-
-    cd "$pane_path" 2>/dev/null || exit 0
-
-    if ! git rev-parse --is-inside-work-tree &>/dev/null; then
-      basename "$pane_path"
-      exit 0
-    fi
-
-    # Get worktree name
-    wt_root=$(git rev-parse --show-toplevel 2>/dev/null)
-    if [[ -f "$wt_root/.git" ]]; then
-      # Linked worktree
-      gitdir=$(sed -n 's/^gitdir: //p' "$wt_root/.git" | head -n1)
-      wt_name=$(basename "$gitdir")
-    else
-      wt_name="main"
-    fi
-
-    # Get branch
-    branch=$(git symbolic-ref --short -q HEAD 2>/dev/null || git rev-parse --short HEAD 2>/dev/null || echo "?")
-
-    # Get diff stats
-    diff_stats=$(git diff --numstat 2>/dev/null | awk '{add+=$1; del+=$2} END {printf "%d %d", add+0, del+0}')
-    staged_stats=$(git diff --cached --numstat 2>/dev/null | awk '{add+=$1; del+=$2} END {printf "%d %d", add+0, del+0}')
-
-    read -r unstaged_add unstaged_del <<< "$diff_stats"
-    read -r staged_add staged_del <<< "$staged_stats"
-
-    total_add=$((unstaged_add + staged_add))
-    total_del=$((unstaged_del + staged_del))
-
-    output="$wt_name"
-
-    if [[ $total_add -gt 0 || $total_del -gt 0 ]]; then
-      output="$output "
-      [[ $total_add -gt 0 ]] && output="$output#[fg=green]+$total_add#[fg=default]"
-      [[ $total_add -gt 0 && $total_del -gt 0 ]] && output="$output "
-      [[ $total_del -gt 0 ]] && output="$output#[fg=red]-$total_del#[fg=default]"
-    fi
-
-    echo "$output"
-  '';
+  extraPathsStr = lib.concatStringsSep " " (cfg.extraPaths or []);
 
   tmux-sessionizer = pkgs.writeShellScriptBin "tmux-sessionizer" ''
 
@@ -104,8 +18,10 @@
 
     # Search paths for git repositories with depth control
     # Format: path:depth (depth is optional, defaults to TS_MAX_DEPTH)
-    # Only directories containing .git will be shown
     TS_SEARCH_PATHS=(${searchPathsStr})
+
+    # Extra paths that aren't git repos (shown as-is)
+    TS_EXTRA_PATHS=(${extraPathsStr})
 
     # Default max depth for paths without explicit depth
     TS_MAX_DEPTH=2
@@ -141,7 +57,7 @@
     session_cmd=""
     user_selected=""
     split_type=""
-    VERSION="0.1.0"
+    VERSION="0.2.0"
 
     while [[ "$#" -gt 0 ]]; do
         case "$1" in
@@ -149,9 +65,9 @@
             echo "Usage: tmux-sessionizer [OPTIONS] [SEARCH_PATH]"
             echo "Options:"
             echo "  -h, --help             Display this help message"
-            echo "  -s, --session <name>   session command index."
-            echo "  --vsplit               Create vertical split (horizontal layout) for session command"
-            echo "  --hsplit               Create horizontal split (vertical layout) for session command"
+            echo "  -s, --session <idx>   Run session command by index"
+            echo "  --vsplit              Create vertical split for session command"
+            echo "  --hsplit              Create horizontal split for session command"
             exit 0
             ;;
         -s | --session)
@@ -162,17 +78,16 @@
             fi
 
             if [[ -z $TS_SESSION_COMMANDS ]]; then
-                echo "TS_SESSION_COMMANDS is not set.  Must have a command set to run when switching to a session"
+                echo "TS_SESSION_COMMANDS is not set. Must have commands configured."
                 exit 1
             fi
 
             if [[ -z "$session_idx" || "$session_idx" -lt 0 || "$session_idx" -ge "''${#TS_SESSION_COMMANDS[@]}" ]]; then
-                echo "Error: Invalid index. Please provide an index between 0 and $((''${#TS_SESSION_COMMANDS[@]} - 1))."
+                echo "Error: Invalid index. Please provide 0 to $((''${#TS_SESSION_COMMANDS[@]} - 1))."
                 exit 1
             fi
 
             session_cmd="''${TS_SESSION_COMMANDS[$session_idx]}"
-
             shift
             ;;
         --vsplit)
@@ -192,44 +107,49 @@
         shift
     done
 
-    log "tmux-sessionizer($VERSION): idx=$session_idx cmd=$session_cmd user_selected=$user_selected split_type=$split_type log=$TS_LOG log_file=$TS_LOG_FILE"
+    log "tmux-sessionizer($VERSION): idx=$session_idx cmd=$session_cmd user_selected=$user_selected split_type=$split_type"
 
-    # Validate split options are only used with session commands
     if [[ -n "$split_type" && -z "$session_idx" ]]; then
-        echo "Error: --vsplit and --hsplit can only be used with -s/--session option"
+        echo "Error: --vsplit and --hsplit require -s option"
         exit 1
     fi
 
     sanity_check() {
         if ! command -v tmux &>/dev/null; then
-            echo "tmux is not installed. Please install it first."
+            echo "tmux is not installed."
             exit 1
         fi
-
         if ! command -v fzf &>/dev/null; then
-            echo "fzf is not installed. Please install it first."
+            echo "fzf is not installed."
             exit 1
         fi
     }
 
     switch_to() {
         if [[ -z $TMUX ]]; then
-            log "attaching to session $1"
             tmux attach-session -t "$1"
         else
-            log "switching to session $1"
             tmux switch-client -t "$1"
         fi
     }
 
     has_session() {
-        tmux list-sessions | grep -q "^$1:"
+        tmux list-sessions 2>/dev/null | grep -q "^$1:"
+    }
+
+    hydrate() {
+        if [[ -n "$session_cmd" ]]; then
+            return
+        fi
+        if [ -f "$2/.tmux-sessionizer" ]; then
+            tmux send-keys -t "$1" "source $2/.tmux-sessionizer" C-m
+        elif [ -f "$HOME/.tmux-sessionizer" ]; then
+            tmux send-keys -t "$1" "source $HOME/.tmux-sessionizer" C-m
+        fi
     }
 
     is_tmux_running() {
-        tmux_running=$(pgrep tmux)
-
-        if [[ -z $TMUX ]] && [[ -z $tmux_running ]]; then
+        if [[ -z $TMUX ]] && [[ -z $(pgrep tmux) ]]; then
             return 1
         fi
         return 0
@@ -252,132 +172,94 @@
         local split_type="$2"
         local pane_id="$3"
         init_pane_cache
-
-        # Remove existing entry if it exists
         grep -v "^''${session_idx}:''${split_type}:" "$PANE_CACHE_FILE" > "''${PANE_CACHE_FILE}.tmp" 2>/dev/null || true
         mv "''${PANE_CACHE_FILE}.tmp" "$PANE_CACHE_FILE"
-
-        # Add new entry
         echo "''${session_idx}:''${split_type}:''${pane_id}" >> "$PANE_CACHE_FILE"
     }
 
     cleanup_dead_panes() {
         init_pane_cache
         local temp_file="''${PANE_CACHE_FILE}.tmp"
-
         while IFS=: read -r idx split pane_id; do
             if tmux list-panes -a -F "#{pane_id}" 2>/dev/null | grep -q "^''${pane_id}$"; then
                 echo "''${idx}:''${split}:''${pane_id}" >> "$temp_file"
             fi
         done < "$PANE_CACHE_FILE"
-
         mv "$temp_file" "$PANE_CACHE_FILE" 2>/dev/null || touch "$PANE_CACHE_FILE"
     }
 
     sanity_check
 
-    # if TS_SEARCH_PATHS is not set use default
-    [[ -n "$TS_SEARCH_PATHS" ]] || TS_SEARCH_PATHS=(~/ ~/personal ~/personal/dev/env/.config)
+    [[ -n "$TS_SEARCH_PATHS" ]] || TS_SEARCH_PATHS=(~/Documents)
 
-    # Add any extra search paths to the TS_SEARCH_PATHS array
-    # e.g : EXTRA_SEARCH_PATHS=("$HOME/extra1:4" "$HOME/extra2")
-    # note : Path can be suffixed with :number to limit or extend the depth of the search for the Path
-
-    if [[ ''${#TS_EXTRA_SEARCH_PATHS[@]} -gt 0 ]]; then
-        TS_SEARCH_PATHS+=("''${TS_EXTRA_SEARCH_PATHS[@]}")
+    if [[ ''${#TS_EXTRA_PATHS[@]} -gt 0 ]]; then
+        TS_SEARCH_PATHS+=("''${TS_EXTRA_PATHS[@]}")
     fi
 
-    # ANSI color codes (from Stylix theme)
-    TMUX_PREFIX_COLOR="${prefixColor}"
-    RESET_COLOR="\033[0m"
+    # Get all worktrees for a given repo path
+    get_worktrees() {
+        local repo_path="$1"
+        git -C "$repo_path" worktree list --porcelain 2>/dev/null | while read -r line; do
+            if [[ "$line" =~ ^worktree\ (.+)$ ]]; then
+                local wt_path="''${BASH_REMATCH[1]}"
+                # Skip the main repo itself
+                if [[ "$wt_path" != "$repo_path" ]]; then
+                    local wt_name=$(basename "$wt_path")
+                    echo "''${repo_path}/''${wt_name}"
+                fi
+            fi
+        done
+    }
 
-    # utility function to find directories
+    # Find all directories (git repos + worktrees + extra paths)
     find_dirs() {
-        # list TMUX sessions
+        # List TMUX sessions first
         if [[ -n "''${TMUX}" ]]; then
             current_session=$(tmux display-message -p '#S')
-            tmux list-sessions -F "#{session_name}" 2>/dev/null | grep -vFx "$current_session" | while read -r session; do
-                echo -e "''${TMUX_PREFIX_COLOR}[TMUX]''${RESET_COLOR} $session"
-            done
+            tmux list-sessions -F "[TMUX] #{session_name}" 2>/dev/null | grep -vFx "[TMUX] $current_session"
         else
-            tmux list-sessions -F "#{session_name}" 2>/dev/null | while read -r session; do
-                echo -e "''${TMUX_PREFIX_COLOR}[TMUX]''${RESET_COLOR} $session"
-            done
+            tmux list-sessions -F "[TMUX] #{session_name}" 2>/dev/null
         fi
 
-        # note: TS_SEARCH_PATHS is an array of paths to search for git repositories
-        # if the path ends with :number, it will search for repos with a max depth of number ;)
-        # if there is no number, it will search for repos with a max depth defined by TS_MAX_DEPTH or 1 if not set
+        # Process each search path
         for entry in "''${TS_SEARCH_PATHS[@]}"; do
-            # Check if entry as :number as suffix then adapt the maxdepth parameter
+            # Parse path:depth format
             if [[ "$entry" =~ ^([^:]+):([0-9]+)$ ]]; then
                 path="''${BASH_REMATCH[1]}"
                 depth="''${BASH_REMATCH[2]}"
             else
                 path="$entry"
+                depth="''${TS_MAX_DEPTH:-2}"
             fi
 
-            # Find directories that contain .git (directory only) or .bare (bare worktree pattern)
-            # We exclude .git FILES because those are worktrees inside a bare repo project
-            # The bare repo project itself (with .bare/) is what we want to show
-            if [[ -d "$path" ]]; then
-                # If the path itself is a git repo or bare repo project, include it
-                if [[ -d "$path/.git" ]] || [[ -d "$path/.bare" ]]; then
-                    echo "$path"
-                fi
-                # Search for git repos (.git directory) and bare repo projects (.bare directory)
-                # Exclude .git files (worktrees) - we only want the project roots
-                find "$path" -mindepth 1 -maxdepth "''${depth:-''${TS_MAX_DEPTH:-1}}" -type d \( -exec test -d "{}/.git" \; -o -exec test -d "{}/.bare" \; \) -print 2>/dev/null
+            [[ -d "$path" ]] || continue
+
+            # Check if this is a git repo
+            if [[ -d "$path/.git" ]]; then
+                # It's a git repo - show it and its worktrees
+                echo "$path"
+                get_worktrees "$path"
+            elif [[ -d "$path/.bare" ]]; then
+                # Bare repo - just show it
+                echo "$path"
+            else
+                # Non-git directory - show as-is
+                echo "$path"
             fi
+
+            # Search for git repos within this path
+            find "$path" -mindepth 1 -maxdepth "''${depth}" -type d 2>/dev/null | while read -r dir; do
+                if [[ -d "$dir/.git" ]]; then
+                    echo "$dir"
+                    get_worktrees "$dir"
+                fi
+            done
         done
     }
 
-    # Get canonical repo name from any path (works for worktrees and bare repos)
-    get_repo_session_name() {
-        local dir="$1"
-
-        # Check for bare repo pattern first (directory with .bare/)
-        if [[ -d "$dir/.bare" ]]; then
-            basename "$dir" | tr '. ' '__'
-            return 0
-        fi
-
-        if ! git -C "$dir" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-            basename "$dir" | tr '. ' '__'
-            return 0
-        fi
-
-        # Get the common git dir (shared across all worktrees)
-        local common
-        common=$(git -C "$dir" rev-parse --git-common-dir 2>/dev/null)
-
-        # Resolve relative path to absolute
-        if [[ "$common" != /* ]]; then
-            common=$(cd "$dir" && realpath -m "$common" 2>/dev/null || echo "$dir/$common")
-        fi
-
-        # For bare repo pattern: .bare is the common dir, use parent as project name
-        if [[ "$(basename "$common")" == ".bare" ]]; then
-            basename "$(dirname "$common")" | tr '. ' '__'
-            return 0
-        fi
-
-        # Get repo root from common dir
-        local repo_root
-        if [[ "$common" == */.git ]]; then
-            repo_root=$(dirname "$common")
-        else
-            repo_root="$common"
-        fi
-
-        # Create session name: repo_basename (sanitized)
-        basename "$repo_root" | tr '. ' '__'
-    }
-
     handle_session_cmd() {
-        log "executing session command $session_cmd with index $session_idx split_type=$split_type"
         if ! is_tmux_running; then
-            echo "Error: tmux is not running.  Please start tmux first before using session commands."
+            echo "Error: tmux is not running."
             exit 1
         fi
 
@@ -396,13 +278,12 @@
         start_index=$((69 + $session_idx))
         target="$current_session:$start_index"
 
-        log "target: $target command $session_cmd has-session=$(tmux has-session -t="$target" 2> /dev/null)"
-        if tmux has-session -t="$target" 2> /dev/null; then
+        if tmux has-session -t="$target" 2>/dev/null; then
             switch_to "$target"
         else
-            log "executing session command: tmux neww -dt $target $session_cmd"
-            tmux neww -dt $target "$session_cmd"
-            tmux select-window -t $target
+            tmux neww -dt "$target" "$session_cmd"
+            hydrate "$target" "$selected"
+            tmux select-window -t "$target"
         fi
     }
 
@@ -410,11 +291,9 @@
         local current_session="$1"
         cleanup_dead_panes
 
-        # Check if pane already exists
         local existing_pane_id=$(get_pane_id "$session_idx" "$split_type")
 
         if [[ -n "$existing_pane_id" ]] && tmux list-panes -a -F "#{pane_id}" 2>/dev/null | grep -q "^''${existing_pane_id}$"; then
-            log "switching to existing pane $existing_pane_id"
             tmux select-pane -t "$existing_pane_id"
             if [[ -z $TMUX ]]; then
                 tmux attach-session -t "$current_session"
@@ -422,51 +301,50 @@
                 tmux switch-client -t "$current_session"
             fi
         else
-            # Create new split
             local split_flag=""
             if [[ "$split_type" == "vsplit" ]]; then
-                split_flag="-h"  # horizontal layout (vertical split)
+                split_flag="-h"
             else
-                split_flag="-v"  # vertical layout (horizontal split)
+                split_flag="-v"
             fi
 
-            log "creating new split: tmux split-window $split_flag -c $(pwd) $session_cmd"
             local new_pane_id=$(tmux split-window $split_flag -c "$(pwd)" -P -F "#{pane_id}" "$session_cmd")
 
             if [[ -n "$new_pane_id" ]]; then
                 set_pane_id "$session_idx" "$split_type" "$new_pane_id"
-                log "created pane $new_pane_id for session_idx=$session_idx split_type=$split_type"
             fi
         fi
     }
 
-    if [[ ! -z $session_cmd ]]; then
+    if [[ -n "$session_cmd" ]]; then
         handle_session_cmd
-    elif [[ ! -z $user_selected ]]; then
+    elif [[ -n "$user_selected" ]]; then
         selected="$user_selected"
     else
-        selected=$(find_dirs | fzf --ansi)
+        selected=$(find_dirs | fzf)
     fi
 
-    if [[ -z $selected ]]; then
-        exit 0
-    fi
+    [[ -z "$selected" ]] && exit 0
 
-    # Handle existing tmux session selection
-    if [[ "$selected" =~ ^\[TMUX\][[:space:]](.+)$ ]]; then
+    # Handle [TMUX] session selection
+    if [[ "$selected" =~ ^\[TMUX\]\ (.+)$ ]]; then
         switch_to "''${BASH_REMATCH[1]}"
         exit 0
     fi
 
-    # Get canonical session name (uses repo root for worktrees)
-    selected_name=$(get_repo_session_name "$selected")
+    # Handle worktree selection (parent/worktree format)
+    if [[ "$selected" =~ ^(.+)/([^/]+)$ ]]; then
+        selected_name="''${BASH_REMATCH[2]}"
+    else
+        selected_name=$(basename "$selected" | tr '. ' '_')
+    fi
 
     if ! is_tmux_running; then
         tmux new-session -ds "$selected_name" -c "$selected"
-    fi
-
-    if ! has_session "$selected_name"; then
+        hydrate "$selected_name" "$selected"
+    elif ! has_session "$selected_name"; then
         tmux new-session -ds "$selected_name" -c "$selected"
+        hydrate "$selected_name" "$selected"
     fi
 
     switch_to "$selected_name"
@@ -477,24 +355,29 @@ in {
 
     searchPaths = lib.mkOption {
       type = lib.types.listOf lib.types.str;
-      default = ["$HOME/Documents:3" "$HOME/dotfiles"];
+      default = ["$HOME/Documents:3"];
       description = "List of paths to search for git repositories. Format: path:depth";
+    };
+
+    extraPaths = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [];
+      description = "Extra non-git directories to show in sessionizer";
+    };
+
+    wtWorktreeDir = lib.mkOption {
+      type = lib.types.str;
+      default = "~/.wt-worktrees";
+      description = "Directory where wt stores worktrees";
     };
   };
 
   config = lib.mkIf cfg.enable {
-    # For Nix systems, add to packages (goes into profile)
-    home.packages = lib.mkIf (!portable) [tmux-sessionizer tmux-git-status];
+    home.packages = lib.mkIf (!portable) [tmux-sessionizer];
 
-    # For portable systems, write to ~/.local/bin
     home.file.".local/bin/tmux-sessionizer" = lib.mkIf portable {
       executable = true;
       text = builtins.readFile "${tmux-sessionizer}/bin/tmux-sessionizer";
-    };
-
-    home.file.".local/bin/tmux-git-status" = lib.mkIf portable {
-      executable = true;
-      text = builtins.readFile "${tmux-git-status}/bin/tmux-git-status";
     };
   };
 }

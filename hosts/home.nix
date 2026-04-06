@@ -16,6 +16,7 @@
     lazyvim.enable = true;
     tmux.enable = true;
     tmux-sessionizer.enable = true;
+    wt.enable = true;
     opencode.enable = true;
     plannotator.enable = true;
     agent-config.enable = true;

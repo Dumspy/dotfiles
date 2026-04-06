@@ -18,6 +18,7 @@
     ./lazyvim.nix
     ./tmux.nix
     ./tmux-sessionizer.nix
+    ./wt.nix
     ./opencode.nix
     ./plannotator.nix
     ./agent-config.nix
@@ -46,6 +47,7 @@
     lazyvim.enable = true;
     tmux.enable = true;
     tmux-sessionizer.enable = true;
+    wt.enable = true;
     opencode.enable = true;
     plannotator.enable = true;
     agent-config.enable = true;
