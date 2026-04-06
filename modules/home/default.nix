@@ -12,6 +12,7 @@
     ./lazyvim.nix
     ./tmux.nix
     ./tmux-sessionizer.nix
+    ./wt.nix
     ./opencode.nix
     ./plannotator.nix
     ./agent-config.nix
