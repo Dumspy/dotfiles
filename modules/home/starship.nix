@@ -16,6 +16,27 @@ in {
       enableZshIntegration = config.myModules.home.zsh.enable && !portable;
       enableFishIntegration = config.myModules.home.fish.enable;
       settings = {
+        format = "$custom$all";
+
+        custom.worktree_context = {
+          command = ''
+            root="$(git rev-parse --show-toplevel 2>/dev/null)" || exit 1
+            main_root="$(git -C "$root" worktree list --porcelain 2>/dev/null | awk '/^worktree / { sub(/^worktree /, ""); print; exit }')"
+            if [ -z "$main_root" ] || [ "$root" = "$main_root" ]; then
+              exit 1
+            fi
+
+            repo="$(basename "$main_root")"
+            worktree="$(basename "$root")"
+            printf '%s/%s' "$repo" "$worktree"
+          '';
+          when = ''
+            git rev-parse --show-toplevel >/dev/null 2>&1
+          '';
+          format = "[$output]($style) ";
+          style = "bold mauve";
+        };
+
         aws = {
           symbol = "  ";
         };

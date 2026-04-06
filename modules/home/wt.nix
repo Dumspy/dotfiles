@@ -112,6 +112,48 @@ in {
           command tmux rename-window -- $argv[1] >/dev/null 2>/dev/null
         end
 
+        function __wt_session_name
+          set -l repo_dir $argv[1]
+          set -l target $argv[2]
+
+          if test -z "$repo_dir" -o -z "$target"
+            return 1
+          end
+
+          set -l repo_prefix "$repo_dir/"
+          if string match -q -- "$repo_prefix*" "$target"
+            set -l repo_name (basename "$repo_dir" | string replace -a '.' '_' | string replace -a ' ' '_')
+            set -l worktree_name (basename "$target" | string replace -a '.' '_' | string replace -a ' ' '_')
+            printf "%s/%s\n" $repo_name $worktree_name
+          else
+            basename "$target" | string replace -a '.' '_' | string replace -a ' ' '_'
+          end
+        end
+
+        function __wt_focus_tmux_session
+          set -l name $argv[1]
+          set -l target $argv[2]
+
+          if not command -sq tmux
+            return 1
+          end
+
+          if set -q TMUX
+            if command tmux has-session -t="$name" >/dev/null 2>&1
+              command tmux switch-client -t "$name"
+            else
+              command tmux new-session -ds "$name" -c "$target" >/dev/null
+              command tmux switch-client -t "$name"
+            end
+          else
+            if command tmux has-session -t="$name" >/dev/null 2>&1
+              command tmux attach-session -t "$name"
+            else
+              command tmux new-session -s "$name" -c "$target"
+            end
+          end
+        end
+
         function __wt_open
           set -l name $argv[1]
           if test -z "$name"
@@ -125,13 +167,17 @@ in {
           end
 
           set -l target "$repo_dir/$name"
+          set -l session_name (__wt_session_name "$repo_dir" "$target")
           command mkdir -p -- "$repo_dir"
 
           if test -d "$target"
             if __wt_is_registered "$target"
+              if __wt_focus_tmux_session "$session_name" "$target"
+                return 0
+              end
+
               cd "$target"
               or return 1
-              __wt_rename_tmux_window "$name"
               return 0
             end
             echo "wt: $target exists but is not a git worktree" >&2
@@ -147,9 +193,12 @@ in {
             return 1
           end
 
+          if __wt_focus_tmux_session "$session_name" "$target"
+            return 0
+          end
+
           cd "$target"
           or return 1
-          __wt_rename_tmux_window "$name"
         end
 
         function __wt_remove

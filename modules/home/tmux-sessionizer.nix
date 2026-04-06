@@ -9,6 +9,7 @@
 
   searchPathsStr = lib.concatStringsSep " " cfg.searchPaths;
   extraPathsStr = lib.concatStringsSep " " (cfg.extraPaths or []);
+  wtWorktreeDirStr = lib.replaceStrings ["~"] ["$HOME"] cfg.wtWorktreeDir;
 
   tmux-sessionizer = pkgs.writeShellScriptBin "tmux-sessionizer" ''
 
@@ -22,6 +23,9 @@
 
     # Extra paths that aren't git repos (shown as-is)
     TS_EXTRA_PATHS=(${extraPathsStr})
+
+    # Worktree store root used for repo-aware session naming
+    TS_WT_WORKTREE_DIR="${wtWorktreeDirStr}"
 
     # Default max depth for paths without explicit depth
     TS_MAX_DEPTH=2
@@ -141,10 +145,13 @@
         if [[ -n "$session_cmd" ]]; then
             return
         fi
+        local source_cmd
         if [ -f "$2/.tmux-sessionizer" ]; then
-            tmux send-keys -t "$1" "source $2/.tmux-sessionizer" C-m
+            printf -v source_cmd 'source %q' "$2/.tmux-sessionizer"
+            tmux send-keys -t "$1" "$source_cmd" C-m
         elif [ -f "$HOME/.tmux-sessionizer" ]; then
-            tmux send-keys -t "$1" "source $HOME/.tmux-sessionizer" C-m
+            printf -v source_cmd 'source %q' "$HOME/.tmux-sessionizer"
+            tmux send-keys -t "$1" "$source_cmd" C-m
         fi
     }
 
@@ -158,6 +165,54 @@
     init_pane_cache() {
         mkdir -p "$PANE_CACHE_DIR"
         touch "$PANE_CACHE_FILE"
+    }
+
+    emit_entry() {
+        printf '%s\t%s\n' "$1" "$2"
+    }
+
+    main_repo_root() {
+        local path="$1"
+        local line
+
+        while IFS= read -r line; do
+            case "$line" in
+            worktree\ *)
+                printf '%s\n' "''${line#worktree }"
+                return 0
+                ;;
+            esac
+        done < <(git -C "$path" worktree list --porcelain 2>/dev/null)
+
+        return 1
+    }
+
+    is_managed_worktree_dir() {
+        local path="$1"
+        local wt_root="''${TS_WT_WORKTREE_DIR%/}"
+        [[ "$path" == "$wt_root" || "$path" == "$wt_root"/* ]]
+    }
+
+    is_worktree_path() {
+        local path="$1"
+        local main_root
+        main_root=$(main_repo_root "$path") || return 1
+        [[ "$path" != "$main_root" ]]
+    }
+
+    session_name_for_path() {
+        local path="$1"
+        local main_root
+        main_root=$(main_repo_root "$path" 2>/dev/null || true)
+
+        if [[ -n "$main_root" && "$path" != "$main_root" ]]; then
+            local repo_name worktree_name
+            repo_name=$(basename "$main_root" | tr '. ' '_')
+            worktree_name=$(basename "$path" | tr '. ' '_')
+            printf '%s/%s\n' "$repo_name" "$worktree_name"
+        else
+            basename "$path" | tr '. ' '_'
+        fi
     }
 
     get_pane_id() {
@@ -199,13 +254,21 @@
     # Get all worktrees for a given repo path
     get_worktrees() {
         local repo_path="$1"
-        git -C "$repo_path" worktree list --porcelain 2>/dev/null | while read -r line; do
+        local repo_root
+        repo_root=$(main_repo_root "$repo_path" 2>/dev/null || true)
+        if [[ -z "$repo_root" || "$repo_path" != "$repo_root" ]]; then
+            return 0
+        fi
+        local repo_name
+        repo_name=$(basename "$repo_root")
+        git -C "$repo_root" worktree list --porcelain 2>/dev/null | while read -r line; do
             if [[ "$line" =~ ^worktree\ (.+)$ ]]; then
                 local wt_path="''${BASH_REMATCH[1]}"
                 # Skip the main repo itself
-                if [[ "$wt_path" != "$repo_path" ]]; then
-                    local wt_name=$(basename "$wt_path")
-                    echo "''${repo_path}/''${wt_name}"
+                if [[ "$wt_path" != "$repo_root" ]]; then
+                    local wt_name
+                    wt_name=$(basename "$wt_path")
+                    emit_entry "worktree/''${repo_name}/''${wt_name}" "$wt_path"
                 fi
             fi
         done
@@ -216,9 +279,13 @@
         # List TMUX sessions first
         if [[ -n "''${TMUX}" ]]; then
             current_session=$(tmux display-message -p '#S')
-            tmux list-sessions -F "[TMUX] #{session_name}" 2>/dev/null | grep -vFx "[TMUX] $current_session"
+            tmux list-sessions -F "#{session_name}" 2>/dev/null | grep -vFx "$current_session" | while read -r session; do
+                emit_entry "[TMUX] $session" "[TMUX] $session"
+            done
         else
-            tmux list-sessions -F "[TMUX] #{session_name}" 2>/dev/null
+            tmux list-sessions -F "#{session_name}" 2>/dev/null | while read -r session; do
+                emit_entry "[TMUX] $session" "[TMUX] $session"
+            done
         fi
 
         # Process each search path
@@ -234,24 +301,53 @@
 
             [[ -d "$path" ]] || continue
 
+            if is_managed_worktree_dir "$path"; then
+                continue
+            fi
+
             # Check if this is a git repo
-            if [[ -d "$path/.git" ]]; then
+            if [[ -e "$path/.git" ]]; then
                 # It's a git repo - show it and its worktrees
-                echo "$path"
-                get_worktrees "$path"
+                if is_worktree_path "$path"; then
+                    continue
+                fi
+
+                repo_root=$(main_repo_root "$path" 2>/dev/null || true)
+                if [[ -z "$repo_root" ]]; then
+                    continue
+                fi
+
+                emit_entry "$repo_root" "$repo_root"
+                get_worktrees "$repo_root"
+                continue
             elif [[ -d "$path/.bare" ]]; then
                 # Bare repo - just show it
-                echo "$path"
+                emit_entry "$path" "$path"
+                continue
             else
                 # Non-git directory - show as-is
-                echo "$path"
+                emit_entry "$path" "$path"
             fi
 
             # Search for git repos within this path
-            find "$path" -mindepth 1 -maxdepth "''${depth}" -type d 2>/dev/null | while read -r dir; do
-                if [[ -d "$dir/.git" ]]; then
-                    echo "$dir"
-                    get_worktrees "$dir"
+            find "$path" -mindepth 1 -maxdepth "''${depth}" -type d \
+                \( -exec test -e "{}/.git" \; -o -exec test -d "{}/.bare" \; \) \
+                -print -prune 2>/dev/null | while read -r dir; do
+                if is_managed_worktree_dir "$dir"; then
+                    continue
+                fi
+                if is_worktree_path "$dir"; then
+                    continue
+                fi
+                if [[ -e "$dir/.git" ]]; then
+                    repo_root=$(main_repo_root "$dir" 2>/dev/null || true)
+                    if [[ -z "$repo_root" ]]; then
+                        continue
+                    fi
+                    emit_entry "$repo_root" "$repo_root"
+                    get_worktrees "$repo_root"
+                elif [[ -d "$dir/.bare" ]]; then
+                    emit_entry "$dir" "$dir"
                 fi
             done
         done
@@ -321,23 +417,26 @@
     elif [[ -n "$user_selected" ]]; then
         selected="$user_selected"
     else
-        selected=$(find_dirs | fzf)
+        selected=$(find_dirs | fzf --delimiter=$'\t' --with-nth=1)
     fi
 
     [[ -z "$selected" ]] && exit 0
 
+    selected_label="''${selected%%$'\t'*}"
+    selected_value="''${selected#*$'\t'}"
+    if [[ "$selected_label" == "$selected_value" ]]; then
+        selected_value="$selected_label"
+    fi
+
     # Handle [TMUX] session selection
-    if [[ "$selected" =~ ^\[TMUX\]\ (.+)$ ]]; then
+    if [[ "$selected_label" =~ ^\[TMUX\]\ (.+)$ ]]; then
         switch_to "''${BASH_REMATCH[1]}"
         exit 0
     fi
 
-    # Handle worktree selection (parent/worktree format)
-    if [[ "$selected" =~ ^(.+)/([^/]+)$ ]]; then
-        selected_name="''${BASH_REMATCH[2]}"
-    else
-        selected_name=$(basename "$selected" | tr '. ' '_')
-    fi
+    selected="$selected_value"
+
+    selected_name=$(session_name_for_path "$selected")
 
     if ! is_tmux_running; then
         tmux new-session -ds "$selected_name" -c "$selected"
@@ -355,7 +454,7 @@ in {
 
     searchPaths = lib.mkOption {
       type = lib.types.listOf lib.types.str;
-      default = ["$HOME/Documents:3"];
+      default = ["$HOME/dotfiles" "$HOME/Documents:3"];
       description = "List of paths to search for git repositories. Format: path:depth";
     };
 
