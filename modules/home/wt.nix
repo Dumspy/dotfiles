@@ -257,10 +257,15 @@ in {
           end
 
           command git -C "$main_root" worktree remove "$target"
+          set -l remove_status $status
 
-          if test $inside -eq 1
-            __wt_rename_tmux_window (basename "$main_root")
+          if test $remove_status -eq 0
+            if test $inside -eq 1
+              __wt_rename_tmux_window (basename "$main_root")
+            end
           end
+
+          return $remove_status
         end
 
         function wt
