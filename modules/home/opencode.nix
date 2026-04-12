@@ -2,7 +2,6 @@
   config,
   lib,
   pkgs,
-  inputs,
   ...
 }: let
   cfg = config.myModules.home.opencode;
@@ -41,7 +40,7 @@ in {
   config = lib.mkIf cfg.enable {
     programs.opencode = {
       enable = true;
-      package = inputs.opencode.packages.${pkgs.stdenv.hostPlatform.system}.default;
+      package = pkgs.opencode;
 
       settings = {
         autoupdate = false;
@@ -122,5 +121,7 @@ in {
         "dependabot-solver" = ../../ai/commands/dependabot-solver.md;
       };
     };
+
+    programs.opencode-notifier-plugin.enable = true;
   };
 }

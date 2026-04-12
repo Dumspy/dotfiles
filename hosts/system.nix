@@ -31,8 +31,15 @@
   # Necessary for using flakes on this system.
   nix.settings = {
     experimental-features = "nix-command flakes";
-    extra-substituters = ["https://cache.numtide.com"];
-    extra-trusted-public-keys = ["niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="];
+
+    extra-substituters = [
+      "https://cache.numtide.com"
+      "https://auxera.cachix.org"
+    ];
+    extra-trusted-public-keys = [
+      "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
+      "auxera.cachix.org-1:47t8ocmmQE2OyAEipk98QQsAqG9GFz+5yQ4Ey1AjIHM="
+    ];
   };
 
   # List packages installed in system profile. To search by name, run:
