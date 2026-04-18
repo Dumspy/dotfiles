@@ -4,7 +4,6 @@
   ...
 }: let
   cfg = config.myModules.home.direnv;
-  portable = config.myModules.home.portable or false;
 in {
   options.myModules.home.direnv = {
     enable = lib.mkEnableOption "direnv with nix-direnv integration";
@@ -14,7 +13,7 @@ in {
     programs.direnv = {
       enable = true;
       nix-direnv.enable = true;
-      enableZshIntegration = config.myModules.home.zsh.enable && !portable;
+      enableZshIntegration = config.myModules.home.zsh.enable;
       enableFishIntegration = config.myModules.home.fish.enable;
     };
   };

@@ -5,7 +5,6 @@
   ...
 }: let
   cfg = config.myModules.home.kubectl;
-  portable = config.myModules.home.portable or false;
   aliasLines = lib.mapAttrsToList (_: clusterCfg: "alias -g ${clusterCfg.alias}='--context=${clusterCfg.contextName}'") kubeconfigClusters;
   aliasCode = lib.concatStringsSep "\n" aliasLines;
 in {
@@ -14,12 +13,12 @@ in {
   };
 
   config = lib.mkIf (cfg.enable && kubeconfigClusters != {}) {
-    programs.zsh.initContent = lib.mkIf (!portable) ''
+    programs.zsh.initContent = ''
       # Kubectl context aliases
       ${aliasCode}
     '';
 
-    programs.fish.interactiveShellInit = lib.mkIf (!portable) ''
+    programs.fish.interactiveShellInit = ''
       # Kubectl context environment variables
       ${lib.concatStringsSep "\n" (lib.mapAttrsToList (_: clusterCfg: "set -gx ${clusterCfg.alias} '--context=${clusterCfg.contextName}'") kubeconfigClusters)}
     '';
