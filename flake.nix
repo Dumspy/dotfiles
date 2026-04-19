@@ -21,6 +21,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    auxera = {
+      url = "github:Auxera/nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.opencode.follows = "opencode";
+    };
+
     nix-darwin = {
       url = "github:LnL7/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -107,16 +113,21 @@
     catppuccin,
     lazyvim,
     deploy-rs,
+    auxera,
   }: let
     myLib = (import ./lib) {
       inherit nixpkgs nix-darwin nixos-wsl home-manager catppuccin;
+      inherit inputs;
       flakeRoot = ./.;
     };
     inherit (myLib) mkDarwin mkNixos;
   in
     (flake-utils.lib.eachDefaultSystem (
       system: let
-        pkgs = import nixpkgs {inherit system;};
+        pkgs = import nixpkgs {
+          inherit system;
+          overlays = [auxera.overlays.default];
+        };
         pre-commit-check = git-hooks.lib.${system}.run {
           src = ./.;
           hooks = {
@@ -125,9 +136,6 @@
         };
       in {
         checks = {inherit pre-commit-check;};
-        packages = {
-          plannotator-opencode-plugin = pkgs.callPackage ./packages/plannotator-opencode-plugin.nix {};
-        };
         formatter = pkgs.alejandra;
         devShells.default = pkgs.mkShell {
           inherit (pre-commit-check) shellHook;

@@ -55,7 +55,7 @@
   ];
 
   environment.systemPackages = [
-    inputs.opencode.packages.${pkgs.stdenv.hostPlatform.system}.default
+    pkgs.opencode
     inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.codex
   ];
 
