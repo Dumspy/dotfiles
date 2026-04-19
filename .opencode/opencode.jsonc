@@ -6,4 +6,9 @@
       "command": ["nix", "run", "github:utensils/mcp-nixos", "--"],
     },
   },
+  "permission": {
+    "bash": {
+      "rebuild": "deny",
+    },
+  },
 }

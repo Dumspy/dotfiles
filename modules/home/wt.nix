@@ -5,7 +5,6 @@
   ...
 }: let
   cfg = config.myModules.home.wt;
-  portable = config.myModules.home.portable or false;
   wtWorktreeDir = cfg.worktreeDir or "~/.wt-worktrees";
 in {
   options.myModules.home.wt = {
