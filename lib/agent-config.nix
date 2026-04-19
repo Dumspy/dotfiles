@@ -4,7 +4,6 @@
   config,
 }: let
   cfg = config.myModules.home.agent-config;
-  portable = (config.myModules.home or {}).portable or false;
 
   # Validate skill IDs to prevent path traversal attacks
   assertSkillId = id:
@@ -310,10 +309,7 @@ in {
       type = targetType;
       default = {
         dest = ".config/opencode/skills";
-        structure =
-          if portable
-          then "link"
-          else "symlink-tree";
+        structure = "symlink-tree";
       };
       description = "Target for skills installation";
     };
@@ -322,10 +318,7 @@ in {
       type = targetType;
       default = {
         dest = ".config/opencode/agents";
-        structure =
-          if portable
-          then "link"
-          else "symlink-tree";
+        structure = "symlink-tree";
       };
       description = "Target for agents installation";
     };

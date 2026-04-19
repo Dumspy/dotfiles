@@ -241,20 +241,6 @@
         };
       };
 
-      # Portable home-manager configuration for cross-platform dotfiles export
-      homeConfigurations.portable = home-manager.lib.homeManagerConfiguration {
-        pkgs = import nixpkgs {
-          system = "x86_64-linux";
-          overlays = [inputs.auxera.overlays.default];
-        };
-        extraSpecialArgs = {inherit inputs;};
-        modules = [
-          inputs.auxera.homeManagerModules.default
-          catppuccin.homeModules.catppuccin
-          ./modules/home/portable.nix
-        ];
-      };
-
       deploy.nodes = {
         oci-node-1 = {
           hostname = "100.99.30.112";
