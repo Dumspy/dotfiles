@@ -2,7 +2,6 @@
   config,
   lib,
   pkgs,
-  auxera,
   ...
 }: let
   cfg = config.myModules.home.opencode;
@@ -36,7 +35,7 @@ in {
   config = lib.mkIf cfg.enable {
     programs.opencode = {
       enable = true;
-      package = auxera.opencode;
+      package = pkgs.auxera.opencode;
 
       settings = {
         autoupdate = false;
