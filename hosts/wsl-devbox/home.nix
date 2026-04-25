@@ -1,7 +1,7 @@
 {config, ...}: {
   imports = [
-    ../config.nix
-    ../home.nix
+    ../common/config.nix
+    ../common/home.nix
   ];
 
   # Home Manager needs a bit of information about you and the

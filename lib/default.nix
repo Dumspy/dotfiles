@@ -18,10 +18,10 @@
         [
           {nixpkgs.hostPlatform = "aarch64-darwin";}
           {nixpkgs.overlays = [inputs.auxera.overlays.default];}
-          (flakeRoot + /hosts/config.nix)
+          (flakeRoot + /hosts/common/config.nix)
           (flakeRoot + /modules/system)
           (flakeRoot + /modules/system/platform/darwin.nix)
-          (flakeRoot + /hosts/system.nix)
+          (flakeRoot + /hosts/common/system.nix)
           (flakeRoot + /hosts/${name}/system.nix)
           home-manager.darwinModules.home-manager
           {
@@ -33,7 +33,7 @@
                 imports = [
                   inputs.auxera.homeManagerModules.default
                   (flakeRoot + /modules/home)
-                  (flakeRoot + /hosts/home.nix)
+                  (flakeRoot + /hosts/common/home.nix)
                   (flakeRoot + /hosts/${name}/home.nix)
                   catppuccin.homeModules.catppuccin
                 ];
@@ -64,10 +64,10 @@
         [
           {nixpkgs.hostPlatform = system;}
           {nixpkgs.overlays = [inputs.auxera.overlays.default];}
-          (flakeRoot + /hosts/config.nix)
+          (flakeRoot + /hosts/common/config.nix)
           (flakeRoot + /modules/system)
           (flakeRoot + /modules/system/platform/nixos.nix)
-          (flakeRoot + /hosts/system.nix)
+          (flakeRoot + /hosts/common/system.nix)
           (flakeRoot + /hosts/${name}/system.nix)
         ]
         ++ (
@@ -83,7 +83,7 @@
                   imports = [
                     inputs.auxera.homeManagerModules.default
                     (flakeRoot + /modules/home)
-                    (flakeRoot + /hosts/home.nix)
+                    (flakeRoot + /hosts/common/home.nix)
                     (flakeRoot + /hosts/${name}/home.nix)
                     catppuccin.homeModules.catppuccin
                   ];

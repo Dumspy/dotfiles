@@ -7,7 +7,6 @@
   system.stateVersion = "26.05";
   imports = [
     ./hardware-configuration.nix
-    ../../modules/system/oci-keepalive.nix
   ];
 
   # Boot options
@@ -26,12 +25,6 @@
     tailscale = {
       enable = true;
       exitNode = true;
-    };
-    oci-keepalive = {
-      enable = true;
-      activeHours = "06-22";
-      minLoad = 5;
-      maxLoad = 30;
     };
     openssh = {
       enable = true;

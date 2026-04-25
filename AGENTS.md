@@ -14,14 +14,15 @@
 - **Structure**:
   - `/modules/system` → system-level configs (nix-darwin/nixos)
   - `/modules/home` → home-manager configs
-  - `/hosts` → per-host configs (darwin, wsl-devbox, k3s-node, master-node)
-  - `/skills` → custom agent skills
+  - `/hosts/common` → shared host configuration
+  - `/hosts/<hostname>` → per-host configs (darwin, wsl-devbox, k3s-node, master-node, oci-node-*)
+  - `/ai/skills` → custom agent skills
 - **Secrets**: Managed via opnix (1Password CLI integration)
 - **SSH**: WSL uses npiperelay for host SSH agent forwarding
 
 ## Theming
 - **Framework**: catppuccin/nix for consistent theming across all targets
-- **Theme**: Catppuccin Macchiato (configured in `hosts/home.nix`)
+- **Theme**: Catppuccin Macchiato (configured in `hosts/common/home.nix`)
 - **Fonts**: JetBrainsMono Nerd Font (mono), Inter (sans), Noto Serif, Noto Color Emoji
 
 ## Code Style

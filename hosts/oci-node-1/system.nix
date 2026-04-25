@@ -7,7 +7,6 @@
   system.stateVersion = "26.05";
   imports = [
     ./hardware-configuration.nix
-    ../../modules/system/oci-keepalive.nix
   ];
 
   # Boot options
@@ -25,12 +24,6 @@
   myModules.system = {
     onepassword.enable = true;
     tailscale.enable = true;
-    oci-keepalive = {
-      enable = true;
-      activeHours = "06-22";
-      minLoad = 5;
-      maxLoad = 30;
-    };
     openssh = {
       enable = true;
       authorizedKeys = [config.var.publicKey];
