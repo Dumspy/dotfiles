@@ -6,19 +6,17 @@
   cfg = config.myModules.home.plannotator;
 in {
   options.myModules.home.plannotator = {
-    enable = lib.mkEnableOption "plannotator OpenCode plugin";
+    enable = lib.mkEnableOption "plannator OpenCode plugin";
 
     env = lib.mkOption {
       type = lib.types.attrsOf lib.types.str;
       default = {};
-      description = "Environment variables exported for Plannotator.";
+      description = "Environment variables exported for Plannator";
     };
   };
 
   config = lib.mkIf (cfg.enable && config.myModules.home.opencode.enable) {
-    programs.plannotator-opencode-plugin = {
-      enable = true;
-      env = cfg.env;
-    };
+    programs.plannotator-opencode-plugin.enable = true;
+    programs.plannotator-opencode-plugin.env = cfg.env;
   };
 }

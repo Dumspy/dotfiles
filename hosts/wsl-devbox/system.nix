@@ -54,7 +54,6 @@
 
   # Set default browser for WSL
   environment.variables = {
-    BROWSER = "wslview";
     NIX_HOST = "wsl-devbox";
   };
 }

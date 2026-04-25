@@ -16,15 +16,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    opencode = {
-      url = "github:anomalyco/opencode";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     auxera = {
       url = "github:Auxera/nixpkgs";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.opencode.follows = "opencode";
     };
 
     nix-darwin = {
@@ -96,7 +89,6 @@
   outputs = inputs @ {
     self,
     opnix,
-    opencode,
     nix-darwin,
     nixos-wsl,
     nixpkgs,

@@ -35,7 +35,7 @@ in {
   config = lib.mkIf cfg.enable {
     programs.opencode = {
       enable = true;
-      package = pkgs.opencode;
+      package = pkgs.auxera.opencode;
 
       settings = {
         autoupdate = false;
