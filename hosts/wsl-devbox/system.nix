@@ -50,6 +50,7 @@
     pkgs.gcc
     pkgs.gnumake
     pkgs.opencode
+    pkgs.wslu
   ];
 
   # Set default browser for WSL
