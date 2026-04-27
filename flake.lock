@@ -446,11 +446,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1777054018,
-        "narHash": "sha256-tTNS7V6xN/LX1KZ0TrdOnj375ZrsUlLoce4qxZwDN9U=",
+        "lastModified": 1777258755,
+        "narHash": "sha256-EC07KwADRE2LdIk7vEDyAaD3I0ZUq24T9jQF9L0iEPk=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "ffbd94a1c9d7d3e1258e51c084ab2109da04f2b1",
+        "rev": "7f8bbc93d63401e41368d6ddc46a4f631610fa90",
         "type": "github"
       },
       "original": {
@@ -522,11 +522,11 @@
         "treefmt-nix": "treefmt-nix_2"
       },
       "locked": {
-        "lastModified": 1777069264,
-        "narHash": "sha256-SBeiesmJLTHSG5RrzaKJ1081cd/5uYDr0MgDJaiok84=",
+        "lastModified": 1777266861,
+        "narHash": "sha256-cdSr2nIz4I+ysG1gAZxbKQo+f79vCCKfQCdiRYnyPec=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "3066de9018973a4c7164621ebcf13b9872a2bfb0",
+        "rev": "c8f7c7882804510f2b807021cac0a69c1aeb4829",
         "type": "github"
       },
       "original": {
@@ -670,11 +670,11 @@
     "sentry-skills": {
       "flake": false,
       "locked": {
-        "lastModified": 1777071667,
-        "narHash": "sha256-3DwfaScRB44ubjZS90+vbzig2afw12sUNrzo1qNoNCY=",
+        "lastModified": 1777224270,
+        "narHash": "sha256-TGtzezqSplcXQHwwjcTrB0ZigZl4co1tSYO6W5Q11qc=",
         "owner": "getsentry",
         "repo": "skills",
-        "rev": "a2366b16ba49c0c845bdbbd27e0eae283b3a493f",
+        "rev": "5cfc9e22a91c2d3a230c4d5154ea0f1babce3b28",
         "type": "github"
       },
       "original": {
