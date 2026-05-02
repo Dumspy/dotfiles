@@ -56,7 +56,6 @@
 
   environment.systemPackages = [
     pkgs.opencode
-    inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.codex
   ];
 
   # Set Git commit hash for darwin-version.

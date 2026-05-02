@@ -18,6 +18,13 @@
     tmux-sessionizer.enable = true;
     wt.enable = true;
     opencode.enable = true;
+    pi = {
+      enable = true;
+      settings = {
+        defaultProvider = "opencode-go";
+        enableInstallTelemetry = false;
+      };
+    };
     plannotator.enable = true;
     agent-config.enable = true;
     agent-browser.enable = true;
