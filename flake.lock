@@ -214,14 +214,17 @@
         "vercel-agent-skills": "vercel-agent-skills"
       },
       "locked": {
-        "lastModified": 1777818576,
-        "narHash": "sha256-d/Km8hQoeO2ovaZOpSe+sGoudxqoaLkLX87mgNlZ+AQ=",
-        "path": "/home/nixos/Documents/dot-agents",
-        "type": "path"
+        "lastModified": 1777818573,
+        "narHash": "sha256-viCwHUvDebqDJbuJCr+B+X8olFoV7xhmREvYzDtURHM=",
+        "owner": "Dumspy",
+        "repo": "dot-agents",
+        "rev": "dad8c75dff40b6ac9f9d785c1bd3c67a85017cb0",
+        "type": "github"
       },
       "original": {
-        "path": "/home/nixos/Documents/dot-agents",
-        "type": "path"
+        "owner": "Dumspy",
+        "repo": "dot-agents",
+        "type": "github"
       }
     },
     "expo-agent-skills": {

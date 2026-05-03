@@ -36,7 +36,7 @@
     };
 
     dot-agents = {
-      url = "path:/home/nixos/Documents/dot-agents";
+      url = "github:Dumspy/dot-agents";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
