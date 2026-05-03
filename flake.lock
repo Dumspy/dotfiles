@@ -214,8 +214,8 @@
         "vercel-agent-skills": "vercel-agent-skills"
       },
       "locked": {
-        "lastModified": 1777817736,
-        "narHash": "sha256-lsdoedqGsFipVKfQNiYWe1dxG5WDcNAAoc6oyeYmmR4=",
+        "lastModified": 1777818576,
+        "narHash": "sha256-d/Km8hQoeO2ovaZOpSe+sGoudxqoaLkLX87mgNlZ+AQ=",
         "path": "/home/nixos/Documents/dot-agents",
         "type": "path"
       },
