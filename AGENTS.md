@@ -16,7 +16,7 @@
   - `/modules/home` → home-manager configs
   - `/hosts/common` → shared host configuration
   - `/hosts/<hostname>` → per-host configs (darwin, wsl-devbox, k3s-node, master-node, oci-node-*)
-  - `/ai/skills` → custom agent skills
+  - Agent skills/agents live in the external `dot-agents` repo (consumed as a flake input)
 - **Secrets**: Managed via opnix (1Password CLI integration)
 - **SSH**: WSL uses npiperelay for host SSH agent forwarding
 

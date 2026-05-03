@@ -35,34 +35,9 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    vercel-agent-skills = {
-      url = "github:vercel-labs/agent-skills";
-      flake = false;
-    };
-
-    expo-agent-skills = {
-      url = "github:expo/skills";
-      flake = false;
-    };
-
-    agent-browser = {
-      url = "github:vercel-labs/agent-browser";
-      flake = false;
-    };
-
-    anthropics-agent-skills = {
-      url = "github:anthropics/skills";
-      flake = false;
-    };
-
-    dex-agent-skills = {
-      url = "github:dcramer/dex";
-      flake = false;
-    };
-
-    sentry-skills = {
-      url = "github:getsentry/skills";
-      flake = false;
+    dot-agents = {
+      url = "path:/home/nixos/Documents/dot-agents";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     llm-agents = {
@@ -95,12 +70,7 @@
     flake-utils,
     git-hooks,
     home-manager,
-    vercel-agent-skills,
-    expo-agent-skills,
-    agent-browser,
-    anthropics-agent-skills,
-    dex-agent-skills,
-    sentry-skills,
+    dot-agents,
     llm-agents,
     catppuccin,
     lazyvim,
