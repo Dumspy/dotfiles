@@ -3,11 +3,11 @@
     "agent-browser": {
       "flake": false,
       "locked": {
-        "lastModified": 1776719567,
-        "narHash": "sha256-DmlTsY0qYDmJrVUNLLe+FTkstmTdnmLAeXa0lu7fkto=",
+        "lastModified": 1777477152,
+        "narHash": "sha256-bTYekrFtUtbyJXudjQYe7sH0FTuhcGzcSDCN7qRciv8=",
         "owner": "vercel-labs",
         "repo": "agent-browser",
-        "rev": "57405f93614fae46e5c955ce662b4785283e1301",
+        "rev": "7ada3384e2afb5f3c43d9106389da86d8f807dca",
         "type": "github"
       },
       "original": {
@@ -19,11 +19,11 @@
     "anthropics-agent-skills": {
       "flake": false,
       "locked": {
-        "lastModified": 1776964038,
-        "narHash": "sha256-xFsg66TCtKzSgRIW6Ab771FWEIhei3jPgfE4byMiB44=",
+        "lastModified": 1777816720,
+        "narHash": "sha256-6GyoLtVWna20TrLg7Y2R6wCWD6C4GbDtIB0jbl5VESY=",
         "owner": "anthropics",
         "repo": "skills",
-        "rev": "5128e1865d670f5d6c9cef000e6dfc4e951fb5b9",
+        "rev": "d230a6dd6eb1a0dbee9fec55e2f00a96e28dff81",
         "type": "github"
       },
       "original": {
@@ -200,19 +200,29 @@
         "type": "github"
       }
     },
-    "expo-agent-skills": {
-      "flake": false,
+    "dot-agents": {
+      "inputs": {
+        "agent-browser": "agent-browser",
+        "anthropics-agent-skills": "anthropics-agent-skills",
+        "dex-agent-skills": "dex-agent-skills",
+        "home-manager": "home-manager_2",
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "sentry-skills": "sentry-skills",
+        "vercel-agent-skills": "vercel-agent-skills"
+      },
       "locked": {
-        "lastModified": 1776955492,
-        "narHash": "sha256-j5xTQWdJN98vvbDiAQXVjS79q4XB+nkESoZOrNY0xWg=",
-        "owner": "expo",
-        "repo": "skills",
-        "rev": "93751dadf0494110893a9f7a2091ca14833d8212",
+        "lastModified": 1778888579,
+        "narHash": "sha256-dLrJryUrk/2Dago3xTMAKyi23K7zs35eL1MMp83AE40=",
+        "owner": "Dumspy",
+        "repo": "dot-agents",
+        "rev": "f517cf824593007b6e5d535283b4ceb6bcb40c24",
         "type": "github"
       },
       "original": {
-        "owner": "expo",
-        "repo": "skills",
+        "owner": "Dumspy",
+        "repo": "dot-agents",
         "type": "github"
       }
     },
@@ -442,6 +452,27 @@
     "home-manager_2": {
       "inputs": {
         "nixpkgs": [
+          "dot-agents",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1777815398,
+        "narHash": "sha256-MrIhEoqXc4YsHEUfH4rDU/K09XnWcKntNhCjs7n7zi8=",
+        "owner": "nix-community",
+        "repo": "home-manager",
+        "rev": "b5e86c1b19f178a8ee10f7cb747325e02e3d3991",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "home-manager",
+        "type": "github"
+      }
+    },
+    "home-manager_3": {
+      "inputs": {
+        "nixpkgs": [
           "nixpkgs"
         ]
       },
@@ -647,34 +678,29 @@
     },
     "root": {
       "inputs": {
-        "agent-browser": "agent-browser",
-        "anthropics-agent-skills": "anthropics-agent-skills",
         "auxera": "auxera",
         "catppuccin": "catppuccin",
         "deploy-rs": "deploy-rs",
-        "dex-agent-skills": "dex-agent-skills",
-        "expo-agent-skills": "expo-agent-skills",
+        "dot-agents": "dot-agents",
         "flake-utils": "flake-utils_2",
         "git-hooks": "git-hooks",
-        "home-manager": "home-manager_2",
+        "home-manager": "home-manager_3",
         "lazyvim": "lazyvim",
         "llm-agents": "llm-agents",
         "nix-darwin": "nix-darwin",
         "nixos-wsl": "nixos-wsl",
         "nixpkgs": "nixpkgs_2",
-        "opnix": "opnix",
-        "sentry-skills": "sentry-skills",
-        "vercel-agent-skills": "vercel-agent-skills"
+        "opnix": "opnix"
       }
     },
     "sentry-skills": {
       "flake": false,
       "locked": {
-        "lastModified": 1777071667,
-        "narHash": "sha256-3DwfaScRB44ubjZS90+vbzig2afw12sUNrzo1qNoNCY=",
+        "lastModified": 1777667164,
+        "narHash": "sha256-ALz9FpFK0i5TNrLgwomLzHHRsvCBRjtukCrNSYn4nSI=",
         "owner": "getsentry",
         "repo": "skills",
-        "rev": "a2366b16ba49c0c845bdbbd27e0eae283b3a493f",
+        "rev": "0493d77a5510c508a54e815d42570483fa26c48e",
         "type": "github"
       },
       "original": {

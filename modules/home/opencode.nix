@@ -108,10 +108,6 @@ in {
           };
         };
       };
-
-      commands = {
-        "dependabot-solver" = ../../ai/commands/dependabot-solver.md;
-      };
     };
 
     programs.opencode-notifier-plugin.enable = true;
