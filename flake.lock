@@ -205,7 +205,6 @@
         "agent-browser": "agent-browser",
         "anthropics-agent-skills": "anthropics-agent-skills",
         "dex-agent-skills": "dex-agent-skills",
-        "expo-agent-skills": "expo-agent-skills",
         "home-manager": "home-manager_2",
         "nixpkgs": [
           "nixpkgs"
@@ -214,32 +213,16 @@
         "vercel-agent-skills": "vercel-agent-skills"
       },
       "locked": {
-        "lastModified": 1777818573,
-        "narHash": "sha256-viCwHUvDebqDJbuJCr+B+X8olFoV7xhmREvYzDtURHM=",
+        "lastModified": 1778888579,
+        "narHash": "sha256-dLrJryUrk/2Dago3xTMAKyi23K7zs35eL1MMp83AE40=",
         "owner": "Dumspy",
         "repo": "dot-agents",
-        "rev": "dad8c75dff40b6ac9f9d785c1bd3c67a85017cb0",
+        "rev": "f517cf824593007b6e5d535283b4ceb6bcb40c24",
         "type": "github"
       },
       "original": {
         "owner": "Dumspy",
         "repo": "dot-agents",
-        "type": "github"
-      }
-    },
-    "expo-agent-skills": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1776955492,
-        "narHash": "sha256-j5xTQWdJN98vvbDiAQXVjS79q4XB+nkESoZOrNY0xWg=",
-        "owner": "expo",
-        "repo": "skills",
-        "rev": "93751dadf0494110893a9f7a2091ca14833d8212",
-        "type": "github"
-      },
-      "original": {
-        "owner": "expo",
-        "repo": "skills",
         "type": "github"
       }
     },
