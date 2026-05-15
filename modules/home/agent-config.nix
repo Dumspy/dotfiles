@@ -35,14 +35,6 @@
         "react-best-practices"
         "web-design-guidelines"
 
-        # Expo
-        "expo-api-routes"
-        "building-native-ui"
-        "native-data-fetching"
-        "expo-dev-client"
-        "expo-tailwind-setup"
-        "use-dom"
-
         # Browser
         "agent-browser"
 
