@@ -31,6 +31,7 @@
     dex.enable = false;
     lazygit.enable = true;
     ripgrep.enable = true;
+    node-hardening.enable = true;
   };
 
   programs.home-manager.enable = true;
