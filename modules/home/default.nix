@@ -19,6 +19,7 @@
     ./agent-browser.nix
     ./pi.nix
     ./dex.nix
+    ./node-hardening.nix
     ./ssh.nix
     ./lazygit.nix
     ./ripgrep.nix
