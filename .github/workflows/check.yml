@@ -6,13 +6,6 @@ on:
       - master
   pull_request:
   workflow_dispatch:
-  workflow_run:
-    workflows:
-      - "Update Flakes"
-    types:
-      - completed
-    branches:
-      - "automated/flake-updates-*"
 
 jobs:
   test:
@@ -22,8 +15,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_branch || '' }}
-          repository: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_repository.full_name || '' }}
           fetch-depth: 0
 
       - name: Install Nix
