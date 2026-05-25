@@ -23,6 +23,7 @@
       settings = {
         defaultProvider = "opencode-go";
         enableInstallTelemetry = false;
+        theme = "catppuccin-macchiato";
       };
     };
     plannotator.enable = true;
