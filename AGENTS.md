@@ -32,3 +32,19 @@
 - **Config structure**: `mkDarwin` and `mkNixos` factory functions for system setup
 - **User config**: Per-system `specialArgs` includes username, homePrefix, SSH publicKey
 - **Imports**: Modular structure with explicit `imports` in module definitions
+
+---
+
+## Agent Configuration
+
+The canonical source of truth for agent configuration lives in the `dot-agents` repo
+(typically cloned under `~/dot-agents` or `~/Documents/dot-agents`).
+
+That repo contains universal skills, Pi extensions, OpenCode commands, and the Nix/Home Manager
+modules that deploy them to this machine.
+
+### If you need to modify agent config
+
+1. Go to your local `dot-agents` checkout
+2. Make changes there
+3. Rebuild (Nix) or push to trigger the `stow` branch update
