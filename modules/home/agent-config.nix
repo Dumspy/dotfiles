@@ -24,9 +24,6 @@
       ];
 
       skills = [
-        "dependabot-solver"
-        "pr-review-resolver"
-
         # Anthropic
         "skill-creator"
 
