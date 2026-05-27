@@ -16,20 +16,6 @@
   config = lib.mkIf config.myModules.home.agent-config.enable {
     programs.dot-agents = {
       enable = true;
-
-      agents = [
-        "code-simplifier"
-        "librarian"
-        "oracle"
-      ];
-
-      skills = [
-        # Anthropic
-        "skill-creator"
-
-        # Browser
-        "agent-browser"
-      ];
     };
   };
 }
