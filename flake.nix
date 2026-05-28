@@ -36,7 +36,7 @@
     };
 
     dot-agents = {
-      url = "github:Dumspy/dot-agents/pi-playground";
+      url = "github:Dumspy/dot-agents";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 

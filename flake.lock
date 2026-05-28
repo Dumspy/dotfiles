@@ -192,16 +192,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1779908986,
-        "narHash": "sha256-KvuWHL+NTUiRuzNO7MGSVeazOWDbPtieqid/9JJ1Hj4=",
+        "lastModified": 1779986933,
+        "narHash": "sha256-Ou+c6ew+Z7UW/wVJUe7Gmh7Cf5feju46AmL/o0h9pFE=",
         "owner": "Dumspy",
         "repo": "dot-agents",
-        "rev": "05355419ff5a2b830b2c434746246c8c4bd9ea80",
+        "rev": "1cc770a6c8f611e069851cbb4ec44c8d759a7237",
         "type": "github"
       },
       "original": {
         "owner": "Dumspy",
-        "ref": "pi-playground",
         "repo": "dot-agents",
         "type": "github"
       }
