@@ -1,21 +1,5 @@
 {
   "nodes": {
-    "agent-browser": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1777477152,
-        "narHash": "sha256-bTYekrFtUtbyJXudjQYe7sH0FTuhcGzcSDCN7qRciv8=",
-        "owner": "vercel-labs",
-        "repo": "agent-browser",
-        "rev": "7ada3384e2afb5f3c43d9106389da86d8f807dca",
-        "type": "github"
-      },
-      "original": {
-        "owner": "vercel-labs",
-        "repo": "agent-browser",
-        "type": "github"
-      }
-    },
     "anthropics-agent-skills": {
       "flake": false,
       "locked": {
@@ -183,7 +167,6 @@
     },
     "dot-agents": {
       "inputs": {
-        "agent-browser": "agent-browser",
         "anthropics-agent-skills": "anthropics-agent-skills",
         "git-hooks": "git-hooks",
         "home-manager": "home-manager_2",
@@ -192,11 +175,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1779989820,
-        "narHash": "sha256-U3/ltCRL72WUZoPmB+7Udde8geB9o0toCDfjWYIQd7E=",
+        "lastModified": 1780078319,
+        "narHash": "sha256-y2Mcf+685wZgZjFVay8JK8j77ZZf1OQMw7LFMyAleTA=",
         "owner": "Dumspy",
         "repo": "dot-agents",
-        "rev": "7987263aa8dabbe4750a6b91d8f8c53fae6c3ab4",
+        "rev": "8c1197172157d1bef318bff851d263f9108d432d",
         "type": "github"
       },
       "original": {
