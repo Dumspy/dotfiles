@@ -17,6 +17,15 @@
       authorizedKeys = [config.var.publicKey];
     };
     deploy.enable = true;
+    supermemory = {
+      enable = true;
+      openFirewall = true;
+      environment = {
+        OPENAI_BASE_URL = "https://opencode.ai/zen/go/v1/chat/completions";
+        OPENAI_MODEL = "deepseek-v4-flash";
+      };
+      environmentFile = config.services.onepassword-secrets.secretPaths.supermemoryEnv;
+    };
   };
 
   # Bootloader.
@@ -67,4 +76,16 @@
     pkgs.gcc
     pkgs.gnumake
   ];
+
+  myModules.system.onepassword = {
+    enable = true;
+    secrets = {
+      supermemoryEnv = {
+        reference = "op://NixSecrets/SuperMemory/env";
+        owner = "supermemory";
+        group = "supermemory";
+        services = ["supermemory"];
+      };
+    };
+  };
 }

@@ -17,6 +17,7 @@
     ++ lib.optionals (!isDarwin) [
       ./1password-agent.nix
       ./k3s.nix
+      ./supermemory.nix
       ./traefik.nix
       ./deploy.nix
     ];
