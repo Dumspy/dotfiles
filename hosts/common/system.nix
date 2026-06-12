@@ -67,7 +67,6 @@
   # Fonts
   fonts.packages = [
     pkgs.nerd-fonts.jetbrains-mono
-    pkgs.iosevka
   ];
 
   myModules.system.shell.default = lib.mkDefault "zsh";

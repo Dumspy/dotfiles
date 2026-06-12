@@ -36,7 +36,7 @@
     };
 
     dot-agents = {
-      url = "github:Dumspy/dot-agents";
+      url = "github:Dumspy/dot-agents/context-extension";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
