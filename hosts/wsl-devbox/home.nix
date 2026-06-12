@@ -11,4 +11,8 @@
 
   myModules.home.shell.default = "fish";
   myModules.home.kubectl.enable = true;
+
+  programs.dot-agents.pi.keybindings = {
+    "app.clipboard.pasteImage" = "alt+v";
+  };
 }

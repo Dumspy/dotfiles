@@ -31,6 +31,7 @@
   # Necessary for using flakes on this system.
   nix.settings = {
     experimental-features = "nix-command flakes";
+    auto-optimise-store = true;
 
     extra-substituters = [
       "https://cache.numtide.com"
@@ -66,7 +67,6 @@
   # Fonts
   fonts.packages = [
     pkgs.nerd-fonts.jetbrains-mono
-    pkgs.iosevka
   ];
 
   myModules.system.shell.default = lib.mkDefault "zsh";

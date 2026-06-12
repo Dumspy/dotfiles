@@ -23,11 +23,11 @@
       settings = {
         defaultProvider = "opencode-go";
         enableInstallTelemetry = false;
+        theme = "catppuccin-macchiato";
       };
     };
     plannotator.enable = true;
     agent-config.enable = true;
-    agent-browser.enable = true;
     dex.enable = false;
     lazygit.enable = true;
     ripgrep.enable = true;

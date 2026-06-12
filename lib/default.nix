@@ -17,7 +17,7 @@
       modules =
         [
           {nixpkgs.hostPlatform = "aarch64-darwin";}
-          {nixpkgs.overlays = [inputs.auxera.overlays.default];}
+          {nixpkgs.overlays = [inputs.auxera.overlays.default (import (flakeRoot + /overlays/opencode-fix.nix)) (import (flakeRoot + /overlays/helm-fix.nix))];}
           (flakeRoot + /hosts/common/config.nix)
           (flakeRoot + /modules/system)
           (flakeRoot + /modules/system/platform/darwin.nix)
@@ -63,7 +63,7 @@
       modules =
         [
           {nixpkgs.hostPlatform = system;}
-          {nixpkgs.overlays = [inputs.auxera.overlays.default];}
+          {nixpkgs.overlays = [inputs.auxera.overlays.default (import (flakeRoot + /overlays/opencode-fix.nix)) (import (flakeRoot + /overlays/helm-fix.nix))];}
           (flakeRoot + /hosts/common/config.nix)
           (flakeRoot + /modules/system)
           (flakeRoot + /modules/system/platform/nixos.nix)
