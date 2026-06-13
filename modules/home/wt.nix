@@ -211,16 +211,31 @@ in {
             set current_root (__wt_normalize_path "$current_root")
           end
 
+          # Split positional name from forwarded flags (e.g. --force) so that
+          # both `wt rm name --force` and `wt rm --force name` work.
+          set -l name_arg
+          set -l extra_args
+          for arg in $argv
+            if string match -q -- '-*' "$arg"
+              set extra_args $extra_args $arg
+            else if test -z "$name_arg"
+              set name_arg "$arg"
+            else
+              echo "wt: unexpected extra positional argument: $arg" >&2
+              return 1
+            end
+          end
+
           set -l target
-          if test -n "$argv[1]"
-            if string match -q -- '/*' "$argv[1]"
-              set target "$argv[1]"
+          if test -n "$name_arg"
+            if string match -q -- '/*' "$name_arg"
+              set target "$name_arg"
             else
               set -l repo_dir (__wt_repo_dir)
               if test -z "$repo_dir"
                 return 1
               end
-              set target "$repo_dir/$argv[1]"
+              set target "$repo_dir/$name_arg"
             end
           else
             if test "$current_root" = "$main_root"
@@ -255,7 +270,7 @@ in {
             or return 1
           end
 
-          command git -C "$main_root" worktree remove "$target"
+          command git -C "$main_root" worktree remove $extra_args "$target"
           set -l remove_status $status
 
           if test $remove_status -eq 0
@@ -285,11 +300,11 @@ in {
             case ls list
               command git worktree list
             case rm remove
-              __wt_remove $argv[2]
+              __wt_remove $argv[2..-1]
             case -h --help help
               echo "usage: wt [name]"
               echo "       wt ls"
-              echo "       wt rm [name]"
+              echo "       wt rm [name] [--force]"
             case '*'
               __wt_open "$argv[1]"
           end
