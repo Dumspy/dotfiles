@@ -30,6 +30,7 @@ in
     dontUnpack = true;
     dontBuild = true;
     dontConfigure = true;
+    dontStrip = true;
 
     nativeBuildInputs = lib.optionals stdenv.hostPlatform.isLinux [patchelf];
 
