@@ -6,8 +6,8 @@
   glibc,
   gcc,
   openssl,
-  version ? "0.0.2",
-  sha256 ? "sha256-i/OUaQgHs3eG0iph0+5kISt66CN0iU51SFYTTKYHYbQ=",
+  version ? "0.0.3",
+  sha256 ? "sha256-0mq95jckhm4ax11486ay1iamik3fqphl51lgkq4i2ddx2ijlhdj0",
 }: let
   platform =
     if stdenv.hostPlatform.system == "x86_64-linux"
