@@ -19,11 +19,6 @@
     red = "#ed8796";
     green = "#a6da95";
   };
-
-  # Nerd Font "nf-cod-terminal" icon (U+E795), same as catppuccin/tmux default.
-  # Uses builtins.fromJSON to interpret the \uE795 escape, since Nix string
-  # literals do not support \uNNNN escapes.
-  terminalIcon = builtins.fromJSON ''"\uE795"'';
 in {
   options.myModules.home.tmux = {
     enable = lib.mkEnableOption "tmux with vim navigation";
@@ -65,11 +60,11 @@ in {
         set -g status-left "#[fg=${colors.mauve},bold] #S #[fg=${colors.overlay1}]│ "
         set -g status-left-length 20
 
-        # Right: prefix-aware terminal icon (red=on, green=off) + time
-        set -g status-right "#{?client_prefix,#[fg=${colors.red}],#[fg=${colors.green}]}${terminalIcon} #[fg=${colors.overlay1}] %-I:%M %p "
+        # Right: colored circle shows prefix state (red=on, green=off), clock in text color
+        set -g status-right "#{?client_prefix,#[fg=${colors.red}],#[fg=${colors.green}]}● #[fg=${colors.text}]%-I:%M %p "
         set -g status-right-length 50
 
-        # Windows: inline list, active highlighted in mauve
+        # Windows: inline list, active window in mauve
         setw -g window-status-format "#[fg=${colors.overlay1}] #I #W "
         setw -g window-status-current-format "#[fg=${colors.mauve},bold] #I #W "
         setw -g window-status-separator ""
