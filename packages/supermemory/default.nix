@@ -7,7 +7,7 @@
   gcc,
   openssl,
   version ? "0.0.3",
-  sha256 ? "sha256-0mq95jckhm4ax11486ay1iamik3fqphl51lgkq4i2ddx2ijlhdj0",
+  sha256 ? "sha256-QDZIZRS9NREJno+GQuHFbsxYVQxeGURC6IpUOJksCVc=",
 }: let
   platform =
     if stdenv.hostPlatform.system == "x86_64-linux"
