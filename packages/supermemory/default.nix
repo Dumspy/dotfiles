@@ -38,18 +38,18 @@ in
       mkdir -p $out/bin
       cp $src $out/bin/supermemory-server
       chmod +x $out/bin/supermemory-server
-
-      ${lib.optionalString stdenv.hostPlatform.isLinux ''
-        patchelf --set-interpreter ${
-          if stdenv.hostPlatform.system == "x86_64-linux"
-          then "${glibc}/lib/ld-linux-x86-64.so.2"
-          else if stdenv.hostPlatform.system == "aarch64-linux"
-          then "${glibc}/lib/ld-linux-aarch64.so.1"
-          else throw "Unsupported Linux platform: ${stdenv.hostPlatform.system}"
-        } $out/bin/supermemory-server
-      ''}
-
       runHook postInstall
+    '';
+
+    postFixup = lib.optionalString stdenv.hostPlatform.isLinux ''
+      chmod +w $out/bin/supermemory-server
+      patchelf --set-interpreter ${
+        if stdenv.hostPlatform.system == "x86_64-linux"
+        then "${glibc}/lib/ld-linux-x86-64.so.2"
+        else if stdenv.hostPlatform.system == "aarch64-linux"
+        then "${glibc}/lib/ld-linux-aarch64.so.1"
+        else throw "Unsupported Linux platform: ${stdenv.hostPlatform.system}"
+      } $out/bin/supermemory-server
     '';
 
     meta = {
