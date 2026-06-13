@@ -2,6 +2,10 @@
   lib,
   stdenv,
   fetchurl,
+  autoPatchelfHook,
+  glibc,
+  gcc,
+  openssl,
   version ? "0.0.2",
   sha256 ? "sha256-i/OUaQgHs3eG0iph0+5kISt66CN0iU51SFYTTKYHYbQ=",
 }: let
@@ -28,6 +32,9 @@ in
     dontUnpack = true;
     dontBuild = true;
     dontConfigure = true;
+
+    nativeBuildInputs = lib.optionals stdenv.hostPlatform.isLinux [autoPatchelfHook];
+    buildInputs = lib.optionals stdenv.hostPlatform.isLinux [glibc gcc.cc.lib openssl];
 
     installPhase = ''
       runHook preInstall
