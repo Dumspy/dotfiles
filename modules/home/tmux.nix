@@ -25,6 +25,10 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
+    # hosts/common/home.nix sets catppuccin.enable, which auto-enables
+    # catppuccin.tmux. Disable it here so the manual status bar config wins.
+    catppuccin.tmux.enable = false;
+
     programs.tmux = {
       enable = true;
       terminal = "screen-256color";
