@@ -28,6 +28,7 @@
     };
     plannotator.enable = true;
     agent-config.enable = true;
+    devenv.enable = true;
     dex.enable = false;
     lazygit.enable = true;
     ripgrep.enable = true;

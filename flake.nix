@@ -6,11 +6,6 @@
 
     flake-utils.url = "github:numtide/flake-utils";
 
-    git-hooks = {
-      url = "github:cachix/git-hooks.nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     opnix = {
       url = "github:brizzbuzz/opnix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -68,7 +63,6 @@
     nixos-wsl,
     nixpkgs,
     flake-utils,
-    git-hooks,
     home-manager,
     dot-agents,
     llm-agents,
@@ -90,19 +84,8 @@
           inherit system;
           overlays = [auxera.overlays.default];
         };
-        pre-commit-check = git-hooks.lib.${system}.run {
-          src = ./.;
-          hooks = {
-            alejandra.enable = true;
-          };
-        };
       in {
-        checks = {inherit pre-commit-check;};
         formatter = pkgs.alejandra;
-        devShells.default = pkgs.mkShell {
-          inherit (pre-commit-check) shellHook;
-          packages = [pkgs.alejandra pkgs.deadnix];
-        };
       }
     ))
     // {
