@@ -3,6 +3,7 @@
 
   catppuccin = {
     enable = true;
+    autoEnable = true;
     flavor = "macchiato";
     accent = "mauve";
   };
@@ -34,6 +35,8 @@
     ripgrep.enable = true;
     node-hardening.enable = true;
   };
+
+  programs.man.generateCaches = false;
 
   programs.home-manager.enable = true;
 }

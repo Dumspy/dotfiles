@@ -17,6 +17,7 @@ in {
   config = lib.mkIf cfg.enable {
     programs.ssh = {
       enable = true;
+      enableDefaultConfig = false;
       extraConfig = lib.mkIf (cfg.identityAgent != null) ''
         Host *
           IdentityAgent "${cfg.identityAgent}"
