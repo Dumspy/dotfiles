@@ -9,7 +9,6 @@ on:
 
 jobs:
   test:
-    if: github.repository == 'dumspy/dotfiles'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -22,8 +21,16 @@ jobs:
         with:
           nix_path: nixpkgs=channel:nixos-unstable
 
-      - name: Verify flake configuration
-        run: nix develop -c nix flake check . --all-systems
+      - name: Setup Cachix
+        uses: cachix/cachix-action@v16
+        with:
+          name: devenv
 
-      - name: Lint Nix code with Alejandra
-        run: nix develop -c alejandra --check .
+      - name: Install devenv
+        run: nix profile add nixpkgs#devenv
+
+      - name: Verify flake configuration
+        run: nix flake check . --all-systems
+
+      - name: Build devenv shell and run git hooks
+        run: devenv test

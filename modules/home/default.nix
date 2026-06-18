@@ -16,6 +16,7 @@
     ./opencode.nix
     ./plannotator.nix
     ./agent-config.nix
+    ./devenv.nix
     ./pi.nix
     ./dex.nix
     ./node-hardening.nix
