@@ -1,11 +1,8 @@
 {
-  config,
   lib,
   pkgs,
   ...
-}: let
-  cfg = config.myModules.home.shell;
-in {
+}: {
   options.myModules.home.shell = {
     default = lib.mkOption {
       type = lib.types.enum ["zsh" "fish"];

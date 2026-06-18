@@ -24,4 +24,19 @@
       "^result$"
     ];
   };
+
+  git-hooks.hooks.deadnix = {
+    enable = true;
+
+    # Same exclusions as alejandra so generated / vendored files are not scanned.
+    settings = {
+      noLambdaArg = true;
+      noLambdaPatternNames = true;
+      exclude = [
+        "^\\.devenv/"
+        "^\\.direnv/"
+        "^result$"
+      ];
+    };
+  };
 }
