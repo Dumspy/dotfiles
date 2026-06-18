@@ -175,11 +175,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1781295951,
-        "narHash": "sha256-WfuUzT7HA4U8AMFUHRQpYO14saKenn74IG6Bo3Tc6uU=",
+        "lastModified": 1781309837,
+        "narHash": "sha256-5TzIwXJ6R6/kSSLdtbNjs/fmrl52cvPuwZWWuHOxGb4=",
         "owner": "Dumspy",
         "repo": "dot-agents",
-        "rev": "b4a32ccc6908ca5611ba91ede43fa8809f9cf9e9",
+        "rev": "7a59d4af8109bf7d8e24aa82d7defaa7ad94eecf",
         "type": "github"
       },
       "original": {
