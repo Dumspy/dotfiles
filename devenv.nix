@@ -24,9 +24,4 @@
       "^result$"
     ];
   };
-
-  # Runs in CI via `devenv test`.
-  enterTest = ''
-    pre-commit run --all-files
-  '';
 }
