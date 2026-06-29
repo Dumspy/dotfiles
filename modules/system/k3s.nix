@@ -6,6 +6,7 @@
 }: let
   cfg = config.myModules.system.k3s;
   homePrefix = config.var.homePrefix;
+  username = config.var.username;
 in {
   options.myModules.system.k3s = {
     enable = lib.mkEnableOption "k3s Kubernetes distribution";
@@ -68,7 +69,7 @@ in {
     networking.firewall.allowedUDPPorts = [8472];
 
     systemd.services.setup-kubeconfig = {
-      description = "Setup kubeconfig for user nixos";
+      description = "Setup kubeconfig for user ${username}";
       wantedBy = ["multi-user.target"];
       after = ["k3s.service"];
       serviceConfig = {
@@ -93,7 +94,7 @@ in {
           cp /etc/rancher/k3s/k3s.yaml ${homePrefix}/.kube/config
 
           echo "Setting proper ownership and permissions..."
-          chown nixos:users ${homePrefix}/.kube/config
+          chown ${username}:users ${homePrefix}/.kube/config
           chmod 600 ${homePrefix}/.kube/config
 
           echo "Kubeconfig setup completed successfully."

@@ -10,7 +10,7 @@ in {
     enable = lib.mkEnableOption "kubeconfig management for multiple Kubernetes clusters";
     user = lib.mkOption {
       type = lib.types.str;
-      default = "nixos";
+      default = config.var.username;
       description = "Default user to own the kubeconfig files";
     };
     group = lib.mkOption {

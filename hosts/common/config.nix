@@ -10,18 +10,23 @@
     then {
       username = "felix.berger";
       homePrefix = "/Users/felix.berger";
-      editor = "zed";
     }
     else {
       username = "nixos";
       homePrefix = "/home/nixos";
-      editor = "nvim";
     };
 
   globalConfig = {
     dotfiles = "${hostConfig.homePrefix}/dotfiles";
     publicKey = publicKey;
     sshKeys = [publicKey];
+    # Editor is nvim everywhere: it's a blocking terminal editor that works
+    # as git's core.editor / $EDITOR out of the box, and it's installed on
+    # every host via the lazyvim home module. (A `zed` editor was previously
+    # declared here for darwin but never wired in, and `zed` doesn't block
+    # without `--wait` so it isn't a drop-in for $EDITOR.) This is the single
+    # source consumed by modules/home/{git,lazyvim}.nix.
+    editor = "nvim";
   };
 in {
   config.var = lib.recursiveUpdate globalConfig hostConfig;

@@ -23,6 +23,8 @@ in {
       ++ lib.optional (cfg.default == "fish") pkgs.fish;
 
     programs.fish.enable = cfg.default == "fish";
+    # zsh is always enabled as a bare fallback shell (it gets full home-manager
+    # config only when it is the `default`; see modules/home/shell.nix).
     programs.zsh = {
       enable = true;
       shellInit = ''

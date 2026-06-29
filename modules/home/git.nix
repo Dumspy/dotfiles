@@ -45,7 +45,7 @@ in {
         push.autoSetupRemote = true;
         gpg.format = "ssh";
         commit.gpgSign = true;
-        core.editor = "nvim";
+        core.editor = config.var.editor;
         init.defaultBranch = "development";
 
         aliases = {

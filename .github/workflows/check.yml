@@ -20,11 +20,20 @@ jobs:
         uses: cachix/install-nix-action@v31
         with:
           nix_path: nixpkgs=channel:nixos-unstable
+          # Pull from the same binary caches the systems use (hosts/common/system.nix)
+          # so CI doesn't rebuild numtide packages from source. auxera is added
+          # via cachix-action below (it's cachix-hosted).
+          extra-conf: |
+            extra-substituters = https://cache.numtide.com
+            extra-trusted-public-keys = niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g=
 
       - name: Setup Cachix
         uses: cachix/cachix-action@v16
         with:
+          # devenv caches the devenv shell deps; auxera mirrors the system
+          # substituter for auxera.cachix.org (pull-only).
           name: devenv
+          extraPullNames: auxera
 
       - name: Install devenv
         run: nix profile add nixpkgs#devenv

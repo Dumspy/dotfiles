@@ -37,6 +37,6 @@ in {
       '';
     };
 
-    home.sessionVariables.EDITOR = "nvim";
+    home.sessionVariables.EDITOR = config.var.editor;
   };
 }

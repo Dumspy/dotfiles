@@ -10,7 +10,7 @@ Secrets are managed using [opnix](https://github.com/brizzbuzz/opnix), a built-i
    echo "your-service-account-token" | sudo tee /etc/opnix-token
    sudo chmod 600 /etc/opnix-token
    ```
-3. **Configure secrets**: Add secrets in `nix/modules/system/onepassword.nix`:
+3. **Configure secrets**: Add secrets in `modules/system/onepassword.nix`:
    ```nix
    services.onepassword-secrets = {
      enable = true;
@@ -40,7 +40,7 @@ For WSL systems, 1Password SSH agent is integrated via `1password-agent.nix`:
 ### WSL Install Steps
 * Enable WSL if you haven't done already:
    * `wsl --install --no-distribution`
-* Download nixos.wsl from the [latest release](https://github.com/nix-community/NixOS-WSL/releases/tag/2505.7.0).
+* Download nixos.wsl from the [latest release](https://github.com/nix-community/NixOS-WSL/releases/latest).
 * Double-click the file you just downloaded (requires WSL >= 2.4.4)
 * You can now run NixOS:
    * `wsl -d NixOS`
