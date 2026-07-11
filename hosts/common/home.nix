@@ -26,7 +26,7 @@
         theme = "catppuccin-macchiato";
       };
     };
-    plannotator.enable = true;
+    plannotator.enable = false;
     agent-config.enable = true;
     devenv.enable = true;
     dex.enable = false;
