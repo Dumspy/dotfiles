@@ -12,7 +12,10 @@
     };
 
     auxera = {
-      url = "github:Auxera/nixpkgs";
+      # TEMP: track the branch carrying the herdr package (PR #322) while we
+      # develop modules/home/herdr.nix. Revert to the default ref once the PR
+      # merges to main and we bump flake.lock.
+      url = "github:Auxera/nixpkgs/herdr/add-herdr-package";
     };
 
     nix-darwin = {
