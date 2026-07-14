@@ -67,7 +67,14 @@ in {
               surface0 = macchiato.surface0;
               surface1 = macchiato.surface1;
               surface_dim = macchiato.crust;
-              overlay0 = macchiato.overlay0;
+              # herdr renders non-active auto-named tabs as `overlay0` + DIM on
+              # `surface0` (tabs.rs:333). With the Macchiato overlay0 (#6e738d)
+              # the DIM'd text collapses against surface0 (#363a4f) and is
+              # unreadable. Lift overlay0 to subtext0 (#a5adcb) so the inactive
+              # tab text stays light-on-dark like our tmux status bar. Aligns
+              # with overlay1 (#8087a2) — overlay1 is already used by named
+              # inactive tabs without DIM, so the two stay visually consistent.
+              overlay0 = macchiato.subtext0;
               overlay1 = macchiato.overlay1;
               text = macchiato.text;
               subtext0 = macchiato.subtext0;
