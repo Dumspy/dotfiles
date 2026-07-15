@@ -24,16 +24,15 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1784054434,
-        "narHash": "sha256-yYX3Cwv0kbOqsK8z/MRMKAfd/DvjH39CoHXBKDo5COk=",
+        "lastModified": 1784131652,
+        "narHash": "sha256-7yGQpQwHEXVbgVaS+JeWM3w1XfnE6IaQChUnPCBm/F8=",
         "owner": "Auxera",
         "repo": "nixpkgs",
-        "rev": "88f113666b7c62986742f93f1adf439282ec76b5",
+        "rev": "7e636b91f30a75d17ed065cbdcfa20cc2f340f7c",
         "type": "github"
       },
       "original": {
         "owner": "Auxera",
-        "ref": "herdr/add-herdr-package",
         "repo": "nixpkgs",
         "type": "github"
       }
