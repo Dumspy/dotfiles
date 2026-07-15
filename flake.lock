@@ -24,11 +24,11 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1783747867,
-        "narHash": "sha256-/YPZbt7332o+oFPNfC3G17uJv83b7ecrl+CJlxNZDKo=",
+        "lastModified": 1784131652,
+        "narHash": "sha256-7yGQpQwHEXVbgVaS+JeWM3w1XfnE6IaQChUnPCBm/F8=",
         "owner": "Auxera",
         "repo": "nixpkgs",
-        "rev": "4397165b27dde3767e541073b4db81980d189461",
+        "rev": "7e636b91f30a75d17ed065cbdcfa20cc2f340f7c",
         "type": "github"
       },
       "original": {
@@ -404,11 +404,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1783744526,
-        "narHash": "sha256-yYVxW+uIbCx0Nt870fbErQbz+b2+3Gwpppe+JbIU+Co=",
+        "lastModified": 1783963347,
+        "narHash": "sha256-r376E2XpakiXwModDHIxlvB6qLq4iFVEq730vxOO4JY=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "2afec152df4e284d264f8489d16004c264aebf4c",
+        "rev": "a45a7c451455a51ae740ec3bce4024b312809c29",
         "type": "github"
       },
       "original": {
