@@ -16,6 +16,7 @@
   config = lib.mkIf config.myModules.home.agent-config.enable {
     programs.dot-agents = {
       enable = true;
+      pi.externalExtensions = null;
     };
   };
 }

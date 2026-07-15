@@ -8,6 +8,7 @@
   cfg = config.myModules.home.pi;
   llm-agents-pkgs = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
   jsonFormat = pkgs.formats.json {};
+  settingsJson = builtins.toJSON cfg.settings;
 in {
   options.myModules.home.pi = {
     enable = lib.mkEnableOption "pi coding agent";
@@ -16,7 +17,9 @@ in {
       inherit (jsonFormat) type;
       default = {};
       description = ''
-        Configuration written to {file}`~/.pi/agent/settings.json`.
+        Initial configuration for {file}`~/.pi/agent/settings.json`.
+        Written once if the file does not exist; Pi and other tools
+        may modify the file afterwards.
         See <https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/docs/settings.md>.
       '';
     };
@@ -25,8 +28,23 @@ in {
   config = lib.mkIf cfg.enable {
     home.packages = [llm-agents-pkgs.pi];
 
-    home.file.".pi/agent/settings.json" = lib.mkIf (cfg.settings != {}) {
-      source = jsonFormat.generate "pi-settings.json" cfg.settings;
-    };
+    # settings.json is mutable state — Pi edits it at runtime and dot-agents
+    # merges packages into it via activation script. We write a regular file
+    # (not a store symlink) so those modifications actually persist.
+    home.activation.piSettings = lib.hm.dag.entryAfter ["writeBoundary"] ''
+      SETTINGS="${config.home.homeDirectory}/.pi/agent/settings.json"
+      mkdir -p "$(dirname "$SETTINGS")"
+
+      if [ -L "$SETTINGS" ]; then
+        # Convert an old store symlink to a real file so Pi can edit it
+        cp -L "$SETTINGS" "$SETTINGS.tmp"
+        mv "$SETTINGS.tmp" "$SETTINGS"
+      fi
+
+      if [ ! -f "$SETTINGS" ]; then
+        echo '${settingsJson}' > "$SETTINGS"
+        chmod 644 "$SETTINGS"
+      fi
+    '';
   };
 }

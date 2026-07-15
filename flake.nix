@@ -31,7 +31,7 @@
     };
 
     dot-agents = {
-      url = "github:Dumspy/dot-agents";
+      url = "github:Dumspy/dot-agents/feat/external-extensions";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
