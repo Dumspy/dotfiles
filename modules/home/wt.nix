@@ -8,39 +8,52 @@
   wtWorktreeDir = cfg.worktreeDir or "~/.wt-worktrees";
 in {
   options.myModules.home.wt = {
-    enable = lib.mkEnableOption "git worktree management (wt function)";
+    enable = lib.mkEnableOption "git worktree management (fish functions)";
 
     worktreeDir = lib.mkOption {
       type = lib.types.str;
       default = "~/.wt-worktrees";
-      description = "Directory where worktrees are stored";
+      description = "Root directory where per-repo worktrees are stored.";
     };
   };
 
   config = lib.mkIf cfg.enable {
     programs.fish = {
       interactiveShellInit = lib.mkAfter ''
-        # ============================================================================
-        # wt - worktree management
-        # ============================================================================
+        set -gx WT_WORKTREE_DIR ${wtWorktreeDir}
+      '';
 
-        function __wt_main_root
+      functions = {
+        __wt_main_root = ''
           set -l worktrees (command git worktree list --porcelain 2>/dev/null | string match -r '^worktree .+')
           if test (count $worktrees) -eq 0
             return 1
           end
           string replace -r '^worktree ' "" -- $worktrees[1]
-        end
+        '';
 
-        function __wt_repo_dir
+        __wt_repo_dir = ''
           set -l main_root (__wt_main_root)
           if test -z "$main_root"
             return 1
           end
-          printf "%s/%s\n" ${wtWorktreeDir} (basename "$main_root")
-        end
+          printf "%s/%s\n" $WT_WORKTREE_DIR (basename "$main_root")
+        '';
 
-        function __wt_normalize_path
+        __wt_default_base = ''
+          set -l default (command git rev-parse --abbrev-ref origin/HEAD 2>/dev/null | string replace -r '^origin/' ${"''"})
+          if test -n "$default"
+            printf "%s\n" "$default"
+            return 0
+          end
+          if command git show-ref --verify --quiet refs/heads/master
+            printf "master\n"
+          else if command git show-ref --verify --quiet refs/heads/main
+            printf "main\n"
+          end
+        '';
+
+        __wt_normalize_path = ''
           if test -z "$argv[1]"
             return 1
           end
@@ -49,69 +62,18 @@ in {
           else
             printf "%s\n" "$argv[1]"
           end
-        end
+        '';
 
-        function __wt_random_name
-          set -l left amber ash brisk cedar cinder comet copper ember flint frost harbor ivory juniper maple mist north orbit raven river scout silver solar stone swift timber topo
-          set -l right ant bird bloom brook cloud cove dune field finch flame fox grove hawk leaf meadow moth owl pine reef ridge sparrow star surf trout wave wolf wren
-          printf "%s-%s\n" $left[(random 1 (count $left))] $right[(random 1 (count $right))]
-        end
-
-        function __wt_pick_name
-          set -l repo_dir (__wt_repo_dir)
-          if test -z "$repo_dir"
-            return 1
-          end
-
-          set -l attempts 0
-          while test $attempts -lt 40
-            set attempts (math "$attempts + 1")
-            set -l candidate (__wt_random_name)
-
-            if test -e "$repo_dir/$candidate"
-              continue
-            end
-            if command git show-ref --verify --quiet "refs/heads/$candidate"
-              continue
-            end
-
-            printf "%s\n" "$candidate"
-            return 0
-          end
-
-          while true
-            set -l candidate (__wt_random_name)-(random 100 999)
-            if test -e "$repo_dir/$candidate"
-              continue
-            end
-            if command git show-ref --verify --quiet "refs/heads/$candidate"
-              continue
-            end
-            printf "%s\n" "$candidate"
-            return 0
-          end
-        end
-
-        function __wt_is_registered
+        __wt_is_registered = ''
           set -l target (__wt_normalize_path "$argv[1]")
           if test -z "$target"
             set target "$argv[1]"
           end
           set -l worktrees (command git worktree list --porcelain 2>/dev/null | string match -r '^worktree .+')
           contains -- "worktree $target" $worktrees
-        end
+        '';
 
-        function __wt_rename_tmux_window
-          if not set -q TMUX
-            return 0
-          end
-          if not command -sq tmux
-            return 0
-          end
-          command tmux rename-window -- $argv[1] >/dev/null 2>/dev/null
-        end
-
-        function __wt_session_name
+        __wt_session_name = ''
           set -l repo_dir $argv[1]
           set -l target $argv[2]
 
@@ -127,9 +89,19 @@ in {
           else
             basename "$target" | string replace -a '.' '_' | string replace -a ' ' '_'
           end
-        end
+        '';
 
-        function __wt_focus_tmux_session
+        __wt_rename_tmux_window = ''
+          if not set -q TMUX
+            return 0
+          end
+          if not command -sq tmux
+            return 0
+          end
+          command tmux rename-window -- $argv[1] >/dev/null 2>/dev/null
+        '';
+
+        __wt_focus_tmux_session = ''
           set -l name $argv[1]
           set -l target $argv[2]
 
@@ -151,12 +123,58 @@ in {
               command tmux new-session -s "$name" -c "$target"
             end
           end
-        end
+        '';
 
-        function __wt_open
-          set -l name $argv[1]
-          if test -z "$name"
-            echo "wt: missing name" >&2
+        wt = ''
+          if not command git rev-parse --is-inside-work-tree >/dev/null 2>&1
+            echo "wt: not in a git repo" >&2
+            return 1
+          end
+
+          set -l branch "$argv[1]"
+          if test -z "$branch"
+            echo "Usage: wt branch [base]" >&2
+            return 1
+          end
+
+          set -l base "$argv[2]"
+          if test -z "$base"
+            set base (__wt_default_base)
+          end
+
+          set -l repo_dir (__wt_repo_dir)
+          if test -z "$repo_dir"
+            return 1
+          end
+          command mkdir -p -- "$repo_dir"
+
+          set -l target "$repo_dir/$branch"
+
+          if test -d "$target"
+            if __wt_is_registered "$target"
+              cd "$target"
+              return 0
+            end
+            echo "wt: $target exists but is not a git worktree" >&2
+            return 1
+          end
+
+          if command git show-ref --verify --quiet "refs/heads/$branch"
+            command git worktree add "$target" "$branch" >/dev/null
+          else
+            command git worktree add -b "$branch" "$target" "$base" >/dev/null
+          end
+
+          if test $status -ne 0
+            return 1
+          end
+
+          cd "$target"
+        '';
+
+        wtcd = ''
+          if test -z "$argv[1]"
+            echo "Usage: wtcd <directory>" >&2
             return 1
           end
 
@@ -165,42 +183,18 @@ in {
             return 1
           end
 
-          set -l target "$repo_dir/$name"
-          set -l session_name (__wt_session_name "$repo_dir" "$target")
-          command mkdir -p -- "$repo_dir"
+          cd "$repo_dir/$argv[1]"
+        '';
 
-          if test -d "$target"
-            if __wt_is_registered "$target"
-              if __wt_focus_tmux_session "$session_name" "$target"
-                return 0
-              end
+        wtl = ''
+          command git worktree list
+        '';
 
-              cd "$target"
-              or return 1
-              return 0
-            end
-            echo "wt: $target exists but is not a git worktree" >&2
-            return 1
-          end
+        wtp = ''
+          command git worktree prune -v
+        '';
 
-          if command git show-ref --verify --quiet "refs/heads/$name"
-            command git worktree add "$target" "$name" >/dev/null
-          else
-            command git worktree add -b "$name" "$target" HEAD >/dev/null
-          end
-          if test $status -ne 0
-            return 1
-          end
-
-          if __wt_focus_tmux_session "$session_name" "$target"
-            return 0
-          end
-
-          cd "$target"
-          or return 1
-        end
-
-        function __wt_remove
+        wtrm = ''
           set -l main_root (__wt_main_root)
           if test -z "$main_root"
             return 1
@@ -211,8 +205,6 @@ in {
             set current_root (__wt_normalize_path "$current_root")
           end
 
-          # Split positional name from forwarded flags (e.g. --force) so that
-          # both `wt rm name --force` and `wt rm --force name` work.
           set -l name_arg
           set -l extra_args
           for arg in $argv
@@ -221,7 +213,7 @@ in {
             else if test -z "$name_arg"
               set name_arg "$arg"
             else
-              echo "wt: unexpected extra positional argument: $arg" >&2
+              echo "wtrm: unexpected extra positional argument: $arg" >&2
               return 1
             end
           end
@@ -239,7 +231,7 @@ in {
             end
           else
             if test "$current_root" = "$main_root"
-              echo "wt: give a name or run inside a worktree" >&2
+              echo "wtrm: give a name or run inside a worktree" >&2
               return 1
             end
             set target "$current_root"
@@ -251,12 +243,12 @@ in {
           end
 
           if test "$target" = "$main_root"
-            echo "wt: refusing to remove main worktree" >&2
+            echo "wtrm: refusing to remove main worktree" >&2
             return 1
           end
 
           if not __wt_is_registered "$target"
-            echo "wt: no worktree at $target" >&2
+            echo "wtrm: no worktree at $target" >&2
             return 1
           end
 
@@ -280,36 +272,83 @@ in {
           end
 
           return $remove_status
-        end
+        '';
 
-        function wt
-          if not command git rev-parse --is-inside-work-tree >/dev/null 2>&1
-            echo "wt: not in a git repo" >&2
+        wtmux = ''
+          set -l branch "$argv[1]"
+          set -l target
+
+          if test -n "$branch"
+            set -l repo_dir (__wt_repo_dir)
+            if test -z "$repo_dir"
+              return 1
+            end
+            set target "$repo_dir/$branch"
+          else
+            set -l current_root (command git rev-parse --show-toplevel 2>/dev/null)
+            if test -z "$current_root"
+              echo "wtmux: not in a git repo" >&2
+              return 1
+            end
+            set target (__wt_normalize_path "$current_root")
+          end
+
+          if not __wt_is_registered "$target"
+            echo "wtmux: not a registered worktree: $target" >&2
             return 1
           end
 
-          set -l subcommand "$argv[1]"
-
-          switch "$subcommand"
-            case ""
-              set -l name (__wt_pick_name)
-              if test -z "$name"
-                return 1
-              end
-              __wt_open "$name"
-            case ls list
-              command git worktree list
-            case rm remove
-              __wt_remove $argv[2..-1]
-            case -h --help help
-              echo "usage: wt [name]"
-              echo "       wt ls"
-              echo "       wt rm [name] [--force]"
-            case '*'
-              __wt_open "$argv[1]"
+          set -l repo_dir (__wt_repo_dir)
+          if test -z "$repo_dir"
+            return 1
           end
-        end
-      '';
+          set -l session_name (__wt_session_name "$repo_dir" "$target")
+          if test -z "$session_name"
+            return 1
+          end
+
+          __wt_focus_tmux_session "$session_name" "$target"
+        '';
+
+        wth = ''
+          set -l branch "$argv[1]"
+          set -l target
+
+          if test -n "$branch"
+            set -l repo_dir (__wt_repo_dir)
+            if test -z "$repo_dir"
+              return 1
+            end
+            set target "$repo_dir/$branch"
+          else
+            set -l current_root (command git rev-parse --show-toplevel 2>/dev/null)
+            if test -z "$current_root"
+              echo "wth: not in a git repo" >&2
+              return 1
+            end
+            set target (__wt_normalize_path "$current_root")
+          end
+
+          set -l main_root (__wt_main_root)
+          if test -z "$main_root"
+            return 1
+          end
+
+          if test -n "$branch"
+            if not test -d "$target"
+              wt "$branch"
+              or return 1
+            end
+          end
+
+          if not __wt_is_registered "$target"
+            echo "wth: not a registered worktree: $target" >&2
+            return 1
+          end
+
+          command herdr worktree open --cwd "$main_root" --path "$target" --focus
+        '';
+      };
     };
   };
 }
