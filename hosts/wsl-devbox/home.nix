@@ -16,6 +16,10 @@
   # hosts/common/home.nix during the transition. See docs/herdr-migration-plan.md.
   myModules.home.herdr.enable = true;
 
+  # Enable zoxide smart directory navigation on this host first.
+  # `cd` is replaced by zoxide; `z` and `zi` (interactive fzf) are also available.
+  myModules.home.zoxide.enable = true;
+
   programs.dot-agents.pi.keybindings = {
     "app.clipboard.pasteImage" = "alt+v";
   };

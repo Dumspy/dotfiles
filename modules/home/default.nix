@@ -5,6 +5,7 @@
     ./fish.nix
     ./starship.nix
     ./fzf.nix
+    ./zoxide.nix
     ./direnv.nix
     ./git.nix
     ./ghostty.nix
