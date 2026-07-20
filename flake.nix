@@ -35,11 +35,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    llm-agents = {
-      url = "github:numtide/llm-agents.nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     catppuccin = {
       url = "github:catppuccin/nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -65,7 +60,6 @@
     flake-utils,
     home-manager,
     dot-agents,
-    llm-agents,
     catppuccin,
     lazyvim,
     deploy-rs,

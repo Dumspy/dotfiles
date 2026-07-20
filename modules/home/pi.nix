@@ -2,11 +2,9 @@
   config,
   lib,
   pkgs,
-  inputs,
   ...
 }: let
   cfg = config.myModules.home.pi;
-  llm-agents-pkgs = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
   jsonFormat = pkgs.formats.json {};
   settingsJson = builtins.toJSON cfg.settings;
 in {
@@ -26,7 +24,7 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    home.packages = [llm-agents-pkgs.pi];
+    home.packages = [pkgs.auxera.pi];
 
     # settings.json is mutable state — Pi edits it at runtime and dot-agents
     # merges packages into it via activation script. We write a regular file
