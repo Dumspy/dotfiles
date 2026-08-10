@@ -45,24 +45,27 @@
 
   # List packages installed in system profile. To search by name, run:
   # $ nix-env -qaP | grep wget
-  environment.systemPackages = [
-    pkgs.wget
-    pkgs.home-manager
-    pkgs.nixd
-    pkgs.nil
-    pkgs.git
-    pkgs.gh
-    pkgs.starship
-    pkgs.tmux
-    pkgs.fzf
-    pkgs.neovim
-    pkgs.difftastic
-    pkgs.kubectl
-    pkgs.kubernetes-helm
-    # pkgs.argocd
-    pkgs.jq
-    inputs.opnix.packages.${pkgs.stdenv.hostPlatform.system}.default
-  ];
+  environment.systemPackages =
+    [
+      pkgs.wget
+      pkgs.home-manager
+      pkgs.nixd
+      pkgs.nil
+      pkgs.git
+      pkgs.gh
+      pkgs.starship
+      pkgs.tmux
+      pkgs.fzf
+      pkgs.neovim
+      pkgs.difftastic
+      pkgs.kubectl
+      pkgs.kubernetes-helm
+      # pkgs.argocd
+      pkgs.jq
+      inputs.opnix.packages.${pkgs.stdenv.hostPlatform.system}.default
+    ]
+    # Ghostty terminfo so `xterm-ghostty` is recognized when SSHing in
+    ++ lib.optionals pkgs.stdenv.isLinux [pkgs.ghostty.terminfo];
 
   # Fonts
   fonts.packages = [

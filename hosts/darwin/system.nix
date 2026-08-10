@@ -16,7 +16,6 @@
     casks = [
       "1password"
       "discord"
-      "arc"
       "docker"
       "ghostty"
       "spotify"
@@ -27,6 +26,7 @@
       "dbeaver-community"
       "tailscale-app"
       "helium-browser"
+      "slack"
     ];
     onActivation = {
       autoUpdate = true;
@@ -70,7 +70,7 @@
     dock.tilesize = 48;
     dock.magnification = false;
     dock.persistent-apps = [
-      "/Applications/Arc.app"
+      "/Applications/Helium.app"
       "/Applications/Discord.app"
       "/Applications/Ghostty.app"
       "/Applications/Zed.app"
