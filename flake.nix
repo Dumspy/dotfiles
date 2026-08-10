@@ -31,7 +31,7 @@
     };
 
     dot-agents = {
-      url = "github:Dumspy/dot-agents/feat/external-extensions";
+      url = "github:Dumspy/dot-agents/companion-adjustments";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -66,7 +66,13 @@
     auxera,
   }: let
     myLib = (import ./lib) {
-      inherit nixpkgs nix-darwin nixos-wsl home-manager catppuccin;
+      inherit
+        nixpkgs
+        nix-darwin
+        nixos-wsl
+        home-manager
+        catppuccin
+        ;
       inherit inputs;
       flakeRoot = ./.;
     };
