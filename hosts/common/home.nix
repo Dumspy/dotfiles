@@ -12,6 +12,15 @@
     starship.enable = true;
     fzf.enable = true;
     git.enable = true;
+    hunk = {
+      enable = true;
+      enableGitIntegration = true;
+      settings = {
+        theme = "catppuccin-macchiato";
+        line_numbers = true;
+        tab_width = 4;
+      };
+    };
     direnv.enable = true;
     lazyvim.enable = true;
     tmux.enable = true;
