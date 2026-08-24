@@ -7,6 +7,7 @@
     ./fzf.nix
     ./direnv.nix
     ./git.nix
+    ./hunk.nix
     ./ghostty.nix
     ./kubectl.nix
     ./lazyvim.nix

@@ -12,6 +12,21 @@
     starship.enable = true;
     fzf.enable = true;
     git.enable = true;
+    hunk = {
+      enable = true;
+      enableGitIntegration = true;
+      settings = {
+        theme = "catppuccin-macchiato-mauve";
+        line_numbers = true;
+        tab_width = 4;
+
+        themes."catppuccin-macchiato-mauve" = {
+          base = "catppuccin-macchiato";
+          label = "Catppuccin Macchiato (Mauve)";
+          accent = "#c6a0f6";
+        };
+      };
+    };
     direnv.enable = true;
     lazyvim.enable = true;
     tmux.enable = true;
