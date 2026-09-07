@@ -31,7 +31,7 @@
     };
 
     dot-agents = {
-      url = "github:Dumspy/dot-agents/companion-adjustments";
+      url = "github:Dumspy/dot-agents";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
