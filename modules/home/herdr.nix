@@ -6,6 +6,10 @@
 }: let
   cfg = config.myModules.home.herdr;
 
+  # Use the integration bundled in the exact Herdr source selected by Auxera.
+  # Updating pkgs.auxera.herdr therefore updates the deployed integration too.
+  herdrPiIntegration = "${pkgs.auxera.herdr.src}/src/integration/assets/pi/herdr-agent-state.ts";
+
   # Catppuccin Macchiato palette (https://catppuccin.com/palette).
   # herdr's built-in `catppuccin` theme is Mocha, so we override every theme
   # token to Macchiato via [theme.custom] (migration plan §5). Mirrors the same
@@ -45,6 +49,11 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
+    # `extraExtensions` is deployed by dot-agents' Home Manager module. This
+    # replaces `herdr integration install pi`: Nix writes the integration bundled
+    # with the pinned Herdr source into Pi's global extension directory.
+    programs.dot-agents.pi.extraExtensions."herdr-agent-state.ts" = herdrPiIntegration;
+
     programs.herdr = {
       enable = true;
       # Auxera's from-source herdr (pkgs/herdr in Auxera/nixpkgs). Wins over the
@@ -88,7 +97,50 @@ in {
             };
           };
 
-          keys.prefix = "ctrl+space"; # mirror our tmux prefix (decision §11.3)
+          # Preserve tmux muscle memory. Herdr's workspace/tab model is closest
+          # to tmux's session/window model, respectively. Keys with no Herdr
+          # equivalent (layouts, pane numbers, paste buffers, and the command
+          # prompt) deliberately retain no binding rather than approximating a
+          # different action.
+          keys = {
+            prefix = "ctrl+space";
+
+            # Session/workspace navigation. `goto` is Herdr's navigator, so it
+            # replaces our tmux-sessionizer binding as well as tmux's `prefix+w`.
+            workspace_picker = "prefix+s";
+            goto = ["prefix+f" "prefix+w"];
+            rename_workspace = "prefix+$";
+            previous_workspace = "prefix+(";
+            next_workspace = "prefix+)";
+            settings = "prefix+shift+s";
+            detach = "prefix+d";
+            reload_config = "prefix+r";
+            resize_mode = "prefix+shift+r";
+            open_notification_target = "prefix+shift+o";
+
+            # Window/tab actions. `new_cwd = "follow"` below gives prefix+c
+            # the same current-directory behavior as our tmux override.
+            new_tab = "prefix+c";
+            rename_tab = "prefix+comma";
+            previous_tab = "prefix+p";
+            next_tab = "prefix+n";
+            switch_tab = "prefix+1..9";
+            close_tab = "prefix+&";
+
+            # Pane actions. Keep Herdr's vim-style movement too, while adding
+            # tmux's arrow keys and native % / " split keys.
+            copy_mode = "prefix+[";
+            focus_pane_left = ["prefix+h" "prefix+left"];
+            focus_pane_down = ["prefix+j" "prefix+down"];
+            focus_pane_up = ["prefix+k" "prefix+up"];
+            focus_pane_right = ["prefix+l" "prefix+right"];
+            cycle_pane_next = ["prefix+tab" "prefix+o"];
+            last_pane = "prefix+;";
+            split_vertical = "prefix+%";
+            split_horizontal = "prefix+\"";
+            close_pane = "prefix+x";
+            zoom = "prefix+z";
+          };
 
           terminal = {
             shell_mode = "auto";
