@@ -13,6 +13,9 @@
   #homebrew
   homebrew = {
     enable = true;
+    taps = [
+      "anomalyco/tap"
+    ];
     casks = [
       "1password"
       "discord"
@@ -27,6 +30,7 @@
       "tailscale-app"
       "helium-browser"
       "slack"
+      "anomalyco/tap/hex"
     ];
     onActivation = {
       autoUpdate = true;
@@ -56,6 +60,7 @@
 
   environment.systemPackages = [
     pkgs.opencode
+    pkgs.k9s
   ];
 
   # Set Git commit hash for darwin-version.
@@ -95,21 +100,7 @@
 
   myModules.system.shell.default = "fish";
 
-  myModules.system.kubeconfig = {
-    enable = true;
-    clusters = {
-      k3sNode = {
-        reference = "op://NixSecrets/k3s-node-kubeconfig/kube-config";
-        contextName = "k3s-node";
-        alias = "K3S";
-      };
-      ociCluster = {
-        reference = "op://NixSecrets/oci-cluster-kubeconfig/kube-config";
-        contextName = "oci-cluster";
-        alias = "OCI";
-      };
-    };
-  };
+  myModules.system.kubeconfig.enable = false;
 
   environment.variables = {
     NIX_HOST = "darwin";
