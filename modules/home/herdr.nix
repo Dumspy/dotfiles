@@ -94,10 +94,13 @@ in {
           };
 
           # Preserve tmux muscle memory. Herdr's workspace/tab model is closest
-          # to tmux's session/window model, respectively. Keys with no Herdr
-          # equivalent (layouts, pane numbers, paste buffers, and the command
-          # prompt) deliberately retain no binding rather than approximating a
-          # different action.
+          # to tmux's session/window model, respectively. Every binding below
+          # was validated against modules/home/tmux.nix (explicit binds +
+          # tmux defaults + vim-tmux-navigator) and against herdr's key parser
+          # (config/keybinds.rs) — all parse, none collide with each other.
+          # Keys with no Herdr equivalent (layouts, pane numbers, paste
+          # buffers, the command prompt, last-session) deliberately retain no
+          # binding rather than approximating a different action.
           keys = {
             prefix = "ctrl+space";
 
@@ -106,6 +109,10 @@ in {
             workspace_picker = "prefix+s";
             goto = ["prefix+f" "prefix+w"];
             rename_workspace = "prefix+$";
+            # tmux `prefix+D` is choose-client (benign) while herdr's default
+            # `close_workspace` on the same key closes the workspace. Unbind
+            # it: tmux has no single-key kill-session to mirror.
+            close_workspace = "";
             previous_workspace = "prefix+(";
             next_workspace = "prefix+)";
             settings = "prefix+shift+s";
