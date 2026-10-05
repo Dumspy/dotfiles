@@ -12,6 +12,14 @@
   myModules.home.shell.default = "fish";
   myModules.home.kubectl.enable = true;
 
+  # Enable herdr (alternative to tmux). tmux remains enabled via
+  # hosts/common/home.nix during the transition.
+  myModules.home.herdr.enable = true;
+
+  # Enable zoxide smart directory navigation on this host first.
+  # `cd` is replaced by zoxide (`cdi` for the interactive fzf picker).
+  myModules.home.zoxide.enable = true;
+
   programs.dot-agents.pi.keybindings = {
     "app.clipboard.pasteImage" = "alt+v";
   };

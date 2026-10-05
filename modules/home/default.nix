@@ -5,6 +5,7 @@
     ./fish.nix
     ./starship.nix
     ./fzf.nix
+    ./zoxide.nix
     ./direnv.nix
     ./git.nix
     ./hunk.nix
@@ -13,6 +14,7 @@
     ./lazyvim.nix
     ./tmux.nix
     ./tmux-sessionizer.nix
+    ./herdr.nix
     ./wt.nix
     ./opencode.nix
     ./plannotator.nix
