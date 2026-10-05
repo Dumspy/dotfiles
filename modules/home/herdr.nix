@@ -6,13 +6,9 @@
 }: let
   cfg = config.myModules.home.herdr;
 
-  # Use the integration bundled in the exact Herdr source selected by Auxera.
-  # Updating pkgs.auxera.herdr therefore updates the deployed integration too.
-  herdrPiIntegration = "${pkgs.auxera.herdr.src}/src/integration/assets/pi/herdr-agent-state.ts";
-
   # Catppuccin Macchiato palette (https://catppuccin.com/palette).
   # herdr's built-in `catppuccin` theme is Mocha, so we override every theme
-  # token to Macchiato via [theme.custom] (migration plan §5). Mirrors the same
+  # token to Macchiato via [theme.custom]. Mirrors the same
   # palette already pinned in modules/home/tmux.nix.
   macchiato = {
     base = "#24273a";
@@ -49,11 +45,11 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    # `extraExtensions` is deployed by dot-agents' Home Manager module. This
-    # replaces `herdr integration install pi`: Nix writes the integration bundled
-    # with the pinned Herdr source into Pi's global extension directory.
-    programs.dot-agents.pi.extraExtensions."herdr-agent-state.ts" = herdrPiIntegration;
-
+    # The Pi integration (`herdr-agent-state.ts`, replacing
+    # `herdr integration install pi`) arrives via dot-agents' external
+    # extensions registry (fetched from herdrdev/herdr on GitHub) and is
+    # auto-enabled by `programs.dot-agents.pi.externalExtensions = null`.
+    # Nothing to wire here — enabling herdr is enough.
     programs.herdr = {
       enable = true;
       # Auxera's from-source herdr (pkgs/herdr in Auxera/nixpkgs). Wins over the
@@ -165,7 +161,7 @@ in {
 
           # Share wt's worktree store instead of herdr's default ~/.herdr/worktrees
           # so herdr-native and `wt`-created worktrees live under one root. Confirm
-          # checkout-layout compatibility before relying on it (migration plan §8).
+          # checkout-layout compatibility before relying on it.
           worktrees.directory = "~/.wt-worktrees";
         }
         cfg.settings;

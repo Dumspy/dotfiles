@@ -12,6 +12,7 @@
   myModules.home = {
     shell.default = "fish";
     ghostty.enable = true;
+    herdr.enable = true;
     kubectl.enable = true;
     ssh = {
       enable = true;
