@@ -1,10 +1,10 @@
 {
   config,
   lib,
-  kubeconfigClusters ? {},
   ...
 }: let
   cfg = config.myModules.home.kubectl;
+  kubeconfigClusters = config._module.args.kubeconfigClusters or {};
   aliasLines = lib.mapAttrsToList (_: clusterCfg: "alias -g ${clusterCfg.alias}='--context=${clusterCfg.contextName}'") kubeconfigClusters;
   aliasCode = lib.concatStringsSep "\n" aliasLines;
 in {

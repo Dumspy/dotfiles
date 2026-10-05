@@ -35,13 +35,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    llm-agents = {
-      url = "github:numtide/llm-agents.nix";
+    catppuccin = {
+      url = "github:catppuccin/nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    catppuccin = {
-      url = "github:catppuccin/nix";
+    hunk = {
+      url = "github:modem-dev/hunk";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -65,20 +65,26 @@
     flake-utils,
     home-manager,
     dot-agents,
-    llm-agents,
     catppuccin,
+    hunk,
     lazyvim,
     deploy-rs,
     auxera,
   }: let
     myLib = (import ./lib) {
-      inherit nixpkgs nix-darwin nixos-wsl home-manager catppuccin;
+      inherit
+        nixpkgs
+        nix-darwin
+        nixos-wsl
+        home-manager
+        catppuccin
+        ;
       inherit inputs;
       flakeRoot = ./.;
     };
     inherit (myLib) mkDarwin mkNixos;
   in
-    (flake-utils.lib.eachSystem ["x86_64-linux" "aarch64-linux" "aarch64-darwin"] (
+    (flake-utils.lib.eachSystem ["aarch64-darwin" "aarch64-linux" "x86_64-linux"] (
       system: let
         pkgs = import nixpkgs {
           inherit system;
