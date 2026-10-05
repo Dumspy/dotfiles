@@ -22,5 +22,14 @@ in {
       enableFishIntegration = config.myModules.home.fish.enable;
       options = lib.optionals cfg.replaceCd ["--cmd cd"];
     };
+
+    # zoxide ships no `zd` shortcut (`--cmd cd` only defines `cd`/`cdi`),
+    # so provide one for the zoxide jump under a short explicit name.
+    myModules.home.shell.aliases = {
+      zd =
+        if cfg.replaceCd
+        then "cd"
+        else "z";
+    };
   };
 }
