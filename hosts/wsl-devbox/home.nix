@@ -17,8 +17,7 @@
   myModules.home.herdr.enable = true;
 
   # Enable zoxide smart directory navigation on this host first.
-  # `cd` is replaced by zoxide (`cdi` for the interactive fzf picker);
-  # `zd` is also available as a short explicit jump alias.
+  # `cd` is replaced by zoxide (`cdi` for the interactive fzf picker).
   myModules.home.zoxide.enable = true;
 
   programs.dot-agents.pi.keybindings = {
