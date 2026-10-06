@@ -37,13 +37,4 @@
     magicRollback = true;
     remoteBuild = true;
   };
-
-  master-node = {
-    hostname = "100.83.126.36";
-    sshUser = "deploy";
-    user = "root";
-    profiles.system.path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.master-node;
-    magicRollback = true;
-    remoteBuild = true;
-  };
 }

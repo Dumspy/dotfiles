@@ -139,19 +139,6 @@
           ];
         };
 
-        master-node = mkNixos {
-          name = "master-node";
-          system = "x86_64-linux";
-          specialArgs = {
-            username = "nixos";
-            inherit inputs;
-          };
-          withHomeManager = false;
-          extraModules = [
-            opnix.nixosModules.default
-          ];
-        };
-
         oci-node-1 = mkNixos {
           name = "oci-node-1";
           system = "aarch64-linux";
@@ -198,7 +185,6 @@
         x86_64-linux = deploy-rs.lib.x86_64-linux.deployChecks {
           nodes = {
             k3s-node = self.deploy.nodes.k3s-node;
-            master-node = self.deploy.nodes.master-node;
           };
         };
         aarch64-linux = deploy-rs.lib.aarch64-linux.deployChecks {
