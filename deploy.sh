@@ -3,7 +3,6 @@
 declare -A systems
 systems=(
   ["k3s-node"]="k3s-node"
-  ["master-node"]="master-node"
   ["oci-node-1"]="oci-node-1"
   ["oci-node-2"]="oci-node-2"
   ["oci-node-3"]="oci-node-3"

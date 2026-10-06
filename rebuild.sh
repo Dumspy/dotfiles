@@ -5,7 +5,6 @@ systems=(
   ["wsl-devbox"]="nixos-rebuild switch --flake $HOME/dotfiles#wsl-devbox"
   ["darwin"]="darwin-rebuild switch --flake $HOME/dotfiles#darwin"
   ["k3s-node"]="nixos-rebuild switch --flake $HOME/dotfiles#k3s-node"
-  ["master-node"]="nixos-rebuild switch --flake $HOME/dotfiles#master-node"
   ["oci-node-1"]="nixos-rebuild switch --flake $HOME/dotfiles#oci-node-1"
   ["oci-node-2"]="nixos-rebuild switch --flake $HOME/dotfiles#oci-node-2"
   ["oci-node-3"]="nixos-rebuild switch --flake $HOME/dotfiles#oci-node-3"

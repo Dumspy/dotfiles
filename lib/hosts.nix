@@ -32,10 +32,4 @@
     ip = "100.109.48.72";
     deployUser = "deploy";
   };
-  master-node = {
-    type = "nixos";
-    system = "x86_64-linux";
-    ip = "100.83.126.36";
-    deployUser = "deploy";
-  };
 }
