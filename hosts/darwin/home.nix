@@ -10,6 +10,7 @@
   home.homeDirectory = config.var.homePrefix;
 
   myModules.home = {
+    llama-cpp.enable = true;
     shell.default = "fish";
     ghostty.enable = true;
     herdr.enable = true;

@@ -26,5 +26,6 @@
     ./ssh.nix
     ./lazygit.nix
     ./ripgrep.nix
+    ./llama-cpp.nix
   ];
 }
