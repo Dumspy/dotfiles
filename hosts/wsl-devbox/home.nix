@@ -16,8 +16,7 @@
   # hosts/common/home.nix during the transition.
   myModules.home.herdr.enable = true;
 
-  # Enable zoxide smart directory navigation on this host first.
-  # `cd` is replaced by zoxide (`cdi` for the interactive fzf picker).
+  # Smart directory navigation (`cd` replaced by zoxide, `cdi` for fzf picker).
   myModules.home.zoxide.enable = true;
 
   programs.dot-agents.pi.keybindings = {

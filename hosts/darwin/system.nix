@@ -59,7 +59,6 @@
   ];
 
   environment.systemPackages = [
-    pkgs.opencode
     pkgs.k9s
   ];
 

@@ -49,7 +49,6 @@
     pkgs.socat # required for ssh pipe from Windows to WSL
     pkgs.gcc
     pkgs.gnumake
-    pkgs.opencode
   ];
 
   # Set default browser for WSL
