@@ -99,6 +99,11 @@
 
   myModules.system.shell.default = "fish";
 
+  myModules.system.openssh = {
+    enable = true;
+    authorizedKeys = [config.var.publicKey];
+  };
+
   myModules.system.kubeconfig.enable = false;
 
   environment.variables = {
