@@ -13,6 +13,7 @@
     shell.default = "fish";
     ghostty.enable = true;
     herdr.enable = true;
+    llama-cpp.enable = true;
     zoxide.enable = true;
     kubectl.enable = true;
     ssh = {
