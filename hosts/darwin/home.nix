@@ -10,6 +10,7 @@
   home.homeDirectory = config.var.homePrefix;
 
   myModules.home = {
+    claude-code.enable = true;
     shell.default = "fish";
     ghostty.enable = true;
     herdr.enable = true;

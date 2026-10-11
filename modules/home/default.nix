@@ -17,6 +17,7 @@
     ./herdr.nix
     ./wt.nix
     ./opencode.nix
+    ./claude-code.nix
     ./plannotator.nix
     ./agent-config.nix
     ./devenv.nix
