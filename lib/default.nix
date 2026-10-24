@@ -23,7 +23,12 @@ in {
     extraModules ? [],
   }:
     nix-darwin.lib.darwinSystem {
-      specialArgs = specialArgs // {isDarwin = true;};
+      specialArgs =
+        specialArgs
+        // {
+          isDarwin = true;
+          isWsl = false;
+        };
       modules =
         [
           {nixpkgs.hostPlatform = "aarch64-darwin";}
