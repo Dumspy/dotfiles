@@ -6,29 +6,14 @@
   inputs,
   flakeRoot ? ./..,
   ...
-}: let
-  homeImports = name: [
-    inputs.auxera.homeManagerModules.default
-    inputs.hunk.homeManagerModules.default
-    (flakeRoot + /modules/home)
-    (flakeRoot + /hosts/common/config.nix)
-    (flakeRoot + /hosts/common/home.nix)
-    (flakeRoot + /hosts/${name}/home.nix)
-    catppuccin.homeModules.catppuccin
-  ];
-in {
+}: {
   mkDarwin = {
     name,
     specialArgs,
     extraModules ? [],
   }:
     nix-darwin.lib.darwinSystem {
-      specialArgs =
-        specialArgs
-        // {
-          isDarwin = true;
-          isWsl = false;
-        };
+      specialArgs = specialArgs // {isDarwin = true;};
       modules =
         [
           {nixpkgs.hostPlatform = "aarch64-darwin";}
@@ -45,7 +30,14 @@ in {
               useUserPackages = true;
               extraSpecialArgs = specialArgs;
               users.${specialArgs.username} = {
-                imports = homeImports name;
+                imports = [
+                  inputs.auxera.homeManagerModules.default
+                  inputs.hunk.homeManagerModules.default
+                  (flakeRoot + /modules/home)
+                  (flakeRoot + /hosts/common/home.nix)
+                  (flakeRoot + /hosts/${name}/home.nix)
+                  catppuccin.homeModules.catppuccin
+                ];
               };
             };
           }
@@ -89,7 +81,14 @@ in {
                 useUserPackages = true;
                 extraSpecialArgs = specialArgs;
                 users.${specialArgs.username} = {
-                  imports = homeImports name;
+                  imports = [
+                    inputs.auxera.homeManagerModules.default
+                    inputs.hunk.homeManagerModules.default
+                    (flakeRoot + /modules/home)
+                    (flakeRoot + /hosts/common/home.nix)
+                    (flakeRoot + /hosts/${name}/home.nix)
+                    catppuccin.homeModules.catppuccin
+                  ];
                 };
               };
             }

@@ -1,6 +1,4 @@
-{config, ...}: {
-  home.username = config.var.username;
-  home.homeDirectory = config.var.homePrefix;
+{...}: {
   home.stateVersion = "26.05";
 
   catppuccin = {
