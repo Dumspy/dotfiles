@@ -10,7 +10,7 @@ in {
     enable = lib.mkEnableOption "Ghostty terminal configuration";
   };
 
-  config = lib.mkIf (cfg.enable && pkgs.stdenv.isDarwin) {
+  config = lib.mkIf (cfg.enable && pkgs.stdenv.hostPlatform.isDarwin) {
     programs.ghostty = {
       enable = true;
       package = null; # Installed via homebrew on Darwin

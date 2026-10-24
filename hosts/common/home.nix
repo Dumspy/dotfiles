@@ -5,6 +5,9 @@
 
   catppuccin = {
     enable = true;
+    # Match enable so ports keep auto-enrolling once `enable` becomes a
+    # global off switch. autoEnable's default is already `enable`.
+    autoEnable = true;
     flavor = "macchiato";
     accent = "mauve";
   };
