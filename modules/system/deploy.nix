@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }: let
   cfg = config.myModules.system.deploy;
@@ -15,7 +14,7 @@ in {
       isNormalUser = true;
       description = "Deploy user for deploy-rs";
       extraGroups = ["wheel"];
-      openssh.authorizedKeys.keys = ["ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHuBvk3U7Pdlf5vUV6eH1VvUDigRHDRMp+d+pdo7jTky main-key"];
+      openssh.authorizedKeys.keys = config.var.sshKeys;
     };
 
     security.sudo.extraRules = [

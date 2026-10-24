@@ -65,7 +65,7 @@ in {
     networking.firewall.allowedUDPPorts = [8472];
 
     systemd.services.setup-kubeconfig = {
-      description = "Setup kubeconfig for user nixos";
+      description = "Setup kubeconfig for user ${config.var.username}";
       wantedBy = ["multi-user.target"];
       after = ["k3s.service"];
       serviceConfig = {
@@ -90,7 +90,7 @@ in {
           cp /etc/rancher/k3s/k3s.yaml ${homePrefix}/.kube/config
 
           echo "Setting proper ownership and permissions..."
-          chown nixos:users ${homePrefix}/.kube/config
+          chown ${config.var.username}:users ${homePrefix}/.kube/config
           chmod 600 ${homePrefix}/.kube/config
 
           echo "Kubeconfig setup completed successfully."

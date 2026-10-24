@@ -6,7 +6,17 @@
   inputs,
   flakeRoot ? ./..,
   ...
-}: {
+}: let
+  homeImports = name: [
+    inputs.auxera.homeManagerModules.default
+    inputs.hunk.homeManagerModules.default
+    (flakeRoot + /modules/home)
+    (flakeRoot + /hosts/common/config.nix)
+    (flakeRoot + /hosts/common/home.nix)
+    (flakeRoot + /hosts/${name}/home.nix)
+    catppuccin.homeModules.catppuccin
+  ];
+in {
   mkDarwin = {
     name,
     specialArgs,
@@ -30,14 +40,7 @@
               useUserPackages = true;
               extraSpecialArgs = specialArgs;
               users.${specialArgs.username} = {
-                imports = [
-                  inputs.auxera.homeManagerModules.default
-                  inputs.hunk.homeManagerModules.default
-                  (flakeRoot + /modules/home)
-                  (flakeRoot + /hosts/common/home.nix)
-                  (flakeRoot + /hosts/${name}/home.nix)
-                  catppuccin.homeModules.catppuccin
-                ];
+                imports = homeImports name;
               };
             };
           }
@@ -81,14 +84,7 @@
                 useUserPackages = true;
                 extraSpecialArgs = specialArgs;
                 users.${specialArgs.username} = {
-                  imports = [
-                    inputs.auxera.homeManagerModules.default
-                    inputs.hunk.homeManagerModules.default
-                    (flakeRoot + /modules/home)
-                    (flakeRoot + /hosts/common/home.nix)
-                    (flakeRoot + /hosts/${name}/home.nix)
-                    catppuccin.homeModules.catppuccin
-                  ];
+                  imports = homeImports name;
                 };
               };
             }

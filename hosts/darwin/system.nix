@@ -90,9 +90,6 @@
   # Enable sudo touch id authentication
   security.pam.services.sudo_local.touchIdAuth = true;
 
-  # The platform the configuration will be used on.
-  nixpkgs.hostPlatform = "aarch64-darwin";
-
   myModules.system.shell.default = "fish";
 
   myModules.system.openssh = {
