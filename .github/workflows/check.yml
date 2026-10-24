@@ -1,5 +1,14 @@
 name: Test and Lint Nix Config
 
+# Fork pull_request workflows are taken from the merge commit, so a fork can
+# delete every guard in this file. The job-level `if` below is defence in
+# depth for forks that do not rewrite the workflow. The control a fork cannot
+# delete is the repository setting:
+#   Settings → Actions → General → Fork pull request workflows →
+#   "Require approval for all outside collaborators"
+# (all external contributors, not first-time only).
+# Do not add pull_request_target. It runs this file with the base repo's
+# token and is not a safe way to pin the workflow.
 on:
   push:
     branches:
@@ -7,30 +16,103 @@ on:
   pull_request:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  test:
+  evaluate:
+    name: Evaluate configurations
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # Skipped for fork PRs. A skipped job is reported as success, so it must
+    # not be the required check. The `test` job fails unless this result is
+    # success. Ruleset "Protect Master" requires the check named `test`.
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          fetch-depth: 0
+          persist-credentials: false
+          fetch-depth: 1
 
       - name: Install Nix
-        uses: cachix/install-nix-action@v31
-        with:
-          nix_path: nixpkgs=channel:nixos-unstable
+        uses: cachix/install-nix-action@75c75c31ebece974e48ebc36b4ad125bd97bd97b # v31.11.3
 
-      - name: Setup Cachix
-        uses: cachix/cachix-action@v17
+      # Instantiates every nixosConfigurations toplevel (wsl-devbox, k3s-node,
+      # and the aarch64-linux OCI nodes) and evaluates checks, including
+      # checks.x86_64-linux.eval-darwin. Does not build closures. Nix would
+      # only build x86_64-linux checks, which today is the deploy-rs k3s-node
+      # activation. --no-build keeps that from being a CI dependency, so
+      # deleting deployChecks does not break this command.
+      - name: Evaluate flake outputs and checks
+        run: nix flake check --no-build --all-systems --show-trace
+
+  devenv:
+    name: Devenv shell and git hooks
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@75c75c31ebece974e48ebc36b4ad125bd97bd97b # v31.11.3
+
+      # Public read-only cache for the devenv CLI. No auth token, no push.
+      - name: Use the devenv binary cache
+        uses: cachix/cachix-action@38b082610b782e7e93e209c35fd730d399dee866 # v17
         with:
           name: devenv
 
-      - name: Install devenv
-        run: nix profile add nixpkgs#devenv
+      - name: Run devenv test from devenv.lock
+        run: |
+          set -euo pipefail
+          rev="$(jq -r '.nodes.devenv.locked.rev' devenv.lock)"
+          case "$rev" in
+            *[!0-9a-f]* | "")
+              echo "::error::devenv.lock is missing a pinned devenv revision"
+              exit 1
+              ;;
+          esac
+          if [ "${#rev}" -ne 40 ]; then
+            echo "::error::devenv.lock devenv revision is not a full commit"
+            exit 1
+          fi
+          nix run --accept-flake-config "github:cachix/devenv/${rev}" -- test
 
-      - name: Verify flake configuration
-        run: nix flake check . --all-systems
-
-      - name: Build devenv shell and run git hooks
-        run: devenv test
+  # Required status check. Job id `test` is the context in the Protect Master
+  # ruleset; do not rename it without updating that ruleset. `if: always()` is
+  # load-bearing: without it, skipped dependencies skip this job, and GitHub
+  # reports a skipped required check as success.
+  test:
+    needs: [evaluate, devenv]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Fail unless evaluate and devenv succeeded
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          REPOSITORY: ${{ github.repository }}
+          EVALUATE: ${{ needs.evaluate.result }}
+          DEVENV: ${{ needs.devenv.result }}
+        run: |
+          set -euo pipefail
+          printf 'evaluate=%s devenv=%s\n' "$EVALUATE" "$DEVENV"
+          if [ "$EVENT_NAME" = "pull_request" ] && [ "$HEAD_REPO" != "$REPOSITORY" ]; then
+            echo "::error title=Fork pull request::Refusing CI for an untrusted pull request. A fork can delete this step because pull_request uses the workflow from the merge commit. Require approval for all outside collaborators, and do not add pull_request_target."
+            exit 1
+          fi
+          if [ "$EVALUATE" != "success" ] || [ "$DEVENV" != "success" ]; then
+            echo "::error title=CI did not pass::A skipped job is not a success. Require the check named test, not the skipped jobs."
+            exit 1
+          fi
