@@ -1,5 +1,7 @@
 # Mirrors the main flake's nixpkgs pin so a single `nix flake update && devenv update`
 # keeps the dev environment and the system configurations in lockstep.
+# Dependabot's nix updater only bumps flake.lock. devenv.lock is separate, and
+# CI does not yet fail when the two nixpkgs revisions diverge.
 inputs:
   nixpkgs:
     url: github:NixOS/nixpkgs/nixpkgs-unstable

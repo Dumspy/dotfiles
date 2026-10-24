@@ -1,5 +1,9 @@
 version: 2
 updates:
+  # Nix updates flake.lock only. After merging one, run `devenv update` so
+  # devenv.lock's nixpkgs pin stays next to the system pin (see devenv.yaml).
+  # Do not also enable DeterminateSystems/update-flake-lock; it would open a
+  # second PR for the same inputs. Review the grouped lock diff before merge.
   - package-ecosystem: "nix"
     directory: "/"
     schedule:
@@ -7,6 +11,7 @@ updates:
       day: "monday"
       time: "06:00"
       timezone: "UTC"
+    open-pull-requests-limit: 2
     commit-message:
       prefix: "chore"
       include: "scope"
@@ -17,6 +22,8 @@ updates:
         patterns:
           - "*"
 
+  # Actions are pinned to full commit SHAs. Dependabot updates the SHA and the
+  # trailing version comment in one grouped pull request.
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
@@ -24,6 +31,13 @@ updates:
       day: "monday"
       time: "06:00"
       timezone: "UTC"
+    open-pull-requests-limit: 2
     commit-message:
       prefix: "chore"
       include: "scope"
+    labels:
+      - "github_actions"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
