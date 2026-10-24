@@ -1,5 +1,5 @@
 {
-  description = "Flake for managing my NixOS, nix-darwin, and WSL systems.";
+  description = "Flake for nix-darwin, NixOS-WSL, and NixOS hosts.";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
