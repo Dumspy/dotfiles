@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }: let
   cfg = config.myModules.system.kubeconfig;
@@ -54,7 +53,7 @@ in {
     myModules.system.onepassword.enable = true;
 
     services.onepassword-secrets.secrets =
-      lib.mapAttrs (name: clusterCfg: {
+      lib.mapAttrs (_: clusterCfg: {
         reference = clusterCfg.reference;
         owner = clusterCfg.user;
         group = clusterCfg.group;

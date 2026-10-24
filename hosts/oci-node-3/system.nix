@@ -80,7 +80,14 @@
   };
 
   # Packages
-  environment.systemPackages = with pkgs; [git htop curl k9s gcc gnumake];
+  environment.systemPackages = [
+    pkgs.git
+    pkgs.htop
+    pkgs.curl
+    pkgs.k9s
+    pkgs.gcc
+    pkgs.gnumake
+  ];
 
   environment.variables = {
     KUBECONFIG = "$HOME/.kube/config";

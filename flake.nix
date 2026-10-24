@@ -64,18 +64,15 @@
     nixpkgs,
     flake-utils,
     home-manager,
-    dot-agents,
     catppuccin,
-    hunk,
-    lazyvim,
     deploy-rs,
     auxera,
+    ...
   }: let
     myLib = (import ./lib) {
       inherit
         nixpkgs
         nix-darwin
-        nixos-wsl
         home-manager
         catppuccin
         ;

@@ -6,7 +6,7 @@
   cfg = config.myModules.home.starship;
 in {
   options.myModules.home.starship = {
-    enable = lib.mkEnableOption "starship prompt with nerd font symbols ";
+    enable = lib.mkEnableOption "starship prompt with nerd font symbols";
   };
 
   config = lib.mkIf cfg.enable {

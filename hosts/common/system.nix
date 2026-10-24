@@ -63,7 +63,6 @@
       pkgs.difftastic
       pkgs.kubectl
       pkgs.kubernetes-helm
-      # pkgs.argocd
       pkgs.jq
       inputs.opnix.packages.${pkgs.stdenv.hostPlatform.system}.default
     ]

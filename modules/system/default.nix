@@ -14,10 +14,11 @@
     ++ lib.optionals (isDarwin || isWsl) [
       ./kubeconfig.nix
     ]
-    ++ lib.optionals (!isDarwin) [
+    ++ lib.optionals isWsl [
       ./1password-agent.nix
+    ]
+    ++ lib.optionals (!isDarwin) [
       ./k3s.nix
-      ./traefik.nix
       ./deploy.nix
     ];
 }
