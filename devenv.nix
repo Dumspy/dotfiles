@@ -39,8 +39,4 @@
       ];
     };
   };
-
-  # Same hook CI runs via `devenv test`. actionlint only matches workflow
-  # files, so it does not need the generated-file excludes above.
-  git-hooks.hooks.actionlint.enable = true;
 }

@@ -83,51 +83,6 @@
       flakeRoot = ./.;
     };
     inherit (myLib) mkDarwin mkNixos;
-
-    # `nix flake check` instantiates every nixosConfigurations toplevel, but it
-    # treats darwinConfigurations as an unchecked output. The full darwin
-    # toplevel depends on catppuccin's starship port, an aarch64-darwin
-    # import-from-derivation that cannot build on the Linux runner. This check
-    # forces a slice that stays pure data: platform, Home Manager user, and the
-    # git ssh-sign program. It does not use deploy-rs.
-    evalDarwin = let
-      lib = nixpkgs.lib;
-      pkgs = import nixpkgs {system = "x86_64-linux";};
-      slices =
-        lib.mapAttrs (
-          _: cfg: let
-            users = cfg.config.home-manager.users;
-            user = builtins.head (builtins.attrNames users);
-            home = users.${user};
-          in {
-            system = cfg.config.nixpkgs.hostPlatform.system;
-            inherit user;
-            homeDirectory = home.home.homeDirectory;
-            username = home.home.username;
-            stateVersion = home.home.stateVersion;
-            gitSshProgram = home.programs.git.settings.gpg.ssh.program or "";
-          }
-        )
-        self.darwinConfigurations;
-    in
-      assert builtins.length (builtins.attrNames slices) > 0;
-      assert lib.all (
-        slice:
-          lib.elem slice.system ["aarch64-darwin" "x86_64-darwin"]
-          && slice.homeDirectory != ""
-          && slice.username != ""
-          && slice.stateVersion != ""
-      )
-      (lib.attrValues slices);
-        builtins.deepSeq slices (
-          pkgs.runCommand "eval-darwin" {
-            preferLocalBuild = true;
-            allowSubstitutes = false;
-          } ''
-            mkdir -p "$out"
-            echo ok > "$out/ok"
-          ''
-        );
   in
     (flake-utils.lib.eachSystem ["aarch64-darwin" "aarch64-linux" "x86_64-linux"] (
       system: let
@@ -226,19 +181,12 @@
 
       deploy.nodes = import ./nix/deploy.nix {inherit self deploy-rs;};
 
-      # Keep `eval-darwin` when removing deploy-rs. Drop only the
-      # `// deploy-rs.lib.*.deployChecks` overlays; `nix flake check` still
-      # instantiates nixosConfigurations without them.
       checks = {
-        x86_64-linux =
-          {
-            eval-darwin = evalDarwin;
-          }
-          // deploy-rs.lib.x86_64-linux.deployChecks {
-            nodes = {
-              k3s-node = self.deploy.nodes.k3s-node;
-            };
+        x86_64-linux = deploy-rs.lib.x86_64-linux.deployChecks {
+          nodes = {
+            k3s-node = self.deploy.nodes.k3s-node;
           };
+        };
         aarch64-linux = deploy-rs.lib.aarch64-linux.deployChecks {
           nodes = {
             oci-node-1 = self.deploy.nodes.oci-node-1;
