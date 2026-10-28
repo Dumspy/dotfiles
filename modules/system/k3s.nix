@@ -6,6 +6,11 @@
 }: let
   cfg = config.myModules.system.k3s;
   homePrefix = config.var.homePrefix;
+  # 8472/tcp is not flannel (flannel VXLAN is UDP) but it is open today.
+  # Keep it on the same interfaces as 8472/udp so cluster reachability stays.
+  k3sTcpPorts = lib.optional (cfg.role == "server") 6443 ++ [8472];
+  k3sUdpPorts = [8472];
+  restrictFirewall = cfg.firewallInterfaces != [];
 in {
   options.myModules.system.k3s = {
     enable = lib.mkEnableOption "k3s Kubernetes distribution";
@@ -45,6 +50,15 @@ in {
       default = [];
       description = "Additional k3s CLI flags";
     };
+
+    firewallInterfaces = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [];
+      description = ''
+        Interfaces allowed to reach k3s ports (6443/tcp on servers, 8472/tcp
+        and 8472/udp). Empty opens those ports on all interfaces.
+      '';
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -61,11 +75,14 @@ in {
       ];
     };
 
-    networking.firewall.allowedTCPPorts = lib.lists.flatten [
-      (lib.optional (cfg.role == "server") 6443)
-      (lib.optional true 8472)
-    ];
-    networking.firewall.allowedUDPPorts = [8472];
+    networking.firewall.allowedTCPPorts = lib.mkIf (!restrictFirewall) k3sTcpPorts;
+    networking.firewall.allowedUDPPorts = lib.mkIf (!restrictFirewall) k3sUdpPorts;
+    networking.firewall.interfaces = lib.mkIf restrictFirewall (
+      lib.genAttrs cfg.firewallInterfaces (_: {
+        allowedTCPPorts = k3sTcpPorts;
+        allowedUDPPorts = k3sUdpPorts;
+      })
+    );
 
     systemd.services.setup-kubeconfig = {
       description = "Setup kubeconfig for user nixos";
