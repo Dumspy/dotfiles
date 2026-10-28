@@ -54,6 +54,9 @@
       url = "github:serokell/deploy-rs";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # Stable channel. Downloading it needs a netrc for pkgs.superlogical.com.
+    rex.url = "https://pkgs.superlogical.com/rex/nix/stable.tar.gz";
   };
 
   outputs = inputs @ {
@@ -70,6 +73,7 @@
     lazyvim,
     deploy-rs,
     auxera,
+    rex,
   }: let
     myLib = (import ./lib) {
       inherit
@@ -181,12 +185,51 @@
 
       deploy.nodes = import ./nix/deploy.nix {inherit self deploy-rs;};
 
-      checks = {
-        x86_64-linux = deploy-rs.lib.x86_64-linux.deployChecks {
-          nodes = {
-            k3s-node = self.deploy.nodes.k3s-node;
+      checks = let
+        rexHosts = [
+          "wsl-devbox"
+          "k3s-node"
+          "oci-node-1"
+          "oci-node-2"
+          "oci-node-3"
+        ];
+        # Evaluates every NixOS host. deployChecks below does not include wsl-devbox.
+        rexSummary =
+          nixpkgs.lib.concatMapStringsSep "\n" (
+            name: let
+              cfg = self.nixosConfigurations.${name}.config;
+              ts = cfg.services.rex.tailscale;
+            in
+              nixpkgs.lib.concatStringsSep " " [
+                "host=${name}"
+                "hostname=${ts.hostname}"
+                "user=${cfg.users.users.rex.name}"
+                "enabled=${nixpkgs.lib.boolToString cfg.services.rex.enable}"
+                "tags=${nixpkgs.lib.concatStringsSep "," ts.advertiseTags}"
+                "members=${nixpkgs.lib.boolToString ts.allowTailnetMembers}"
+                "auth=${ts.authKeyFile}"
+                "mode=${cfg.services.onepassword-secrets.secrets.rexAuthKey.mode}"
+                "after=${nixpkgs.lib.concatStringsSep "," cfg.systemd.services.rex.after}"
+              ]
+          )
+          rexHosts;
+      in {
+        x86_64-linux =
+          deploy-rs.lib.x86_64-linux.deployChecks {
+            nodes = {
+              k3s-node = self.deploy.nodes.k3s-node;
+            };
+          }
+          // {
+            rex-nixos = nixpkgs.legacyPackages.x86_64-linux.runCommand "rex-nixos" {} ''
+              cat > "$out" <<EOF
+              ${rexSummary}
+              EOF
+              for host in wsl-devbox k3s-node oci-node-1 oci-node-2 oci-node-3; do
+                grep -q "^host=''${host} hostname=rex-''${host} user=rex enabled=true tags=tag:rex members=true auth=/var/lib/opnix/secrets/rexAuthKey mode=0400 after=.*opnix-secrets.service" "$out"
+              done
+            '';
           };
-        };
         aarch64-linux = deploy-rs.lib.aarch64-linux.deployChecks {
           nodes = {
             oci-node-1 = self.deploy.nodes.oci-node-1;
