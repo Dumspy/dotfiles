@@ -35,16 +35,9 @@ in {
       services = ["rex"];
     };
 
-    # The package account's shell is nologin, so every shared-server terminal
-    # exits immediately until it has a real shell. mkDefault lets the Rex
-    # module's user definition win on everything except that shell.
-    users.groups.rex = {};
-    users.users.rex = {
-      isSystemUser = lib.mkDefault true;
-      group = lib.mkDefault "rex";
-      home = lib.mkDefault "/var/lib/rex";
-      shell = lib.mkForce pkgs.bashInteractive;
-    };
+    # The module creates the rex system user and does not set a shell. nologin
+    # makes every shared-server terminal exit immediately.
+    users.users.rex.shell = pkgs.bashInteractive;
 
     services.rex = {
       enable = true;

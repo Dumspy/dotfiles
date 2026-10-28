@@ -58,7 +58,10 @@
     # Preview until the first stable tag exists. stable.tar.gz is 404 "Blob not found";
     # the install script falls back to preview in that case. Needs a netrc for
     # pkgs.superlogical.com.
-    rex.url = "https://pkgs.superlogical.com/rex/nix/preview.tar.gz";
+    rex = {
+      url = "https://pkgs.superlogical.com/rex/nix/preview.tar.gz";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs @ {
