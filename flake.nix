@@ -55,8 +55,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Stable channel. Downloading it needs a netrc for pkgs.superlogical.com.
-    rex.url = "https://pkgs.superlogical.com/rex/nix/stable.tar.gz";
+    # Preview until the first stable tag exists. stable.tar.gz is 404 "Blob not found";
+    # the install script falls back to preview in that case. Needs a netrc for
+    # pkgs.superlogical.com.
+    rex.url = "https://pkgs.superlogical.com/rex/nix/preview.tar.gz";
   };
 
   outputs = inputs @ {
