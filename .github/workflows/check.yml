@@ -60,6 +60,26 @@ jobs:
             echo 'NIXCFG'
           } >> "${GITHUB_ENV}"
 
+      # Temporary: print the fetched Rex module so option names can be checked.
+      # Remove this step once flake.lock pins rex.
+      - name: Inspect Rex flake module
+        run: |
+          nix flake lock
+          echo "===== REX LOCK ====="
+          python3 - << 'PY'
+          import json
+          lock = json.load(open("flake.lock"))
+          print(json.dumps({"rex": lock["nodes"]["rex"], "root": lock["nodes"]["root"]["inputs"].get("rex")}, indent=2))
+          PY
+          meta=$(nix flake prefetch --json "https://pkgs.superlogical.com/rex/nix/preview.tar.gz")
+          echo "prefetch: $meta"
+          rex=$(printf '%s' "$meta" | python3 -c 'import json,sys; print(json.load(sys.stdin)["storePath"])')
+          echo "rex store: $rex"
+          find "$rex" -type f -name '*.nix' | sort | while read -r f; do
+            echo "===== $f ====="
+            cat "$f"
+          done
+
       - name: Verify flake configuration
         run: nix flake check . --all-systems
 
