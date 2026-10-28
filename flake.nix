@@ -33,6 +33,7 @@
     dot-agents = {
       url = "github:Dumspy/dot-agents";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.home-manager.follows = "home-manager";
     };
 
     catppuccin = {
