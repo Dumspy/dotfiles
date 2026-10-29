@@ -10,6 +10,7 @@
       ./onepassword.nix
       ./tailscale.nix
       ./openssh.nix
+      ./nix-netrc.nix
     ]
     ++ lib.optionals (isDarwin || isWsl) [
       ./kubeconfig.nix
@@ -17,8 +18,6 @@
     ++ lib.optionals (!isDarwin) [
       ./1password-agent.nix
       ./k3s.nix
-      ./nix-netrc.nix
-      ./traefik.nix
       ./deploy.nix
     ];
 }
