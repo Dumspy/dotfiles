@@ -39,33 +39,19 @@ jobs:
         with:
           name: devenv
 
-      # The Rex flake is fetched from pkgs.superlogical.com, which returns 401
-      # without this token. Felix adds the Actions secret REX_PACKAGE_TOKEN.
-      # The Nix client (flake fetch) and the daemon (builds) each read a netrc
-      # they can access: the runner owns the home file, root owns /etc/nix/netrc.
       - name: Write Rex package netrc
         env:
           REX_PACKAGE_TOKEN: ${{ secrets.REX_PACKAGE_TOKEN }}
         run: |
-          if [ -z "${REX_PACKAGE_TOKEN}" ]; then
-            echo "::error::GitHub Actions secret REX_PACKAGE_TOKEN is not set. Felix needs to add the Rex package token so CI can fetch the Rex flake (machine pkgs.superlogical.com login rex)."
-            exit 1
-          fi
           install -d -m 700 "${HOME}/.config/nix"
           printf 'machine pkgs.superlogical.com login rex password %s\n' "${REX_PACKAGE_TOKEN}" > "${HOME}/.config/nix/netrc"
           chmod 600 "${HOME}/.config/nix/netrc"
-          sudo install -d -m 755 /etc/nix
-          sudo cp "${HOME}/.config/nix/netrc" /etc/nix/netrc
-          sudo chmod 600 /etc/nix/netrc
-          if ! sudo grep -qxF 'netrc-file = /etc/nix/netrc' /etc/nix/nix.conf; then
-            echo 'netrc-file = /etc/nix/netrc' | sudo tee -a /etc/nix/nix.conf >/dev/null
-          fi
+          sudo install -m 600 "${HOME}/.config/nix/netrc" /etc/nix/netrc
+          echo 'netrc-file = /etc/nix/netrc' | sudo tee -a /etc/nix/nix.conf >/dev/null
           sudo systemctl restart nix-daemon
           {
             echo 'NIX_CONFIG<<NIXCFG'
-            if [ -n "${NIX_CONFIG:-}" ]; then
-              printf '%s\n' "${NIX_CONFIG}"
-            fi
+            printf '%s\n' "${NIX_CONFIG:-}"
             echo "netrc-file = ${HOME}/.config/nix/netrc"
             echo 'NIXCFG'
           } >> "${GITHUB_ENV}"
