@@ -39,16 +39,18 @@ jobs:
         with:
           name: devenv
 
-      - name: Write Rex package netrc
+      - name: Configure Nix Authentication
         env:
           REX_PACKAGE_TOKEN: ${{ secrets.REX_PACKAGE_TOKEN }}
         run: |
+          # Create user Nix config directory securely
           install -d -m 700 "${HOME}/.config/nix"
+
+          # Write the netrc file
           printf 'machine pkgs.superlogical.com login rex password %s\n' "${REX_PACKAGE_TOKEN}" > "${HOME}/.config/nix/netrc"
           chmod 600 "${HOME}/.config/nix/netrc"
-          sudo install -m 600 "${HOME}/.config/nix/netrc" /etc/nix/netrc
-          echo 'netrc-file = /etc/nix/netrc' | sudo tee -a /etc/nix/nix.conf >/dev/null
-          sudo systemctl restart nix-daemon
+
+          # Inject netrc-file directly into NIX_CONFIG for subsequent steps
           {
             echo 'NIX_CONFIG<<NIXCFG'
             printf '%s\n' "${NIX_CONFIG:-}"
