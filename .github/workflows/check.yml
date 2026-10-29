@@ -13,8 +13,11 @@ on:
   pull_request:
   workflow_dispatch:
 
+# actions: write lets cache-nix-action save the Nix store. Fork PRs never
+# reach that step. Do not add pull_request_target.
 permissions:
   contents: read
+  actions: write
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -23,6 +26,7 @@ concurrency:
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     steps:
       - name: Checkout repository
@@ -33,14 +37,85 @@ jobs:
 
       - name: Install Nix
         uses: cachix/install-nix-action@v31
+        with:
+          # Same substituters as hosts/common/system.nix, plus Catppuccin.
+          # The wsl-devbox eval builds whiskers (catppuccin starship IFD);
+          # these caches are consulted before that compile.
+          extra_nix_config: |
+            extra-substituters = https://cache.numtide.com https://auxera.cachix.org https://catppuccin.cachix.org
+            extra-trusted-public-keys = niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g= auxera.cachix.org-1:47t8ocmmQE2OyAEipk98QQsAqG9GFz+5yQ4Ey1AjIHM= catppuccin.cachix.org-1:noG/4HkbhJb+lUAdKrph6LaozJvAeEEZj4N732IysmU=
 
       - name: Setup Cachix
         uses: cachix/cachix-action@v17
         with:
           name: devenv
 
-      - name: Verify flake configuration
-        run: nix flake check . --all-systems
+      # Supported Actions cache. magic-nix-cache stays removed: GitHub
+      # throttles the unofficial cache API it uses.
+      - name: Restore and save Nix store
+        uses: nix-community/cache-nix-action@v7
+        with:
+          primary-key: nix-v1-${{ runner.os }}-${{ hashFiles('flake.lock', 'devenv.lock') }}
+          restore-prefixes-first-match: nix-v1-${{ runner.os }}-
 
+      # Instantiate configs. Do not `nix build` the toplevels and do not
+      # `nix flake check`: that builds checks.x86_64-linux.deploy-activate,
+      # which is the whole k3s-node closure. drvPath still runs
+      # import-from-derivation, which wsl-devbox needs for the starship theme.
+      # The darwin toplevel cannot be instantiated here: its starship theme is
+      # an aarch64-darwin import-from-derivation.
+      - name: Evaluate configurations
+        run: |
+          set -euo pipefail
+
+          eval_host() {
+            local host="$1"
+            local start end
+            start=$(date +%s)
+            echo "::group::nixosConfigurations.${host}"
+            nix eval --show-trace --raw ".#nixosConfigurations.${host}.config.system.build.toplevel.drvPath"
+            echo
+            end=$(date +%s)
+            echo "elapsed $((end - start))s"
+            echo "::endgroup::"
+          }
+
+          eval_host wsl-devbox
+          eval_host k3s-node
+          eval_host oci-node-1
+          eval_host oci-node-2
+          eval_host oci-node-3
+
+          echo "::group::darwinConfigurations.darwin"
+          start=$(date +%s)
+          system="$(nix eval --raw .#darwinConfigurations.darwin.config.nixpkgs.hostPlatform.system)"
+          user="$(nix eval --raw .#darwinConfigurations.darwin.config.system.primaryUser)"
+          echo "system=${system} user=${user}"
+          test "$system" = "aarch64-darwin"
+          test -n "$user"
+          nix eval --json .#darwinConfigurations.darwin.config.homebrew.casks | jq -e 'length > 0' >/dev/null
+          end=$(date +%s)
+          echo "elapsed $((end - start))s"
+          echo "::endgroup::"
+
+          echo "::group::deploy.nodes"
+          start=$(date +%s)
+          nix eval --json .#deploy.nodes --apply 'nodes: builtins.mapAttrs (_: n: n.hostname) nodes' | jq -e 'length > 0'
+          end=$(date +%s)
+          echo "elapsed $((end - start))s"
+          echo "::endgroup::"
+
+      # nixpkgs' devenv is on cache.nixos.org. The revision pinned in
+      # devenv.lock is the module input, and `nix run` of that git revision
+      # compiles the devenv CLI. `devenv test` still reads devenv.lock.
       - name: Build devenv shell and run git hooks
-        run: nix run --accept-flake-config "github:cachix/devenv/$(jq -r .nodes.devenv.locked.rev devenv.lock)" -- test
+        run: |
+          set -euo pipefail
+          rev="$(jq -r .nodes.nixpkgs.locked.rev devenv.lock)"
+          case "$rev" in
+            *[!0-9a-f]* | "")
+              echo "::error::devenv.lock is missing a pinned nixpkgs revision"
+              exit 1
+              ;;
+          esac
+          nix run --accept-flake-config "github:NixOS/nixpkgs/${rev}#devenv" -- test
