@@ -61,10 +61,7 @@ in {
       ];
     };
 
-    networking.firewall.allowedTCPPorts = lib.lists.flatten [
-      (lib.optional (cfg.role == "server") 6443)
-      (lib.optional true 8472)
-    ];
+    networking.firewall.allowedTCPPorts = lib.optionals (cfg.role == "server") [6443] ++ [8472];
     networking.firewall.allowedUDPPorts = [8472];
 
     systemd.services.setup-kubeconfig = {

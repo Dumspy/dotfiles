@@ -24,6 +24,8 @@ in {
     programs.bun = {
       enable = true;
       package = null;
+      # package is null, so the git textconv driver cannot be installed.
+      enableGitIntegration = false;
       settings = {
         install = {
           minimumReleaseAge = 604800;

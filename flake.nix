@@ -1,5 +1,5 @@
 {
-  description = "Flake for managing my NixOS, nix-darwin, and WSL systems.";
+  description = "Flake for nix-darwin, NixOS-WSL, and NixOS hosts.";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
@@ -33,6 +33,7 @@
     dot-agents = {
       url = "github:Dumspy/dot-agents";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.home-manager.follows = "home-manager";
     };
 
     catppuccin = {
@@ -72,19 +73,15 @@
     nixpkgs,
     flake-utils,
     home-manager,
-    dot-agents,
     catppuccin,
-    hunk,
-    lazyvim,
     deploy-rs,
     auxera,
-    rex,
+    ...
   }: let
     myLib = (import ./lib) {
       inherit
         nixpkgs
         nix-darwin
-        nixos-wsl
         home-manager
         catppuccin
         ;

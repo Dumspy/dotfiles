@@ -14,7 +14,7 @@
         options = "--delete-older-than 30d";
       }
       // (
-        if pkgs.stdenv.isLinux
+        if pkgs.stdenv.hostPlatform.isLinux
         then {
           dates = "weekly";
         }
@@ -63,12 +63,11 @@
       pkgs.difftastic
       pkgs.kubectl
       pkgs.kubernetes-helm
-      # pkgs.argocd
       pkgs.jq
       inputs.opnix.packages.${pkgs.stdenv.hostPlatform.system}.default
     ]
     # Ghostty terminfo so `xterm-ghostty` is recognized when SSHing in
-    ++ lib.optionals pkgs.stdenv.isLinux [pkgs.ghostty.terminfo];
+    ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [pkgs.ghostty.terminfo];
 
   # Fonts
   fonts.packages = [

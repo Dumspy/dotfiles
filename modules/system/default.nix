@@ -19,7 +19,6 @@
       ./k3s.nix
       ./nix-netrc.nix
       ./rex.nix
-      ./traefik.nix
       ./deploy.nix
     ];
 }

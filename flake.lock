@@ -139,7 +139,9 @@
       "inputs": {
         "anthropics-agent-skills": "anthropics-agent-skills",
         "git-hooks": "git-hooks",
-        "home-manager": "home-manager_2",
+        "home-manager": [
+          "home-manager"
+        ],
         "nixpkgs": [
           "nixpkgs"
         ]
@@ -387,27 +389,6 @@
     "home-manager_2": {
       "inputs": {
         "nixpkgs": [
-          "dot-agents",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1777815398,
-        "narHash": "sha256-MrIhEoqXc4YsHEUfH4rDU/K09XnWcKntNhCjs7n7zi8=",
-        "owner": "nix-community",
-        "repo": "home-manager",
-        "rev": "b5e86c1b19f178a8ee10f7cb747325e02e3d3991",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-community",
-        "repo": "home-manager",
-        "type": "github"
-      }
-    },
-    "home-manager_3": {
-      "inputs": {
-        "nixpkgs": [
           "nixpkgs"
         ]
       },
@@ -617,7 +598,7 @@
         "deploy-rs": "deploy-rs",
         "dot-agents": "dot-agents",
         "flake-utils": "flake-utils_2",
-        "home-manager": "home-manager_3",
+        "home-manager": "home-manager_2",
         "hunk": "hunk",
         "lazyvim": "lazyvim",
         "nix-darwin": "nix-darwin",
