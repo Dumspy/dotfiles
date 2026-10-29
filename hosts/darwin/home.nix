@@ -23,7 +23,7 @@
   };
 
   programs.git = {
-    extraConfig = {
+    settings = {
       gpg.ssh.program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign";
     };
   };

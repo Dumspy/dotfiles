@@ -1,12 +1,7 @@
-{
-  pkgs,
-  lib,
-  config,
-  ...
-}: {
-  packages = with pkgs; [
-    alejandra
-    deadnix
+{pkgs, ...}: {
+  packages = [
+    pkgs.alejandra
+    pkgs.deadnix
   ];
 
   # Git hooks (replaces git-hooks in the main flake).

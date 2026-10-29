@@ -21,7 +21,7 @@
       zsh.enable = lib.mkDefault true;
       fish.enable = lib.mkDefault true;
     };
-    myModules.home.shell.aliases = lib.optionalAttrs pkgs.stdenv.isDarwin {
+    myModules.home.shell.aliases = lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin {
       finder = "open";
     };
   };

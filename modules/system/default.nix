@@ -17,7 +17,7 @@
     ++ lib.optionals (!isDarwin) [
       ./1password-agent.nix
       ./k3s.nix
-      ./traefik.nix
+      ./nix-netrc.nix
       ./deploy.nix
     ];
 }
