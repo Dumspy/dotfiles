@@ -31,8 +31,9 @@ in {
       mode = "0600";
     };
 
-    # The daemon default is already $NIX_CONF_DIR/netrc, which is this path
-    # on NixOS. Pin it so nix.conf does not depend on NIX_CONF_DIR.
+    # The daemon default is already $NIX_CONF_DIR/netrc. NixOS and nix-darwin
+    # (`nix.enable`) both use /etc/nix. Pin it so nix.conf does not depend on
+    # NIX_CONF_DIR.
     nix.settings.netrc-file = config.services.onepassword-secrets.secretPaths.nixNetrc;
   };
 }
