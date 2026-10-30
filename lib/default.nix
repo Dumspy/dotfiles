@@ -59,6 +59,7 @@
         // {
           isDarwin = false;
           inherit isWsl;
+          hostName = name;
           modulesPath = "${nixpkgs}/nixos/modules";
         };
       modules =

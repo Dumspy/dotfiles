@@ -39,6 +39,25 @@ jobs:
         with:
           name: devenv
 
+      - name: Configure Nix Authentication
+        env:
+          REX_PACKAGE_TOKEN: ${{ secrets.REX_PACKAGE_TOKEN }}
+        run: |
+          # Create user Nix config directory securely
+          install -d -m 700 "${HOME}/.config/nix"
+
+          # Write the netrc file
+          printf 'machine pkgs.superlogical.com login rex password %s\n' "${REX_PACKAGE_TOKEN}" > "${HOME}/.config/nix/netrc"
+          chmod 600 "${HOME}/.config/nix/netrc"
+
+          # Inject netrc-file directly into NIX_CONFIG for subsequent steps
+          {
+            echo 'NIX_CONFIG<<NIXCFG'
+            printf '%s\n' "${NIX_CONFIG:-}"
+            echo "netrc-file = ${HOME}/.config/nix/netrc"
+            echo 'NIXCFG'
+          } >> "${GITHUB_ENV}"
+
       - name: Verify flake configuration
         run: nix flake check . --all-systems
 
