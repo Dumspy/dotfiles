@@ -28,6 +28,7 @@
     };
     openssh = {
       enable = true;
+      tailscaleOnly = true;
       authorizedKeys = [config.var.publicKey];
     };
     shell.default = "zsh";
@@ -37,6 +38,7 @@
       role = "server";
       nodeIp = "10.0.1.215";
       flannelIface = "enp0s6";
+      firewallInterfaces = ["enp0s6" "tailscale0"];
       extraFlags = [
         "--tls-san=10.0.1.215"
         "--tls-san=100.64.54.67"
@@ -93,9 +95,12 @@
     KUBECONFIG = "$HOME/.kube/config";
   };
 
-  # Firewall
-  networking.firewall.allowedTCPPorts = [22 41641 8888 6443 8472];
-  networking.firewall.allowedUDPPorts = [41641 8472];
+  # Tailscale direct connections. 41641/tcp is unused.
+  # SSH (22) is tailscale0-only. k3s 6443/8472 and tinyproxy 8888 are
+  # limited to the VCN NIC and Tailscale.
+  networking.firewall.allowedUDPPorts = [41641];
+  networking.firewall.interfaces.enp0s6.allowedTCPPorts = [8888];
+  networking.firewall.interfaces.tailscale0.allowedTCPPorts = [8888];
 
   # Tinyproxy
   services.tinyproxy = {
