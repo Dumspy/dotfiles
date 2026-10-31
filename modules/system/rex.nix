@@ -1,12 +1,12 @@
 {
   config,
   lib,
-  pkgs,
   inputs,
-  hostName,
+  username,
   ...
 }: let
   cfg = config.myModules.system.rex;
+  hostTailscale = config.services.tailscale.enable;
 in {
   imports = [
     inputs.rex.nixosModules.default
@@ -17,38 +17,61 @@ in {
       type = lib.types.bool;
       default = true;
       description = ''
-        Run Rex's shared server (`rex.service`, account `rex`) and join the
-        tailnet with Rex's built-in Tailscale as `rex-<hostname>`.
+        Run Rex's login server, so sessions run as `account` instead of the
+        shared server's `rex` user.
+      '';
+    };
+
+    account = lib.mkOption {
+      type = lib.types.str;
+      default = username;
+      description = ''
+        Account the login server runs sessions as. Must already exist; Rex only
+        writes the accounts file.
+      '';
+    };
+
+    principals = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [
+        "tailscale:tag:daily-driver"
+        "tailscale:tag:phone"
+      ];
+      description = ''
+        Rex principals allowed to use `account`. This tailnet identifies callers
+        by tag, not by user login.
+      '';
+    };
+
+    tailnetPort = lib.mkOption {
+      type = lib.types.port;
+      default = 7297;
+      description = ''
+        Port of the `tailnet://` listener, opened on `tailscale0`. Ignored on
+        hosts without Tailscale.
       '';
     };
   };
 
   config = lib.mkIf cfg.enable {
-    myModules.system.onepassword.enable = true;
+    assertions = [
+      {
+        assertion = builtins.hasAttr cfg.account config.users.users;
+        message = "myModules.system.rex.account must name an existing user account.";
+      }
+    ];
 
-    # Root-only. services = ["rex"] starts rex.service after opnix writes this.
-    services.onepassword-secrets.secrets.rexAuthKey = {
-      reference = "op://Shared-Secret/rex-authkey/password";
-      owner = "root";
-      group = "root";
-      mode = "0400";
-      services = ["rex"];
-    };
-
-    # The module creates the rex system user and does not set a shell. nologin
-    # makes every shared-server terminal exit immediately.
-    users.users.rex.shell = pkgs.bashInteractive;
-
-    services.rex = {
+    services.rex.loginServer = {
       enable = true;
-      tailscale = {
-        enable = true;
-        hostname = "rex-${hostName}";
-        advertiseTags = ["tag:rex"];
-        authKeyFile = config.services.onepassword-secrets.secretPaths.rexAuthKey;
-        # --tailscale-allow-tailnet-members. A tagged device has no owner.
-        allowTailnetMembers = true;
-      };
+      accounts.${cfg.account}.principals = cfg.principals;
+      defaults = lib.genAttrs cfg.principals (_: cfg.account);
+
+      # Tagged callers need `tailnet://`; Serve does not forward their identity.
+      extraListen = lib.optional hostTailscale "tailnet://:${toString cfg.tailnetPort}";
     };
+
+    # The module never opens `extraListen` ports itself.
+    networking.firewall.interfaces."tailscale0".allowedTCPPorts =
+      lib.optional hostTailscale cfg.tailnetPort;
   };
 }
