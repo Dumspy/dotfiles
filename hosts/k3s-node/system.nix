@@ -17,6 +17,7 @@
     tailscale.enable = true;
     openssh = {
       enable = true;
+      tailscaleOnly = true;
       authorizedKeys = [config.var.publicKey];
     };
     deploy.enable = true;
@@ -83,6 +84,10 @@
     KUBECONFIG = "$HOME/.kube/config";
   };
 
-  # Allow Prometheus to scrape node_exporter (port 6443 already opened by k3s module)
+  # Prometheus node_exporter. Left on all interfaces, along with the k3s
+  # module's 6443/8472. This node does not set --node-ip, so k3s uses the
+  # default-route NIC (enp6s18 when hardware-configuration.nix was generated)
+  # and only adds the Tailscale IP as a TLS SAN. In-cluster hostPort scrapes
+  # also arrive on the CNI interface, not tailscale0.
   networking.firewall.allowedTCPPorts = [9100];
 }

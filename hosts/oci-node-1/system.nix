@@ -26,6 +26,7 @@
     tailscale.enable = true;
     openssh = {
       enable = true;
+      tailscaleOnly = true;
       authorizedKeys = [config.var.publicKey];
     };
     shell.default = "zsh";
@@ -36,6 +37,7 @@
       serverAddr = "https://10.0.1.215:6443";
       nodeIp = "10.0.1.141";
       flannelIface = "enp0s6";
+      firewallInterfaces = ["enp0s6" "tailscale0"];
       extraFlags = [
         "--node-external-ip=10.0.1.141"
         "--node-label=role=database"
@@ -111,7 +113,7 @@
 
   services.k3s.tokenFile = config.services.onepassword-secrets.secretPaths.k3sToken;
 
-  # Firewall
-  networking.firewall.allowedTCPPorts = [22 41641 8472];
-  networking.firewall.allowedUDPPorts = [41641 8472];
+  # Tailscale direct connections. 41641/tcp is unused.
+  # SSH (22) is tailscale0-only. Flannel (8472) is enp0s6 and tailscale0.
+  networking.firewall.allowedUDPPorts = [41641];
 }
