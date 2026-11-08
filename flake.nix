@@ -95,6 +95,7 @@
         };
       in {
         formatter = pkgs.alejandra;
+        packages.git-auth = pkgs.callPackage ./packages/git-auth/package.nix {};
       }
     ))
     // {
