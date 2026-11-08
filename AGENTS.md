@@ -10,7 +10,7 @@
 ## Architecture
 - **Type**: Declarative dotfiles/NixOS configuration management using Nix flakes
 - **Targets**: macOS (nix-darwin), NixOS (WSL, k3s-node)
- - **Key inputs**: nixpkgs, home-manager, nix-darwin, nixos-wsl, opnix (1Password secrets), auxera (opencode and related packages), dot-agents, catppuccin, hunk, lazyvim, deploy-rs
+ - **Key inputs**: nixpkgs, home-manager, nix-darwin, nixos-wsl, opnix (1Password secrets), auxera (herdr and other packages), dot-agents (all agent config: skills, Pi, OpenCode), catppuccin, hunk, lazyvim, rex
 - **Structure**:
   - `/modules/system` → system-level configs (nix-darwin/nixos)
   - `/modules/home` → home-manager configs

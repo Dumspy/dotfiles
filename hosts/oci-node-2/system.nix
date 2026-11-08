@@ -29,7 +29,6 @@
       authorizedKeys = [config.var.publicKey];
     };
     shell.default = "zsh";
-    deploy.enable = true;
     k3s = {
       enable = true;
       role = "agent";

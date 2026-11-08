@@ -31,7 +31,7 @@
               extraSpecialArgs = specialArgs;
               users.${specialArgs.username} = {
                 imports = [
-                  inputs.auxera.homeManagerModules.default
+                  inputs.dot-agents.homeModules.default
                   inputs.hunk.homeManagerModules.default
                   (flakeRoot + /modules/home)
                   (flakeRoot + /hosts/common/home.nix)
@@ -83,7 +83,7 @@
                 extraSpecialArgs = specialArgs;
                 users.${specialArgs.username} = {
                   imports = [
-                    inputs.auxera.homeManagerModules.default
+                    inputs.dot-agents.homeModules.default
                     inputs.hunk.homeManagerModules.default
                     (flakeRoot + /modules/home)
                     (flakeRoot + /hosts/common/home.nix)

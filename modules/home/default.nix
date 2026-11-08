@@ -16,11 +16,7 @@
     ./tmux-sessionizer.nix
     ./herdr.nix
     ./wt.nix
-    ./opencode.nix
-    ./agent-config.nix
     ./devenv.nix
-    ./pi.nix
-    ./dex.nix
     ./node-hardening.nix
     ./ssh.nix
     ./lazygit.nix

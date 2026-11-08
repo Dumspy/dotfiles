@@ -19,7 +19,6 @@
       enable = true;
       authorizedKeys = [config.var.publicKey];
     };
-    deploy.enable = true;
   };
 
   # Bootloader.

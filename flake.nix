@@ -4,8 +4,6 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
-    flake-utils.url = "github:numtide/flake-utils";
-
     opnix = {
       url = "github:brizzbuzz/opnix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -34,6 +32,7 @@
       url = "github:Dumspy/dot-agents";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "home-manager";
+      inputs.auxera.follows = "auxera";
     };
 
     catppuccin = {
@@ -51,11 +50,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    deploy-rs = {
-      url = "github:serokell/deploy-rs";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     rex = {
       url = "https://pkgs.superlogical.com/rex/nix/preview.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -63,16 +57,12 @@
   };
 
   outputs = inputs @ {
-    self,
     opnix,
     nix-darwin,
     nixos-wsl,
     nixpkgs,
-    flake-utils,
     home-manager,
     catppuccin,
-    deploy-rs,
-    auxera,
     ...
   }: let
     myLib = (import ./lib) {
@@ -86,117 +76,93 @@
       flakeRoot = ./.;
     };
     inherit (myLib) mkDarwin mkNixos;
-  in
-    (flake-utils.lib.eachSystem ["aarch64-darwin" "aarch64-linux" "x86_64-linux"] (
-      system: let
-        pkgs = import nixpkgs {
-          inherit system;
-          overlays = [auxera.overlays.default];
-        };
-      in {
-        formatter = pkgs.alejandra;
-      }
-    ))
-    // {
-      # Build darwin flake using:
-      darwinConfigurations = {
-        darwin = mkDarwin {
-          name = "darwin";
-          specialArgs = {
-            username = "felix.berger";
-            inherit inputs;
-          };
-          extraModules = [
-            opnix.darwinModules.default
-          ];
-        };
-      };
+  in {
+    formatter = nixpkgs.lib.genAttrs ["aarch64-darwin" "aarch64-linux" "x86_64-linux"] (
+      system: nixpkgs.legacyPackages.${system}.alejandra
+    );
 
-      # Build nixosConfigurations using:
-      nixosConfigurations = {
-        wsl-devbox = mkNixos {
-          name = "wsl-devbox";
-          system = "x86_64-linux";
-          specialArgs = {
-            username = "nixos";
-            inherit inputs;
-          };
-          isWsl = true;
-          withHomeManager = true;
-          extraModules = [
-            opnix.nixosModules.default
-            nixos-wsl.nixosModules.default
-          ];
+    # Build darwin flake using:
+    darwinConfigurations = {
+      darwin = mkDarwin {
+        name = "darwin";
+        specialArgs = {
+          username = "felix.berger";
+          inherit inputs;
         };
-
-        k3s-node = mkNixos {
-          name = "k3s-node";
-          system = "x86_64-linux";
-          specialArgs = {
-            username = "nixos";
-            inherit inputs;
-          };
-          withHomeManager = false;
-          extraModules = [
-            opnix.nixosModules.default
-          ];
-        };
-
-        oci-node-1 = mkNixos {
-          name = "oci-node-1";
-          system = "aarch64-linux";
-          specialArgs = {
-            username = "nixos";
-            inherit inputs;
-          };
-          withHomeManager = false;
-          extraModules = [
-            opnix.nixosModules.default
-          ];
-        };
-
-        oci-node-2 = mkNixos {
-          name = "oci-node-2";
-          system = "aarch64-linux";
-          specialArgs = {
-            username = "nixos";
-            inherit inputs;
-          };
-          withHomeManager = false;
-          extraModules = [
-            opnix.nixosModules.default
-          ];
-        };
-
-        oci-node-3 = mkNixos {
-          name = "oci-node-3";
-          system = "aarch64-linux";
-          specialArgs = {
-            username = "nixos";
-            inherit inputs;
-          };
-          withHomeManager = false;
-          extraModules = [
-            opnix.nixosModules.default
-          ];
-        };
-      };
-
-      deploy.nodes = import ./nix/deploy.nix {inherit self deploy-rs;};
-
-      checks = {
-        x86_64-linux = deploy-rs.lib.x86_64-linux.deployChecks {
-          nodes = {
-            k3s-node = self.deploy.nodes.k3s-node;
-          };
-        };
-        aarch64-linux = deploy-rs.lib.aarch64-linux.deployChecks {
-          nodes = {
-            oci-node-1 = self.deploy.nodes.oci-node-1;
-            oci-node-2 = self.deploy.nodes.oci-node-2;
-            oci-node-3 = self.deploy.nodes.oci-node-3;
-          };
-        };
+        extraModules = [
+          opnix.darwinModules.default
+        ];
       };
     };
+
+    # Build nixosConfigurations using:
+    nixosConfigurations = {
+      wsl-devbox = mkNixos {
+        name = "wsl-devbox";
+        system = "x86_64-linux";
+        specialArgs = {
+          username = "nixos";
+          inherit inputs;
+        };
+        isWsl = true;
+        withHomeManager = true;
+        extraModules = [
+          opnix.nixosModules.default
+          nixos-wsl.nixosModules.default
+        ];
+      };
+
+      k3s-node = mkNixos {
+        name = "k3s-node";
+        system = "x86_64-linux";
+        specialArgs = {
+          username = "nixos";
+          inherit inputs;
+        };
+        withHomeManager = false;
+        extraModules = [
+          opnix.nixosModules.default
+        ];
+      };
+
+      oci-node-1 = mkNixos {
+        name = "oci-node-1";
+        system = "aarch64-linux";
+        specialArgs = {
+          username = "nixos";
+          inherit inputs;
+        };
+        withHomeManager = false;
+        extraModules = [
+          opnix.nixosModules.default
+        ];
+      };
+
+      oci-node-2 = mkNixos {
+        name = "oci-node-2";
+        system = "aarch64-linux";
+        specialArgs = {
+          username = "nixos";
+          inherit inputs;
+        };
+        withHomeManager = false;
+        extraModules = [
+          opnix.nixosModules.default
+        ];
+      };
+
+      oci-node-3 = mkNixos {
+        name = "oci-node-3";
+        system = "aarch64-linux";
+        specialArgs = {
+          username = "nixos";
+          inherit inputs;
+        };
+        withHomeManager = false;
+        extraModules = [
+          opnix.nixosModules.default
+        ];
+      };
+    };
+  };
 }
