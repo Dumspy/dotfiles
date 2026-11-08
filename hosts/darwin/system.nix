@@ -102,6 +102,7 @@
   };
 
   myModules.system.kubeconfig.enable = false;
+  myModules.system.git-auth.enable = true;
 
   environment.variables = {
     NIX_HOST = "darwin";

@@ -28,6 +28,7 @@
   wsl.wslConf.network.generateResolvConf = false;
 
   myModules.system.onepassword-agent.enable = true;
+  myModules.system.git-auth.enable = true;
 
   # Enable Docker
   virtualisation.docker.enable = true;

@@ -11,6 +11,7 @@
       ./tailscale.nix
       ./openssh.nix
       ./nix-netrc.nix
+      ./git-auth.nix
     ]
     ++ lib.optionals (isDarwin || isWsl) [
       ./kubeconfig.nix
