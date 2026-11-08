@@ -7,7 +7,7 @@ Nix flake for these hosts:
 | `darwin` | aarch64-darwin | nix-darwin and Home Manager |
 | `wsl-devbox` | x86_64-linux | NixOS-WSL and Home Manager |
 | `k3s-node` | x86_64-linux | NixOS |
-| `oci-node-1`, `oci-node-2`, `oci-node-3` | aarch64-linux | NixOS, deployed with deploy-rs |
+| `oci-node-1`, `oci-node-2`, `oci-node-3` | aarch64-linux | NixOS |
 
 Rebuild the machine you are on, or pick one with `fzf`:
 
@@ -16,12 +16,6 @@ Rebuild the machine you are on, or pick one with `fzf`:
 ```
 
 `NIX_HOST` overrides hostname detection. The script expects this checkout at `$HOME/dotfiles`.
-
-Deploy a remote NixOS host:
-
-```bash
-./deploy.sh
-```
 
 ## Secrets Management
 

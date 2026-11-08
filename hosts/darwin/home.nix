@@ -9,6 +9,10 @@
   home.username = config.var.username;
   home.homeDirectory = config.var.homePrefix;
 
+  # Homebrew CLI tools (casks with binaries: claude, code, dbeaver, zed, ...).
+  # nix-darwin does not put the brew prefix on PATH for us.
+  home.sessionPath = ["/opt/homebrew/bin"];
+
   myModules.home = {
     shell.default = "fish";
     ghostty.enable = true;

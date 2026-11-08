@@ -19,6 +19,5 @@
       ./1password-agent.nix
       ./k3s.nix
       ./rex.nix
-      ./deploy.nix
     ];
 }

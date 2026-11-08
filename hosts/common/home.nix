@@ -35,21 +35,20 @@
     tmux.enable = true;
     tmux-sessionizer.enable = true;
     wt.enable = true;
-    opencode.enable = true;
-    pi = {
-      enable = true;
-      settings = {
-        defaultProvider = "opencode-go";
-        enableInstallTelemetry = false;
-        theme = "catppuccin-macchiato";
-      };
-    };
-    agent-config.enable = true;
     devenv.enable = true;
-    dex.enable = false;
     lazygit.enable = true;
     ripgrep.enable = true;
     node-hardening.enable = true;
+  };
+
+  # Agent config (skills, Pi, OpenCode) lives in the dot-agents repo.
+  programs.dot-agents = {
+    enable = true;
+    pi = {
+      enable = true;
+      externalExtensions = null;
+    };
+    opencode.enable = true;
   };
 
   programs.home-manager.enable = true;
